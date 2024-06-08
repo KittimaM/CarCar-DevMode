@@ -13,7 +13,7 @@ const putApi = async (url, jsonData, isUseToken = false) => {
     }
     const response = await axios.put(initialUrl + url, jsonData, { headers });
     const { status, msg } = response.data;
-    if (msg == "token expired") {
+    if (msg === "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -33,7 +33,7 @@ const postApi = async (url, jsonData, isUseToken = false) => {
     }
     const response = await axios.post(initialUrl + url, jsonData, { headers });
     const { status, msg } = response.data;
-    if (msg == "token expired") {
+    if (msg === "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -56,7 +56,7 @@ const deleteApi = async (url, jsonData, isUseToken = false) => {
       data: jsonData,
     });
     const { status, msg } = response.data;
-    if (msg == "token expired") {
+    if (msg === "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -80,7 +80,7 @@ const getApi = async (url, options = null, isUseToken = false) => {
     }
     const response = await axios.get(initialUrl + url, { headers });
     const { status, msg } = response.data;
-    if (msg == "token expired") {
+    if (msg === "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -328,36 +328,36 @@ export const UpdateChannel = (url, jsonData) => {
   return putApi(url, jsonData);
 };
 
-export const GetAllStatus = () => {
-  return getApi("admin/status");
+export const GetAllStatus = (url) => {
+  return getApi(url);
 };
 
-export const PostAddStatus = (jsonData) => {
-  return postApi("admin/status", jsonData);
+export const PostAddStatus = (url, jsonData) => {
+  return postApi(url, jsonData);
 };
 
-export const UpdateStatus = (jsonData) => {
-  return putApi("admin/status", jsonData);
+export const UpdateStatus = (url, jsonData) => {
+  return putApi(url, jsonData);
 };
 
-export const DeleteStatus = (jsonData) => {
-  return deleteApi("admin/status", jsonData);
+export const DeleteStatus = (url, jsonData) => {
+  return deleteApi(url, jsonData);
 };
 
-export const GetAllStatusGroup = () => {
-  return getApi("admin/status-group");
+export const GetAllStatusGroup = (url) => {
+  return getApi(url);
 };
 
-export const PostAddStatusGroup = (jsonData) => {
-  return postApi("admin/status-group", jsonData);
+export const PostAddStatusGroup = (url, jsonData) => {
+  return postApi(url, jsonData);
 };
 
-export const UpdateStatusGroup = (jsonData) => {
-  return putApi("admin/status-group", jsonData);
+export const UpdateStatusGroup = (url, jsonData) => {
+  return putApi(url, jsonData);
 };
 
-export const DeleteStatusGroup = (jsonData) => {
-  return deleteApi("admin/status-group", jsonData);
+export const DeleteStatusGroup = (url, jsonData) => {
+  return deleteApi(url, jsonData);
 };
 
 export const GetAllAdminCustomer = (url) => {

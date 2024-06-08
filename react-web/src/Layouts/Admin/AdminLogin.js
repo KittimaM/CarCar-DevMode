@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostLogin } from "../Api";
 import LoginImg from "../../assets/login-2.jpeg";
 
 const AdminLogin = () => {
+  const [errors, setErrors] = useState();
   const navigate = useNavigate();
   const handleLogin = (event) => {
     event.preventDefault();
@@ -17,9 +18,15 @@ const AdminLogin = () => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         localStorage.setItem("token", msg);
-        navigate("/admin");
+        navigate("/admin/main");
       } else {
-        console.log(data);
+        if (msg === "NO DATA") {
+          setErrors("No User");
+        } else if (msg === "Wrong Password") {
+          setErrors("Wrong Password");
+        } else {
+          console.log(data);
+        }
       }
     });
   };
@@ -62,6 +69,9 @@ const AdminLogin = () => {
                 placeholder="Type here"
                 className="input input-bordered w-full max-w-xs"
               />
+            </label>
+            <label className="form-control w-full flex flex-col p-2 ">
+              {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
             </label>
 
             <div className="py-4">

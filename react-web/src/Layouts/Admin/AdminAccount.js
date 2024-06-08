@@ -14,10 +14,10 @@ const AdminAccount = ({ permission }) => {
   const fetchAccount = () => {
     GetAllAccount().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         let total = 0;
         msg.map((item) => {
-          if (item.is_income == 1) {
+          if (item.is_income === 1) {
             total += parseInt(item.income);
           } else {
             total -= parseInt(item.expense);
@@ -47,7 +47,7 @@ const AdminAccount = ({ permission }) => {
     };
     PostAddAccount(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchAccount();
       } else {
         console.log(data);
@@ -68,7 +68,7 @@ const AdminAccount = ({ permission }) => {
     };
     PostAddAccount(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchAccount();
       } else {
         console.log(data);
@@ -88,13 +88,13 @@ const AdminAccount = ({ permission }) => {
       label: data.get("label"),
     };
     const account_type = data.get("account_type");
-    if (account_type == "is_income") {
+    if (account_type === "is_income") {
       jsonData["is_income"] = 1;
       jsonData["income"] = data.get("price");
       jsonData["is_expense"] = 0;
       jsonData["expense"] = 0;
       jsonData["date"] =
-        data.get("date").length == 0
+        data.get("date").length === 0
           ? editItem.date.split("T")[0]
           : data.get("date");
     } else {
@@ -103,13 +103,13 @@ const AdminAccount = ({ permission }) => {
       jsonData["is_expense"] = 1;
       jsonData["expense"] = data.get("price");
       jsonData["date"] =
-        data.get("date").length == 0
+        data.get("date").length === 0
           ? editItem.date.split("T")[0]
           : data.get("date");
     }
     UpdateAccount(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setEditItem(null);
         fetchAccount();
       } else {
@@ -125,7 +125,7 @@ const AdminAccount = ({ permission }) => {
     };
     DeleteAccount(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchAccount();
       } else {
         console.log(data);
@@ -181,8 +181,8 @@ const AdminAccount = ({ permission }) => {
               list.map((item) => (
                 <tr>
                   <td>{item.label}</td>
-                  <td>{item.is_income == 1 && item.income}</td>
-                  <td>{item.is_expense == 1 && item.expense}</td>
+                  <td>{item.is_income === 1 && item.income}</td>
+                  <td>{item.is_expense === 1 && item.expense}</td>
                   <td>{item.date.split("T")[0]}</td>
                   {permission && permission.includes("3") && (
                     <td>
@@ -220,7 +220,7 @@ const AdminAccount = ({ permission }) => {
               type="number"
               name="price"
               defaultValue={
-                editItem.is_income == 1 ? editItem.income : editItem.expense
+                editItem.is_income === 1 ? editItem.income : editItem.expense
               }
             />
             <label>date</label>
@@ -228,7 +228,7 @@ const AdminAccount = ({ permission }) => {
             <select
               name="account_type"
               defaultValue={
-                editItem.is_income == 1 ? "is_income" : "is_expense"
+                editItem.is_income === 1 ? "is_income" : "is_expense"
               }
             >
               <option value="is_income">is_income</option>

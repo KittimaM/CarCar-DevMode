@@ -6,6 +6,7 @@ import {
   PostAddStatus,
   UpdateStatus,
 } from "../Api";
+import URLList from "../Url/URLList";
 
 const AdminStatus = ({ permission }) => {
   const [statusGroups, setStatusGroups] = useState();
@@ -13,17 +14,17 @@ const AdminStatus = ({ permission }) => {
   const [editItem, setEditItem] = useState(null);
 
   const fetchAllStatus = () => {
-    GetAllStatusGroup().then((data) => {
+    GetAllStatusGroup(URLList.AdminStatusGroup).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setStatusGroups(msg);
       } else {
         console.log(data);
       }
     });
-    GetAllStatus().then((data) => {
+    GetAllStatus(URLList.AdminStatus).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setStatuses(msg);
       } else {
         console.log(data);
@@ -42,9 +43,9 @@ const AdminStatus = ({ permission }) => {
       description: data.get("description"),
       status_group_id: data.get("status_group_id"),
     };
-    PostAddStatus(jsonData).then((data) => {
+    PostAddStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchAllStatus();
       } else {
         console.log(data);
@@ -65,9 +66,9 @@ const AdminStatus = ({ permission }) => {
       description: data.get("description"),
       status_group_id: data.get("status_group_id"),
     };
-    UpdateStatus(jsonData).then((data) => {
+    UpdateStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setEditItem(null);
         fetchAllStatus();
       } else {
@@ -81,9 +82,9 @@ const AdminStatus = ({ permission }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteStatus(jsonData).then((data) => {
+    DeleteStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchAllStatus();
       } else {
         console.log(data);
@@ -133,7 +134,7 @@ const AdminStatus = ({ permission }) => {
                   {statuses &&
                     statuses.map(
                       (status) =>
-                        status.status_group_id == statusGroup.id && (
+                        status.status_group_id === statusGroup.id && (
                           <tr>
                             <td>{status.code}</td>
                             <td>{status.description}</td>
