@@ -22,9 +22,9 @@ const AdminCustomerCar = ({ permission }) => {
   const fetchCustomerCar = () => {
     GetAllAdminCustomerCar(URLList.AdminCustomerCarURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setCustomerCarList(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setCustomerCarList(null);
       } else {
         console.log(data);
@@ -35,7 +35,7 @@ const AdminCustomerCar = ({ permission }) => {
     fetchCustomerCar();
     GetAllAdminCustomer(URLList.AdminCustomerURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setCustomerList(msg);
       } else {
         console.log(data);
@@ -43,7 +43,7 @@ const AdminCustomerCar = ({ permission }) => {
     });
     GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setCarSizeList(msg);
       } else {
         console.log(data);
@@ -51,7 +51,7 @@ const AdminCustomerCar = ({ permission }) => {
     });
     GetAllProvince(URLList.ProvinceURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setProvinceList(msg);
       } else {
         console.log(data);
@@ -64,7 +64,7 @@ const AdminCustomerCar = ({ permission }) => {
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status == "ERROR") {
+    if (status === "ERROR") {
       return setErrors(msg);
     } else {
       const jsonData = {
@@ -81,7 +81,7 @@ const AdminCustomerCar = ({ permission }) => {
       PostAddAdminCustomerCar(URLList.AdminCustomerCarURL, jsonData).then(
         (data) => {
           const { status, msg } = data;
-          if (status == "SUCCESS") {
+          if (status === "SUCCESS") {
             setErrors([]);
             setOpenAddCustomerCarForm(false);
             fetchCustomerCar();
@@ -103,26 +103,26 @@ const AdminCustomerCar = ({ permission }) => {
     const postfix = data.get("plate_no").match(/(\d+)$/g);
 
     if (
-      (prefix == null || prefix == "") &&
-      (postfix == null || postfix == "")
+      (prefix === null || prefix === "") &&
+      (postfix === null || postfix === "")
     ) {
       errorMsg["plate_no"] = "please insert data";
     } else if (
-      prefix == null ||
-      prefix == "" ||
-      postfix == null ||
-      postfix == ""
+      prefix === null ||
+      prefix === "" ||
+      postfix === null ||
+      postfix === ""
     ) {
       errorMsg["plate_no"] = "wrong structure plate no";
     }
 
-    if (data.get("brand") == null || data.get("brand") == "") {
+    if (data.get("brand") === null || data.get("brand") === "") {
       errorMsg["brand"] = "please insert data";
     }
-    if (data.get("model") == null || data.get("model") == "") {
+    if (data.get("model") === null || data.get("model") === "") {
       errorMsg["model"] = "please insert data";
     }
-    if (data.get("color") == null || data.get("color") == "") {
+    if (data.get("color") === null || data.get("color") === "") {
       errorMsg["color"] = "please insert data";
     }
 
@@ -141,7 +141,7 @@ const AdminCustomerCar = ({ permission }) => {
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status == "ERROR") {
+    if (status === "ERROR") {
       return setErrors(msg);
     } else {
       const jsonData = {
@@ -159,7 +159,7 @@ const AdminCustomerCar = ({ permission }) => {
       UpdateAdminCustomerCar(URLList.AdminCustomerCarURL, jsonData).then(
         (data) => {
           const { status, msg } = data;
-          if (status == "SUCCESS") {
+          if (status === "SUCCESS") {
             setErrors([]);
             setEditItem(null);
             fetchCustomerCar();
@@ -179,7 +179,7 @@ const AdminCustomerCar = ({ permission }) => {
     DeleteAdminCustomerCar(URLList.AdminCustomerCarURL, jsonData).then(
       (data) => {
         const { status, msg } = data;
-        if (status == "SUCCESS") {
+        if (status === "SUCCESS") {
           fetchCustomerCar();
         } else {
           console.log(data);
@@ -217,7 +217,7 @@ const AdminCustomerCar = ({ permission }) => {
                   {customerList &&
                     customerList.map(
                       (customer) =>
-                        customer.id == customerCar.customer_id && customer.name
+                        customer.id === customerCar.customer_id && customer.name
                     )}
                 </td>
                 <td>{customerCar.province}</td>
@@ -227,7 +227,7 @@ const AdminCustomerCar = ({ permission }) => {
                   {carSizeList &&
                     carSizeList.map(
                       (carSize) =>
-                        carSize.id == customerCar.size_id && carSize.size
+                        carSize.id === customerCar.size_id && carSize.size
                     )}
                 </td>
                 <td>{customerCar.color}</td>
@@ -342,7 +342,7 @@ const AdminCustomerCar = ({ permission }) => {
                   >
                     {carSizeList.map(
                       (carSize) =>
-                        carSize.is_available == 1 && (
+                        carSize.is_available === 1 && (
                           <option value={carSize.id} key={carSize.id}>
                             {carSize.size}
                           </option>
@@ -481,7 +481,7 @@ const AdminCustomerCar = ({ permission }) => {
                   >
                     {carSizeList.map(
                       (carSize) =>
-                        carSize.is_available == 1 && (
+                        carSize.is_available === 1 && (
                           <option value={carSize.id} key={carSize.id}>
                             {carSize.size}
                           </option>

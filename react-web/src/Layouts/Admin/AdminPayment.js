@@ -6,7 +6,7 @@ const AdminPayment = () => {
   useEffect(() => {
     GetAllBooking('WHERE processing_status = "Paid"').then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setPaidList(msg);
       } else {
         console.log(data);

@@ -18,7 +18,7 @@ const AdminStaff = ({ permission }) => {
     fetchStaff();
     GetAllRole().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setAllRole(msg);
       } else {
         console.log(data);
@@ -29,7 +29,7 @@ const AdminStaff = ({ permission }) => {
   const fetchStaff = () => {
     GetAllStaff(URLList.AdminStaff).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setUser(msg);
       } else {
         console.log(data);
@@ -48,7 +48,7 @@ const AdminStaff = ({ permission }) => {
     };
     PostAddStaffUser(URLList.AdminStaff, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setOpenAddUserForm(false);
         fetchStaff();
       } else {
@@ -63,7 +63,7 @@ const AdminStaff = ({ permission }) => {
     };
     DeleteStaffUser(URLList.AdminStaff, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchStaff();
       } else {
         console.log(data);
@@ -87,7 +87,7 @@ const AdminStaff = ({ permission }) => {
     };
     UpdateStaffUser(URLList.AdminStaff, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchStaff();
         setEditItem(null);
       } else {

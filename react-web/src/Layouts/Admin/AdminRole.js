@@ -12,7 +12,7 @@ const AdminRole = ({ permission }) => {
   const fetchRole = () => {
     GetAllRole().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setRole(msg);
         let defaultAccess = [];
         Object.keys(msg[0]).map((item) => {
@@ -33,7 +33,7 @@ const AdminRole = ({ permission }) => {
       prev.map((item) => {
         if (item.label === toggleName) {
           if (checked) {
-            if (accessLevel == "view") {
+            if (accessLevel === "view") {
               return {
                 label: item.label,
                 access: [parseInt(value)],
@@ -45,7 +45,7 @@ const AdminRole = ({ permission }) => {
               };
             }
           } else {
-            if (accessLevel == "view") {
+            if (accessLevel === "view") {
               return { label: item.label, access: [0] };
             } else {
               return {
@@ -74,7 +74,7 @@ const AdminRole = ({ permission }) => {
     };
     PostAddRole(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchRole();
       } else {
         console.log(data);
@@ -130,7 +130,7 @@ const AdminRole = ({ permission }) => {
     };
     UpdateRole(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setEditItem(null);
         fetchRole();
       } else {
@@ -146,7 +146,7 @@ const AdminRole = ({ permission }) => {
     };
     DeleteRole(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchRole();
       } else {
         console.log(data);
@@ -155,7 +155,7 @@ const AdminRole = ({ permission }) => {
   };
 
   const subRoleEditAccess = (name, value) => {
-    if (name == "have_right_to_approve_on_leave") {
+    if (name === "have_right_to_approve_on_leave") {
       return (
         <div>
           <input
@@ -196,7 +196,10 @@ const AdminRole = ({ permission }) => {
           <label>approve</label>
         </div>
       );
-    } else if (name == "have_booking_access" || name == "have_payment_access") {
+    } else if (
+      name === "have_booking_access" ||
+      name === "have_payment_access"
+    ) {
       return;
     } else {
       return (
@@ -234,7 +237,7 @@ const AdminRole = ({ permission }) => {
   };
 
   const subRoleAccessContent = (name) => {
-    if (name == "have_right_to_approve_on_leave") {
+    if (name === "have_right_to_approve_on_leave") {
       return (
         <div>
           <input
@@ -271,7 +274,10 @@ const AdminRole = ({ permission }) => {
           <label>approve</label>
         </div>
       );
-    } else if (name == "have_booking_access" || name == "have_payment_access") {
+    } else if (
+      name === "have_booking_access" ||
+      name === "have_payment_access"
+    ) {
       return;
     } else {
       return (
@@ -379,7 +385,7 @@ const AdminRole = ({ permission }) => {
           <form onSubmit={handleEditRole}>
             {Object.keys(editItem).map((item) => (
               <div>
-                {item == "role" && (
+                {item === "role" && (
                   <div>
                     <label>role</label>
                     <input

@@ -5,9 +5,9 @@ const Notification = ({ message, type }) => {
   const [colorNotificationPanel, setColorNotificationPanel] = useState();
 
   useEffect(() => {
-    if (type == "SUCCESS") {
+    if (type === "SUCCESS") {
       setColorNotificationPanel("bg-lime-100");
-    } else if (type == "ERROR") {
+    } else if (type === "ERROR") {
       setColorNotificationPanel("bg-rose-300");
     }
   }, []);

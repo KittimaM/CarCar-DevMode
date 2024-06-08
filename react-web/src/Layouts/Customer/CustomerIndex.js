@@ -12,7 +12,7 @@ const CustomerIndex = () => {
   const fetchCustomerBooking = () => {
     GetAllCustomerBooking().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setBooking(msg);
       } else {
         setBooking(null);
@@ -28,7 +28,7 @@ const CustomerIndex = () => {
     };
     DeleteCustomerBooking(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchCustomerBooking();
       } else {
         console.log(data);
@@ -39,7 +39,9 @@ const CustomerIndex = () => {
     <>
       <div className="navbar bg-neutral text-neutral-content">
         <div className="flex-1">
-          <a to="/customer/index" className="btn btn-ghost text-xl">Carcare</a>
+          <a to="/customer/index" className="btn btn-ghost text-xl">
+            Carcare
+          </a>
         </div>
         <div className="flex-none gap-2">
           {/* <div className="form-control">
@@ -131,7 +133,7 @@ const CustomerIndex = () => {
                   <td>{item.start_service_datetime}</td>
                   <td>{item.processing_status}</td>
                   <td>
-                    {item.processing_status == "Waiting" && (
+                    {item.processing_status === "Waiting" && (
                       <button
                         className="btn"
                         onClick={handleDeleteCustomerBooking}

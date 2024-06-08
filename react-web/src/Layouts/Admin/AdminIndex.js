@@ -37,7 +37,7 @@ function AdminIndex() {
   useEffect(() => {
     GetPermission().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setPermission(msg);
       } else {
         console.log(data);
@@ -48,21 +48,21 @@ function AdminIndex() {
   const handleSelectedContent = (event) => {
     event.preventDefault();
     const value = event.currentTarget.getAttribute("data-value");
-    setIsFirstPage(value == "firstPage" ? true : false);
-    setIsMasterTable(value == "masterTable" ? true : false);
-    setIsStatus(value == "status" ? true : false);
-    setIsChannel(value == "channel" ? true : false);
-    setIsDayOffList(value == "dayOffList" ? true : false);
-    setIsOnLeaveList(value == "onLeaveList" ? true : false);
-    setIsOnLeavePersonal(value == "onLeavePersonal" ? true : false);
-    setIsPayment(value == "payment" ? true : false);
-    setIsAccount(value == "account" ? true : false);
-    setIsRole(value == "role" ? true : false);
-    setIsService(value == "service" ? true : false);
-    setIsCarSize(value == "carSize" ? true : false);
-    setIsUser(value == "user" ? true : false);
-    setIsBooking(value == "booking" ? true : false);
-    setIsSchedule(value == "schedule" ? true : false);
+    setIsFirstPage(value === "firstPage" ? true : false);
+    setIsMasterTable(value === "masterTable" ? true : false);
+    setIsStatus(value === "status" ? true : false);
+    setIsChannel(value === "channel" ? true : false);
+    setIsDayOffList(value === "dayOffList" ? true : false);
+    setIsOnLeaveList(value === "onLeaveList" ? true : false);
+    setIsOnLeavePersonal(value === "onLeavePersonal" ? true : false);
+    setIsPayment(value === "payment" ? true : false);
+    setIsAccount(value === "account" ? true : false);
+    setIsRole(value === "role" ? true : false);
+    setIsService(value === "service" ? true : false);
+    setIsCarSize(value === "carSize" ? true : false);
+    setIsUser(value === "user" ? true : false);
+    setIsBooking(value === "booking" ? true : false);
+    setIsSchedule(value === "schedule" ? true : false);
   };
   return (
     <div>

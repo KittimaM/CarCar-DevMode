@@ -18,7 +18,7 @@ const CustomerRegister = () => {
 
     PostAddCustomer(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         navigate("/customer");
       } else {
         console.log(data);

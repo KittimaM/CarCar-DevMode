@@ -22,7 +22,7 @@ const AdminBooking = () => {
   useEffect(() => {
     GetAllPaymentType(URLList.AdminPaymentType).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setPaymentType(msg);
       } else {
         console.log(data);
@@ -30,7 +30,7 @@ const AdminBooking = () => {
     });
     GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setCarSize(msg);
       } else {
         console.log(data);
@@ -62,10 +62,10 @@ const AdminBooking = () => {
 
     GetAllService(URLList.AdminService).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         const availableService = msg.filter(
           (item) =>
-            item.is_available == 1 && jsonData.car_size_id == item.car_size_id
+            item.is_available === 1 && jsonData.car_size_id === item.car_size_id
         );
         let serviceOptions = [];
         availableService.map((item) => {
@@ -83,7 +83,8 @@ const AdminBooking = () => {
   const handleSelectedService = (event) => {
     event.preventDefault();
     service.map((item) => {
-      if (item.id == event.target.value) item.isSelected = event.target.checked;
+      if (item.id === event.target.value)
+        item.isSelected = event.target.checked;
     });
     setService(service);
   };
@@ -94,7 +95,7 @@ const AdminBooking = () => {
     let servcieUseTime = 0;
     let servicePrice = 0;
     service.map((item) => {
-      if (item.isSelected == true) {
+      if (item.isSelected === true) {
         serviceDetail.push(item.id);
         servcieUseTime += parseInt(item.used_time);
         servicePrice += parseInt(item.price);
@@ -232,7 +233,7 @@ const AdminBooking = () => {
               <select name="car_size">
                 {carSize.map(
                   (item) =>
-                    item.is_available == 1 && (
+                    item.is_available === 1 && (
                       <option key={item.id} value={[item.id, item.size]}>
                         {item.size}
                       </option>
@@ -282,7 +283,7 @@ const AdminBooking = () => {
             <select name="payment_type">
               {paymentType.map(
                 (item) =>
-                  item.is_available == 1 && (
+                  item.is_available === 1 && (
                     <option key={item.id} value={item.id}>
                       {item.payment_type}
                     </option>

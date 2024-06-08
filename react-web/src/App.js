@@ -5,12 +5,12 @@ import CustomerFirstPage from "./Layouts/Customer/CustomerFirstPage";
 import CustomerRegister from "./Layouts/Customer/CustomerRegister";
 import CustomerLogin from "./Layouts/Customer/CustomerLogin";
 import AdminLogin from "./Layouts/Admin/AdminLogin";
-import AdminIndex from "./Layouts/Admin/AdminIndex";
 import Index from "./Layouts/Index";
 import CustomerBooking from "./Layouts/Customer/CustomerBooking";
 import CustomerIndex from "./Layouts/Customer/CustomerIndex";
 import CustomerCar from "./Layouts/Customer/CustomerCar";
 import CustomerProfile from "./Layouts/Customer/CustomerProfile";
+import AdminIndex from "./Layouts/Admin/AdminIndex";
 
 function App() {
   return (
@@ -27,8 +27,8 @@ function App() {
         <Route path="/customer" element={<CustomerFirstPage />} />
 
         {/* admin */}
-        <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin" element={<AdminIndex />} />
+        <Route path="/admin/main" element={<AdminIndex />} />
+        <Route path="/admin" element={<AdminLogin />} />
       </Routes>
     </Router>
   );

@@ -14,7 +14,7 @@ const AdminCustomer = ({ permission }) => {
   const fetchCustomer = () => {
     GetAllAdminCustomer(URLList.AdminCustomerURL).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setCustomer(msg);
       } else {
         console.log(data);
@@ -41,7 +41,7 @@ const AdminCustomer = ({ permission }) => {
     };
     UpdateAdminCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchCustomer();
         setEditItem(null);
       } else {
@@ -60,7 +60,7 @@ const AdminCustomer = ({ permission }) => {
     };
     PostAdminAddCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setOpenAddCustomerForm(false);
         fetchCustomer();
       } else {
@@ -76,7 +76,7 @@ const AdminCustomer = ({ permission }) => {
     };
     DeleteAdminCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         fetchCustomer();
       } else {
         console.log(data);

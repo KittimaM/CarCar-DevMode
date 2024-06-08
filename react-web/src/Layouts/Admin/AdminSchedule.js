@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import {
-  GetAllBooking,
-  PostAddAccount,
-  PostUpDateBookingStatus,
-} from "../Api";
+import { GetAllBooking, PostAddAccount, PostUpDateBookingStatus } from "../Api";
 
-
-const AdminSchedule = ({permission}) => {
+const AdminSchedule = ({ permission }) => {
   const [todaySchedule, setTodaySchedule] = useState([]);
 
   useEffect(() => {
     GetAllBooking().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setTodaySchedule(msg);
       } else {
         console.log(data);
@@ -52,10 +47,10 @@ const AdminSchedule = ({permission}) => {
       booking_id: booking_id,
     };
     PostUpDateBookingStatus(jsonData).then((updatedResponse) => {
-      if (updatedResponse.status == "SUCCESS") {
+      if (updatedResponse.status === "SUCCESS") {
         GetAllBooking().then((data) => {
           const { status, msg } = data;
-          if (status == "SUCCESS") {
+          if (status === "SUCCESS") {
             setTodaySchedule(msg);
           } else {
             console.log(data);
@@ -66,7 +61,7 @@ const AdminSchedule = ({permission}) => {
       }
     });
 
-    if (status == "Paid") {
+    if (status === "Paid") {
       const today = new Date();
       const year = today.getFullYear();
       const month = (today.getMonth() + 1).toString().padStart(2, "0");
@@ -85,98 +80,95 @@ const AdminSchedule = ({permission}) => {
 
   return (
     <>
+      <div className="ml-80 mt-16">
+        <div className="text-lg bg-yellow-100 mb-5 "> Schedule page</div>
 
-    <div className="ml-80 mt-16">
-
-      <div className="text-lg bg-yellow-100 mb-5 "> Schedule page</div>
-
-      <table className="table table-lg">
-        <thead>
-          <tr>
-            <td>id</td>
-            <td>car_no</td>
-            <td>date</td>
-            <td>time</td>
-            <td>status</td>
-            <td></td>
-            <td></td>
-          </tr>
-        </thead>
-        <tbody>
-          {todaySchedule &&
-            todaySchedule.map((item) => (
-              <tr key={item.id}>
-                <td>{item.id}</td>
-                <td>{item.car_no}</td>
-                <td>{item.start_service_datetime.split("T")[0]}</td>
-                <td>{item.start_service_datetime.split("T")[1]}</td>
-                <td>{item.processing_status}</td>
-                <td>
-                  {item.processing_status == "Waiting" && (
-                    <button
-                      className="btn"
-                      onClick={handleUpdateStatus}
-                      value={[
-                        item.id,
-                        item.car_no,
-                        item.service_price,
-                        item.processing_status,
-                      ]}
-                    >
-                      Start Service
-                    </button>
-                  )}
-                  {item.processing_status == "Service in process" && (
-                    <button
-                      className="btn"
-                      onClick={handleUpdateStatus}
-                      value={[
-                        item.id,
-                        item.car_no,
-                        item.service_price,
-                        item.processing_status,
-                      ]}
-                    >
-                      Finish Service
-                    </button>
-                  )}
-                  {item.processing_status == "Finish Service" && (
-                    <button
-                      className="btn"
-                      onClick={handleUpdateStatus}
-                      value={[
-                        item.id,
-                        item.car_no,
-                        item.service_price,
-                        item.processing_status,
-                      ]}
-                    >
-                      Pay
-                    </button>
-                  )}
-                  {item.processing_status == "Paid" && <p>Done</p>}
-                  {permission &&
-                    permission.includes("4") &&
-                    item.processing_status == "Cancel" && <p>Cancel</p>}
-                </td>
-                {item.processing_status == "Waiting" && (
+        <table className="table table-lg">
+          <thead>
+            <tr>
+              <td>id</td>
+              <td>car_no</td>
+              <td>date</td>
+              <td>time</td>
+              <td>status</td>
+              <td></td>
+              <td></td>
+            </tr>
+          </thead>
+          <tbody>
+            {todaySchedule &&
+              todaySchedule.map((item) => (
+                <tr key={item.id}>
+                  <td>{item.id}</td>
+                  <td>{item.car_no}</td>
+                  <td>{item.start_service_datetime.split("T")[0]}</td>
+                  <td>{item.start_service_datetime.split("T")[1]}</td>
+                  <td>{item.processing_status}</td>
                   <td>
-                    <button
-                      className="btn"
-                      onClick={handleUpdateStatus}
-                      value={[item.id, "Cancel"]}
-                    >
-                      Cancel
-                    </button>
+                    {item.processing_status === "Waiting" && (
+                      <button
+                        className="btn"
+                        onClick={handleUpdateStatus}
+                        value={[
+                          item.id,
+                          item.car_no,
+                          item.service_price,
+                          item.processing_status,
+                        ]}
+                      >
+                        Start Service
+                      </button>
+                    )}
+                    {item.processing_status === "Service in process" && (
+                      <button
+                        className="btn"
+                        onClick={handleUpdateStatus}
+                        value={[
+                          item.id,
+                          item.car_no,
+                          item.service_price,
+                          item.processing_status,
+                        ]}
+                      >
+                        Finish Service
+                      </button>
+                    )}
+                    {item.processing_status === "Finish Service" && (
+                      <button
+                        className="btn"
+                        onClick={handleUpdateStatus}
+                        value={[
+                          item.id,
+                          item.car_no,
+                          item.service_price,
+                          item.processing_status,
+                        ]}
+                      >
+                        Pay
+                      </button>
+                    )}
+                    {item.processing_status === "Paid" && <p>Done</p>}
+                    {permission &&
+                      permission.includes("4") &&
+                      item.processing_status === "Cancel" && <p>Cancel</p>}
                   </td>
-                )}
-              </tr>
-            ))}
-        </tbody>
-      </table>
-    </div>
+                  {item.processing_status === "Waiting" && (
+                    <td>
+                      <button
+                        className="btn"
+                        onClick={handleUpdateStatus}
+                        value={[item.id, "Cancel"]}
+                      >
+                        Cancel
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
     </>
-    
   );
 };
 
