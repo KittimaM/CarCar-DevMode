@@ -4,7 +4,7 @@ const {
   AdminAddRole,
   AdminDeleteRole,
   AdminUpdateRole,
-} = require("../../Controller/Admin/AdminRole");
+} = require("../../../Controller/Admin/AdminRole/AdminRole");
 
 var router = express.Router();
 

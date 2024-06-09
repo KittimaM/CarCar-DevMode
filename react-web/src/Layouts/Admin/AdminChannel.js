@@ -23,9 +23,9 @@ const AdminChannel = ({ permission }) => {
   const fetchChannel = () => {
     GetChannel(URLList.AdminChannel).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setChannelList(msg);
-      } else if (status === "NO DATA") {
+      } else if (status == "NO DATA") {
         setChannelList(null);
       } else {
         console.log(data);
@@ -37,7 +37,7 @@ const AdminChannel = ({ permission }) => {
     fetchChannel();
     GetAllService(URLList.AdminService).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         msg.map((item) => {
           item["isSelected"] = false;
         });
@@ -59,7 +59,7 @@ const AdminChannel = ({ permission }) => {
 
   const validateData = (data) => {
     let errorMsg = {};
-    if (data.get("name") === null || data.get("name") === "") {
+    if (data.get("name") == null || data.get("name") == "") {
       errorMsg["name"] = "please insert data";
     }
     if (Object.entries(errorMsg).length !== 0) {
@@ -76,14 +76,14 @@ const AdminChannel = ({ permission }) => {
     event.preventDefault();
     let selectedServiceIds = [];
     service.map((item) => {
-      if (item.is_available === 1 && item.isSelected === true) {
+      if (item.is_available == 1 && item.isSelected == true) {
         selectedServiceIds.push(item.id);
       }
     });
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status === "ERROR") {
+    if (status == "ERROR") {
       setErrors(msg);
     } else {
       const jsonData = {
@@ -94,15 +94,15 @@ const AdminChannel = ({ permission }) => {
       };
       PostAddChannel(URLList.AdminChannel, jsonData).then((data) => {
         const { status, msg } = data;
-        if (status === "SUCCESS") {
+        if (status == "SUCCESS") {
           setNotificationMessage(`success add channel = ${jsonData.name}`);
           setNotificationStatus(status);
           handleShowNotification();
           setOpenAddChannelForm(false);
           fetchChannel();
-        } else if (status === "ERROR") {
+        } else if (status == "ERROR") {
           let errorMsg = {};
-          if (msg.code === "ER_DUP_ENTRY") {
+          if (msg.code == "ER_DUP_ENTRY") {
             errorMsg["name"] = "duplicated";
             setErrors(errorMsg);
           } else {
@@ -120,7 +120,7 @@ const AdminChannel = ({ permission }) => {
       const serviceIds = selectedItem.service.split(",");
       if (
         selectedItem.service != null &&
-        item.is_available === 1 &&
+        item.is_available == 1 &&
         serviceIds.includes(item.id.toString())
       ) {
         item["isSelected"] = true;
@@ -136,14 +136,14 @@ const AdminChannel = ({ permission }) => {
     event.preventDefault();
     let selectedServiceIds = [];
     editService.map((item) => {
-      if (item.is_available === 1 && item.isSelected === true) {
+      if (item.is_available == 1 && item.isSelected == true) {
         selectedServiceIds.push(item.id);
       }
     });
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status === "ERROR") {
+    if (status == "ERROR") {
       setErrors(msg);
     } else {
       const jsonData = {
@@ -155,15 +155,15 @@ const AdminChannel = ({ permission }) => {
       };
       UpdateChannel(URLList.AdminChannel, jsonData).then((data) => {
         const { status, msg } = data;
-        if (status === "SUCCESS") {
+        if (status == "SUCCESS") {
           setNotificationMessage(`success edit channel = ${jsonData.name}`);
           setNotificationStatus(status);
           handleShowNotification();
           setEditItem(null);
           fetchChannel();
-        } else if (status === "ERROR") {
+        } else if (status == "ERROR") {
           let errorMsg = {};
-          if (msg.code === "ER_DUP_ENTRY") {
+          if (msg.code == "ER_DUP_ENTRY") {
             errorMsg["name"] = "duplicated";
             setErrors(errorMsg);
           } else {
@@ -183,7 +183,7 @@ const AdminChannel = ({ permission }) => {
     };
     DeleteChannel(URLList.AdminChannel, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setNotificationMessage("success deleted");
         setNotificationStatus(status);
         handleShowNotification();
@@ -196,16 +196,14 @@ const AdminChannel = ({ permission }) => {
 
   const handleSelectedService = (event) => {
     service.map((item) => {
-      if (item.id === event.target.value)
-        item.isSelected = event.target.checked;
+      if (item.id == event.target.value) item.isSelected = event.target.checked;
     });
     setService(service);
   };
 
   const handleEditSelectedService = (event) => {
     editService.map((item) => {
-      if (item.id === event.target.value)
-        item.isSelected = event.target.checked;
+      if (item.id == event.target.value) item.isSelected = event.target.checked;
     });
     setEditService(editService);
   };
@@ -241,7 +239,7 @@ const AdminChannel = ({ permission }) => {
                   <td>{item.name}</td>
                   <td>{item.description}</td>
                   <td>
-                    {item.is_available === 1 ? "available" : "not available"}
+                    {item.is_available == 1 ? "available" : "not available"}
                   </td>
                   {permission && permission.includes("3") && (
                     <td>
@@ -304,7 +302,7 @@ const AdminChannel = ({ permission }) => {
                     </label>
                     {service.map(
                       (item) =>
-                        item.is_available === 1 && (
+                        item.is_available == 1 && (
                           <div>
                             <input
                               className="mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-primary dark:checked:after:bg-primary dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
@@ -391,7 +389,7 @@ const AdminChannel = ({ permission }) => {
                   </label>
                   {editService.map(
                     (item) =>
-                      item.is_available === 1 && (
+                      item.is_available == 1 && (
                         <div>
                           <input
                             className="mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-primary dark:checked:after:bg-primary dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
@@ -411,7 +409,7 @@ const AdminChannel = ({ permission }) => {
                 </div>
                 <div className="mb-4">
                   <input
-                    defaultChecked={editItem.is_available === 1}
+                    defaultChecked={editItem.is_available == 1}
                     className="mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-primary dark:checked:after:bg-primary dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
                     type="checkbox"
                     role="switch"

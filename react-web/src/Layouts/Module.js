@@ -38,7 +38,7 @@ export const FetchBooking = async () => {
   try {
     const response = await axios.get("http://localhost:5000/api/admin/booking");
     const { status, msg } = response.data;
-    if (status === "SUCCESS") {
+    if (status == "SUCCESS") {
       let bookedDateTime = {};
       msg.map((item) => {
         const {
@@ -84,7 +84,7 @@ export const FetchCarSize = async () => {
   try {
     const response = await axios.get("http://localhost:5000/api/admin/carsize");
     const { status, msg } = response.data;
-    if (status === "SUCCESS") {
+    if (status == "SUCCESS") {
       return msg;
     } else {
       console.log(msg);

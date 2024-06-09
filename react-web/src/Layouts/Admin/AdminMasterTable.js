@@ -9,8 +9,8 @@ const AdminMasterTable = ({ onLeaveTypePermission, paymentTypePermission }) => {
   const handleSelectedContent = (event) => {
     event.preventDefault();
     const value = event.currentTarget.getAttribute("data-value");
-    setIsOnLeaveType(value === "onLeaveType" ? true : false);
-    setIsPaymentType(value === "paymentType" ? true : false);
+    setIsOnLeaveType(value == "onLeaveType" ? true : false);
+    setIsPaymentType(value == "paymentType" ? true : false);
   };
   return (
     <div>

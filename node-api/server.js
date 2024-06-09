@@ -26,6 +26,9 @@ const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
 app.use("/api/customer/car", CustomerCarRoute);
 
 //admin
+const AdminRoleLabelRoute = require("./Routes/Admin/AdminRole/AdminRoleLabel");
+app.use("/api/admin/role-label", AdminRoleLabelRoute);
+
 const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
 app.use("/api/admin/customer-car", AdminCustomerCarRoute);
 
@@ -77,7 +80,7 @@ app.use("/api/admin/service", AdminServiceRoute);
 const AdminPermissionRoute = require("./Routes/Admin/AdminPermission");
 app.use("/api/admin/permission", AdminPermissionRoute);
 
-const AdminRoleRoute = require("./Routes/Admin/AdminRole");
+const AdminRoleRoute = require("./Routes/Admin/AdminRole/AdminRole");
 app.use("/api/admin/role", AdminRoleRoute);
 
 // Start the server

@@ -7,7 +7,7 @@ const AdminFirstPage = () => {
   useEffect(() => {
     GetChannel(URLList.AdminChannel).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setChannel(msg);
       } else {
         console.log(data);
@@ -45,7 +45,7 @@ const AdminFirstPage = () => {
           {channel &&
             channel.map(
               (item) =>
-                item.is_available === 1 && (
+                item.is_available == 1 && (
                   <>
                     <input
                       type="radio"

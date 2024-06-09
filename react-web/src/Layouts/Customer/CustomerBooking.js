@@ -34,7 +34,7 @@ const CustomerBooking = () => {
   useEffect(() => {
     GetAllPaymentType().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setPaymentType(msg);
       } else {
         console.log(data);
@@ -42,7 +42,7 @@ const CustomerBooking = () => {
     });
     GetCustomerCar().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setCar(msg);
       } else {
         console.log(data);
@@ -81,10 +81,10 @@ const CustomerBooking = () => {
     };
     GetAllService(URLList.AdminService).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         const availableService = msg.filter(
           (item) =>
-            item.is_available === 1 && jsonData.size_id === item.car_size_id
+            item.is_available == 1 && jsonData.size_id == item.car_size_id
         );
         setService(availableService);
         setBooking(jsonData);
@@ -109,7 +109,7 @@ const CustomerBooking = () => {
 
   const handleSubmitSelectedService = (event) => {
     event.preventDefault();
-    if (selectedService.length === 0) {
+    if (selectedService.length == 0) {
       alert("please select service");
     } else {
       let serviceId = [];
@@ -117,7 +117,7 @@ const CustomerBooking = () => {
       let servicePrice = 0;
       service.map((item) => {
         selectedService.map((selected_service_item) => {
-          if (item.id === selected_service_item) {
+          if (item.id == selected_service_item) {
             serviceId.push(item.id);
             servcieUseTime += parseInt(item.used_time);
             servicePrice += parseFloat(item.price);
@@ -315,7 +315,7 @@ const CustomerBooking = () => {
           <select name="payment_type">
             {paymentType.map(
               (item) =>
-                item.is_available === 1 && (
+                item.is_available == 1 && (
                   <option key={item.id} value={item.id}>
                     {item.payment_type}
                   </option>

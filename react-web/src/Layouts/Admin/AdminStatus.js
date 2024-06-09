@@ -16,7 +16,7 @@ const AdminStatus = ({ permission }) => {
   const fetchAllStatus = () => {
     GetAllStatusGroup(URLList.AdminStatusGroup).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setStatusGroups(msg);
       } else {
         console.log(data);
@@ -24,7 +24,7 @@ const AdminStatus = ({ permission }) => {
     });
     GetAllStatus(URLList.AdminStatus).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setStatuses(msg);
       } else {
         console.log(data);
@@ -45,7 +45,7 @@ const AdminStatus = ({ permission }) => {
     };
     PostAddStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchAllStatus();
       } else {
         console.log(data);
@@ -68,7 +68,7 @@ const AdminStatus = ({ permission }) => {
     };
     UpdateStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setEditItem(null);
         fetchAllStatus();
       } else {
@@ -84,7 +84,7 @@ const AdminStatus = ({ permission }) => {
     };
     DeleteStatus(URLList.AdminStatus, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchAllStatus();
       } else {
         console.log(data);
@@ -134,7 +134,7 @@ const AdminStatus = ({ permission }) => {
                   {statuses &&
                     statuses.map(
                       (status) =>
-                        status.status_group_id === statusGroup.id && (
+                        status.status_group_id == statusGroup.id && (
                           <tr>
                             <td>{status.code}</td>
                             <td>{status.description}</td>

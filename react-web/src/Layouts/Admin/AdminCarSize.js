@@ -29,9 +29,9 @@ const AdminCarSize = ({ permission }) => {
   const fetchCarSize = async () => {
     GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setCarSizeList(msg);
-      } else if (status === "NO DATA") {
+      } else if (status == "NO DATA") {
         setCarSizeList(null);
       } else {
         console.log(data);
@@ -46,7 +46,7 @@ const AdminCarSize = ({ permission }) => {
 
   const validateData = (data) => {
     let errorMsg = {};
-    if (data.get("size") === null || data.get("size") === "") {
+    if (data.get("size") == null || data.get("size") == "") {
       errorMsg["size"] = "please insert data";
     }
 
@@ -65,7 +65,7 @@ const AdminCarSize = ({ permission }) => {
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status === "ERROR") {
+    if (status == "ERROR") {
       setErrors(msg);
     } else {
       const jsonData = {
@@ -75,15 +75,15 @@ const AdminCarSize = ({ permission }) => {
       };
       PostAddCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
         const { status, msg } = data;
-        if (status === "SUCCESS") {
+        if (status == "SUCCESS") {
           setNotificationMessage(`success add carsize = ${jsonData.size}`);
           setNotificationStatus(status);
           handleShowNotification();
           setOpenAddCarSizeForm(false);
           fetchCarSize();
-        } else if (status === "ERROR") {
+        } else if (status == "ERROR") {
           let errorMsg = {};
-          if (msg.code === "ER_DUP_ENTRY") {
+          if (msg.code == "ER_DUP_ENTRY") {
             errorMsg["size"] = "duplicated";
             setErrors(errorMsg);
           } else {
@@ -107,13 +107,13 @@ const AdminCarSize = ({ permission }) => {
     };
     DeleteCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setNotificationMessage("success delete");
         setNotificationStatus(status);
         handleShowNotification();
         fetchCarSize();
       } else {
-        if (msg.code === "ER_ROW_IS_REFERENCED_2") {
+        if (msg.code == "ER_ROW_IS_REFERENCED_2") {
           setNotificationMessage("in use");
           setNotificationStatus(status);
           handleShowNotification();
@@ -129,7 +129,7 @@ const AdminCarSize = ({ permission }) => {
     const data = new FormData(event.currentTarget);
     const validatedErrors = validateData(data);
     const { status, msg } = validatedErrors;
-    if (status === "ERROR") {
+    if (status == "ERROR") {
       setErrors(msg);
     } else {
       const jsonData = {
@@ -140,15 +140,15 @@ const AdminCarSize = ({ permission }) => {
       };
       UpdateCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
         const { status, msg } = data;
-        if (status === "SUCCESS") {
+        if (status == "SUCCESS") {
           setNotificationMessage(`success edit carsize = ${jsonData.size}`);
           setNotificationStatus(status);
           handleShowNotification();
           setEditItem(null);
           fetchCarSize();
-        } else if (status === "ERROR") {
+        } else if (status == "ERROR") {
           let errorMsg = {};
-          if (msg.code === "ER_DUP_ENTRY") {
+          if (msg.code == "ER_DUP_ENTRY") {
             errorMsg["size"] = "duplicated";
             setErrors(errorMsg);
           } else {
@@ -199,7 +199,7 @@ const AdminCarSize = ({ permission }) => {
                   <td>{carSize.size}</td>
                   <td>{carSize.description}</td>
                   <td>
-                    {carSize.is_available === 1 ? "available" : "not available"}
+                    {carSize.is_available == 1 ? "available" : "not available"}
                   </td>
                   {permission && permission.includes("3") && (
                     <td>
@@ -320,7 +320,7 @@ const AdminCarSize = ({ permission }) => {
                 </div>
                 <div className="mb-4">
                   <input
-                    defaultChecked={editItem.is_available === 1}
+                    defaultChecked={editItem.is_available == 1}
                     className="mr-2 mt-[0.3rem] h-3.5 w-8 appearance-none rounded-[0.4375rem] bg-neutral-300 before:pointer-events-none before:absolute before:h-3.5 before:w-3.5 before:rounded-full before:bg-transparent before:content-[''] after:absolute after:z-[2] after:-mt-[0.1875rem] after:h-5 after:w-5 after:rounded-full after:border-none after:bg-neutral-100 after:shadow-[0_0px_3px_0_rgb(0_0_0_/_7%),_0_2px_2px_0_rgb(0_0_0_/_4%)] after:transition-[background-color_0.2s,transform_0.2s] after:content-[''] checked:bg-primary checked:after:absolute checked:after:z-[2] checked:after:-mt-[3px] checked:after:ml-[1.0625rem] checked:after:h-5 checked:after:w-5 checked:after:rounded-full checked:after:border-none checked:after:bg-primary checked:after:shadow-[0_3px_1px_-2px_rgba(0,0,0,0.2),_0_2px_2px_0_rgba(0,0,0,0.14),_0_1px_5px_0_rgba(0,0,0,0.12)] checked:after:transition-[background-color_0.2s,transform_0.2s] checked:after:content-[''] hover:cursor-pointer focus:outline-none focus:ring-0 focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[3px_-1px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-5 focus:after:w-5 focus:after:rounded-full focus:after:content-[''] checked:focus:border-primary checked:focus:bg-primary checked:focus:before:ml-[1.0625rem] checked:focus:before:scale-100 checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca] checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] dark:bg-neutral-600 dark:after:bg-neutral-400 dark:checked:bg-primary dark:checked:after:bg-primary dark:focus:before:shadow-[3px_-1px_0px_13px_rgba(255,255,255,0.4)] dark:checked:focus:before:shadow-[3px_-1px_0px_13px_#3b71ca]"
                     type="checkbox"
                     role="switch"
