@@ -13,7 +13,7 @@ const CustomerProfile = () => {
   const fetchProfile = () => {
     GetCustomerProfile().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setProfile(msg);
       } else {
         console.log(data);
@@ -39,10 +39,10 @@ const CustomerProfile = () => {
     };
     UpdateCustomerProfile(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setIsError(false);
         setDisabledEditProfile(true);
-      } else if (status === "ER_DUP_ENTRY") {
+      } else if (status == "ER_DUP_ENTRY") {
         setIsError(true);
         setErrorMsg("phone number or name are already been used");
       }
@@ -131,7 +131,7 @@ const CustomerProfile = () => {
                   disabled={disabledEditProfile}
                 />
                 {isError && <p>{errorMsg}</p>}
-                {disabledEditProfile === false && (
+                {disabledEditProfile == false && (
                   <div>
                     <button type="submit" className="btn">
                       Submit

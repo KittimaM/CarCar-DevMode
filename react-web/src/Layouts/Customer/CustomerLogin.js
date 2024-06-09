@@ -23,7 +23,7 @@ const CustomerLogin = () => {
       })
       .then((response) => {
         const { status, msg } = response.data;
-        if (status === "SUCCESS") {
+        if (status == "SUCCESS") {
           localStorage.setItem("token", msg);
           navigate("/customer/index");
         }

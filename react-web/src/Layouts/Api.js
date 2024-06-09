@@ -13,7 +13,7 @@ const putApi = async (url, jsonData, isUseToken = false) => {
     }
     const response = await axios.put(initialUrl + url, jsonData, { headers });
     const { status, msg } = response.data;
-    if (msg === "token expired") {
+    if (msg == "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -33,7 +33,7 @@ const postApi = async (url, jsonData, isUseToken = false) => {
     }
     const response = await axios.post(initialUrl + url, jsonData, { headers });
     const { status, msg } = response.data;
-    if (msg === "token expired") {
+    if (msg == "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -56,7 +56,7 @@ const deleteApi = async (url, jsonData, isUseToken = false) => {
       data: jsonData,
     });
     const { status, msg } = response.data;
-    if (msg === "token expired") {
+    if (msg == "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -80,7 +80,7 @@ const getApi = async (url, options = null, isUseToken = false) => {
     }
     const response = await axios.get(initialUrl + url, { headers });
     const { status, msg } = response.data;
-    if (msg === "token expired") {
+    if (msg == "token expired") {
       localStorage.removeItem("token");
     }
     return { status: status, msg: msg };
@@ -94,16 +94,24 @@ export const GetPermission = () => {
   return getApi("admin/permission", null, isUseToken);
 };
 
-export const GetAllRole = async () => {
-  return getApi("admin/role");
+export const GetAllAdminRole = (url) => {
+  return getApi(url);
+};
+
+export const PostAdminAddRole = (url, jsonData) => {
+  return postApi(url, jsonData);
+};
+
+export const DeleteRole = (url, jsonData) => {
+  return deleteApi(url, jsonData);
+};
+
+export const UpdateRole = (url, jsonData) => {
+  return putApi(url, jsonData);
 };
 
 export const GetAllBooking = (options = null) => {
   return getApi("admin/booking", options);
-};
-
-export const PostAddRole = (jsonData) => {
-  return postApi("admin/role", jsonData);
 };
 
 export const PostAddStaffUser = (url, jsonData) => {
@@ -160,14 +168,6 @@ export const DeleteService = (url, jsonData) => {
 
 export const UpdateService = (url, jsonData) => {
   return putApi(url, jsonData);
-};
-
-export const DeleteRole = (jsonData) => {
-  return deleteApi("admin/role", jsonData);
-};
-
-export const UpdateRole = (jsonData) => {
-  return putApi("admin/role", jsonData);
 };
 
 export const GetCustomerCar = () => {
@@ -390,4 +390,8 @@ export const PostAddAdminCustomerCar = (url, jsonData) => {
 
 export const UpdateAdminCustomerCar = (url, jsonData) => {
   return putApi(url, jsonData);
+};
+
+export const GetAllAdminRoleLabel = (url) => {
+  return getApi(url);
 };

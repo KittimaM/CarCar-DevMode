@@ -13,7 +13,7 @@ const AdminDayOff = ({ permisison }) => {
   const fetchDayOff = () => {
     GetAllDayOff().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setDayOffList(msg);
         let dataToInsert = {
           Sunday: 0,
@@ -38,7 +38,7 @@ const AdminDayOff = ({ permisison }) => {
     fetchDayOff();
     GetAllStaff(URLList.AdminStaff).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setStaff(msg);
       } else {
         console.log(data);
@@ -62,7 +62,7 @@ const AdminDayOff = ({ permisison }) => {
     };
     UpdateDayOff(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setEditItem(null);
         setDayCount(null);
         fetchDayOff();
@@ -90,8 +90,8 @@ const AdminDayOff = ({ permisison }) => {
                 staff.map((staff_item) => (
                   <tr>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Sunday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Sunday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -101,8 +101,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Monday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Monday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -112,8 +112,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Tuesday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Tuesday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -123,8 +123,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Wednesday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Wednesday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -134,8 +134,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Thursday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Thursday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -145,8 +145,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Friday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Friday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -156,8 +156,8 @@ const AdminDayOff = ({ permisison }) => {
                         )}
                     </td>
                     <td>
-                      {staff_item.id === item.staff_id &&
-                        item.day_off === "Saturday" && (
+                      {staff_item.id == item.staff_id &&
+                        item.day_off == "Saturday" && (
                           <button
                             className="btn"
                             onClick={() => handleSelectEditId(item)}
@@ -187,7 +187,7 @@ const AdminDayOff = ({ permisison }) => {
           <form onSubmit={handleEditDayOff}>
             {staff.map(
               (item) =>
-                item.id === editItem.staff_id && (
+                item.id == editItem.staff_id && (
                   <label>
                     username <b>{item.username}</b>
                   </label>

@@ -1,7 +1,4 @@
-var bcrypt = require("bcrypt");
-var jwt = require("jsonwebtoken");
-const Conn = require("../../db");
-const secret = process.env.SECRET_WORD;
+const Conn = require("../../../db");
 
 const AdminGetAllRole = (req, res, next) => {
   Conn.execute("SELECT * FROM role", function (error, results) {

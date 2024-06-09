@@ -16,13 +16,13 @@ const AdminLogin = () => {
 
     PostLogin(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         localStorage.setItem("token", msg);
         navigate("/admin/main");
       } else {
-        if (msg === "NO DATA") {
+        if (msg == "NO DATA") {
           setErrors("No User");
-        } else if (msg === "Wrong Password") {
+        } else if (msg == "Wrong Password") {
           setErrors("Wrong Password");
         } else {
           console.log(data);

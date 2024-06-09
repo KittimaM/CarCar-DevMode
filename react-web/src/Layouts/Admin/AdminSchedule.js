@@ -7,7 +7,7 @@ const AdminSchedule = ({ permission }) => {
   useEffect(() => {
     GetAllBooking().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setTodaySchedule(msg);
       } else {
         console.log(data);
@@ -47,10 +47,10 @@ const AdminSchedule = ({ permission }) => {
       booking_id: booking_id,
     };
     PostUpDateBookingStatus(jsonData).then((updatedResponse) => {
-      if (updatedResponse.status === "SUCCESS") {
+      if (updatedResponse.status == "SUCCESS") {
         GetAllBooking().then((data) => {
           const { status, msg } = data;
-          if (status === "SUCCESS") {
+          if (status == "SUCCESS") {
             setTodaySchedule(msg);
           } else {
             console.log(data);
@@ -61,7 +61,7 @@ const AdminSchedule = ({ permission }) => {
       }
     });
 
-    if (status === "Paid") {
+    if (status == "Paid") {
       const today = new Date();
       const year = today.getFullYear();
       const month = (today.getMonth() + 1).toString().padStart(2, "0");
@@ -105,7 +105,7 @@ const AdminSchedule = ({ permission }) => {
                   <td>{item.start_service_datetime.split("T")[1]}</td>
                   <td>{item.processing_status}</td>
                   <td>
-                    {item.processing_status === "Waiting" && (
+                    {item.processing_status == "Waiting" && (
                       <button
                         className="btn"
                         onClick={handleUpdateStatus}
@@ -119,7 +119,7 @@ const AdminSchedule = ({ permission }) => {
                         Start Service
                       </button>
                     )}
-                    {item.processing_status === "Service in process" && (
+                    {item.processing_status == "Service in process" && (
                       <button
                         className="btn"
                         onClick={handleUpdateStatus}
@@ -133,7 +133,7 @@ const AdminSchedule = ({ permission }) => {
                         Finish Service
                       </button>
                     )}
-                    {item.processing_status === "Finish Service" && (
+                    {item.processing_status == "Finish Service" && (
                       <button
                         className="btn"
                         onClick={handleUpdateStatus}
@@ -147,12 +147,12 @@ const AdminSchedule = ({ permission }) => {
                         Pay
                       </button>
                     )}
-                    {item.processing_status === "Paid" && <p>Done</p>}
+                    {item.processing_status == "Paid" && <p>Done</p>}
                     {permission &&
                       permission.includes("4") &&
-                      item.processing_status === "Cancel" && <p>Cancel</p>}
+                      item.processing_status == "Cancel" && <p>Cancel</p>}
                   </td>
-                  {item.processing_status === "Waiting" && (
+                  {item.processing_status == "Waiting" && (
                     <td>
                       <button
                         className="btn"

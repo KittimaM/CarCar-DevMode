@@ -12,7 +12,7 @@ const CustomerIndex = () => {
   const fetchCustomerBooking = () => {
     GetAllCustomerBooking().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setBooking(msg);
       } else {
         setBooking(null);
@@ -28,7 +28,7 @@ const CustomerIndex = () => {
     };
     DeleteCustomerBooking(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchCustomerBooking();
       } else {
         console.log(data);
@@ -133,7 +133,7 @@ const CustomerIndex = () => {
                   <td>{item.start_service_datetime}</td>
                   <td>{item.processing_status}</td>
                   <td>
-                    {item.processing_status === "Waiting" && (
+                    {item.processing_status == "Waiting" && (
                       <button
                         className="btn"
                         onClick={handleDeleteCustomerBooking}

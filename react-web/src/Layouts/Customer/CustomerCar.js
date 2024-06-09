@@ -20,7 +20,7 @@ const CustomerCar = () => {
   const fetchCustomerCar = async () => {
     GetCustomerCar().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setCar(msg);
       } else {
         setCar(null);
@@ -33,7 +33,7 @@ const CustomerCar = () => {
     fetchCustomerCar();
     GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setCarSize(msg);
       } else {
         setCarSize(null);
@@ -42,7 +42,7 @@ const CustomerCar = () => {
     });
     GetAllProvince(URLList.ProvinceURL).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setProvince(msg);
       } else {
         setProvince(null);
@@ -70,10 +70,10 @@ const CustomerCar = () => {
 
     PostAddCustomerCar(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchCustomerCar();
       } else {
-        if (msg.code === "ER_DUP_ENTRY") {
+        if (msg.code == "ER_DUP_ENTRY") {
           alert("this plate no already exist");
         } else {
           console.log(data);
@@ -93,7 +93,7 @@ const CustomerCar = () => {
     };
     DeleteCustomerCar(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchCustomerCar();
       } else {
         console.log(data);
@@ -120,11 +120,11 @@ const CustomerCar = () => {
     };
     UpdateCustomerCar(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setEditItem(null);
         fetchCustomerCar();
       } else {
-        if (msg.code === "ER_DUP_ENTRY") {
+        if (msg.code == "ER_DUP_ENTRY") {
           alert("this plate no already exist");
         } else {
           console.log(data);
@@ -205,7 +205,7 @@ const CustomerCar = () => {
             <select name="size">
               {carSize.map(
                 (item) =>
-                  item.is_available === 1 && (
+                  item.is_available == 1 && (
                     <option key={item.id} value={[item.id, item.size]}>
                       {item.size}
                     </option>
@@ -294,7 +294,7 @@ const CustomerCar = () => {
               >
                 {carSize.map(
                   (item) =>
-                    item.is_available === 1 && (
+                    item.is_available == 1 && (
                       <option key={item.id} value={[item.id, item.size]}>
                         {item.size}
                       </option>

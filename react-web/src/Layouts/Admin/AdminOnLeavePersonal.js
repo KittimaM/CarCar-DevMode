@@ -16,7 +16,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
   const fetchOnLeaveList = () => {
     GetOnLeavePersonal().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setOnLeaveList(msg);
       } else {
         console.log(data);
@@ -26,7 +26,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
   useEffect(() => {
     GetAllOnLeaveType(URLList.AdminOnLeaveType).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setOnLeaveType(msg);
       } else {
         console.log(data);
@@ -46,7 +46,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
     };
     PostAddOnLeavePersonal(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchOnLeaveList();
       } else {
         console.log(data);
@@ -66,11 +66,11 @@ const AdminOnLeavePersonal = ({ permission }) => {
       staff_id: editItem.staff_id,
       on_leave_type_id: data.get("on_leave_type_id"),
       start_date:
-        data.get("start_date").length === 0
+        data.get("start_date").length == 0
           ? editItem.start_date.split("T")[0]
           : data.get("start_date"),
       end_date:
-        data.get("end_date").length === 0
+        data.get("end_date").length == 0
           ? editItem.end_date.split("T")[0]
           : data.get("end_date"),
       reason: data.get("reason"),
@@ -78,7 +78,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
 
     UpdateOnLeave(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setEditItem(null);
         fetchOnLeaveList();
       } else {
@@ -94,7 +94,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
     };
     DeleteOnLeave(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         fetchOnLeaveList();
       } else {
         console.log(data);
@@ -147,19 +147,19 @@ const AdminOnLeavePersonal = ({ permission }) => {
                     {onLeaveType &&
                       onLeaveType.map(
                         (leaveType) =>
-                          leaveType.id === item.on_leave_type_id &&
+                          leaveType.id == item.on_leave_type_id &&
                           leaveType.type
                       )}
                   </td>
                   <td>{item.reason}</td>
-                  <td>{item.is_approved === 1 ? "Approved" : "Pending"}</td>
+                  <td>{item.is_approved == 1 ? "Approved" : "Pending"}</td>
                   {permission && permission.includes("3") && (
                     <td>
                       <button
                         className="btn"
                         onClick={() => handleSelectEditId(item)}
                         value={item.id}
-                        disabled={item.is_approved === 1}
+                        disabled={item.is_approved == 1}
                       >
                         Edit
                       </button>
@@ -171,7 +171,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
                         className="btn"
                         onClick={handleDeleteOnLeave}
                         value={item.id}
-                        disabled={item.is_approved === 1}
+                        disabled={item.is_approved == 1}
                       >
                         Delete
                       </button>

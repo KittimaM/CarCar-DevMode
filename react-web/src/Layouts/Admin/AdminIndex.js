@@ -9,7 +9,7 @@ import AdminOnLeaveList from "./AdminOnLeaveList";
 import AdminOnLeavePersonal from "./AdminOnLeavePersonal";
 import AdminPayment from "./AdminPayment";
 import AdminAccount from "./AdminAccount";
-import AdminRole from "./AdminRole";
+import AdminRole from "./AdminRole/AdminRole";
 import AdminService from "./AdminService";
 import AdminCarSize from "./AdminCarSize";
 import AdminUser from "./AdminUser/AdminUser";
@@ -37,7 +37,7 @@ function AdminIndex() {
   useEffect(() => {
     GetPermission().then((data) => {
       const { status, msg } = data;
-      if (status === "SUCCESS") {
+      if (status == "SUCCESS") {
         setPermission(msg);
       } else {
         console.log(data);
@@ -48,21 +48,21 @@ function AdminIndex() {
   const handleSelectedContent = (event) => {
     event.preventDefault();
     const value = event.currentTarget.getAttribute("data-value");
-    setIsFirstPage(value === "firstPage" ? true : false);
-    setIsMasterTable(value === "masterTable" ? true : false);
-    setIsStatus(value === "status" ? true : false);
-    setIsChannel(value === "channel" ? true : false);
-    setIsDayOffList(value === "dayOffList" ? true : false);
-    setIsOnLeaveList(value === "onLeaveList" ? true : false);
-    setIsOnLeavePersonal(value === "onLeavePersonal" ? true : false);
-    setIsPayment(value === "payment" ? true : false);
-    setIsAccount(value === "account" ? true : false);
-    setIsRole(value === "role" ? true : false);
-    setIsService(value === "service" ? true : false);
-    setIsCarSize(value === "carSize" ? true : false);
-    setIsUser(value === "user" ? true : false);
-    setIsBooking(value === "booking" ? true : false);
-    setIsSchedule(value === "schedule" ? true : false);
+    setIsFirstPage(value == "firstPage" ? true : false);
+    setIsMasterTable(value == "masterTable" ? true : false);
+    setIsStatus(value == "status" ? true : false);
+    setIsChannel(value == "channel" ? true : false);
+    setIsDayOffList(value == "dayOffList" ? true : false);
+    setIsOnLeaveList(value == "onLeaveList" ? true : false);
+    setIsOnLeavePersonal(value == "onLeavePersonal" ? true : false);
+    setIsPayment(value == "payment" ? true : false);
+    setIsAccount(value == "account" ? true : false);
+    setIsRole(value == "role" ? true : false);
+    setIsService(value == "service" ? true : false);
+    setIsCarSize(value == "carSize" ? true : false);
+    setIsUser(value == "user" ? true : false);
+    setIsBooking(value == "booking" ? true : false);
+    setIsSchedule(value == "schedule" ? true : false);
   };
   return (
     <div>
@@ -442,8 +442,7 @@ function AdminIndex() {
               </li>
             )}
             {permission &&
-              (permission["have_on_leave_type_access"].includes("1") ||
-                permission["have_payment_type_access"].includes("1")) && (
+              permission["have_master_table_access"].includes("1") && (
                 <li>
                   <a
                     onClick={handleSelectedContent}
@@ -517,7 +516,7 @@ function AdminIndex() {
       )}
       {isOnLeaveList && (
         <AdminOnLeaveList
-          permission={permission["have_right_to_approve_on_leave"]}
+          permission={permission["have_on_leave_list_access"]}
         />
       )}
       {isDayOffList && (

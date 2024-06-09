@@ -11,9 +11,9 @@ const AdminUser = ({ staffPermission, customerPermission }) => {
   const handleSelectedContent = (event) => {
     event.preventDefault();
     const value = event.currentTarget.getAttribute("data-value");
-    setIsSelectedStaff(value === "staff" ? true : false);
-    setIsSelectedCustomerCar(value === "customerCar" ? true : false);
-    setSelectedCustomer(value === "customer" ? true : false);
+    setIsSelectedStaff(value == "staff" ? true : false);
+    setIsSelectedCustomerCar(value == "customerCar" ? true : false);
+    setSelectedCustomer(value == "customer" ? true : false);
   };
 
   return (
