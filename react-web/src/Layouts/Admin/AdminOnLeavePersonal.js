@@ -24,6 +24,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
       } else {
         console.log(data);
       }
+      setOpenAddForm(false)
       setErrors([]);
       setEditItem(null);
       setStartDate(null);
@@ -91,43 +92,6 @@ const AdminOnLeavePersonal = ({ permission }) => {
           }
         }
       );
-    }
-  };
-
-  const handleSelectEditId = (selectedItem) => {
-    setEditItem(selectedItem);
-  };
-
-  const handleEditOnLeave = (event) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const validatedErrors = validateData(data);
-    const { status, msg } = validatedErrors;
-    if (status == "ERROR") {
-      setErrors(msg);
-    } else {
-      const jsonData = {
-        id: editItem.id,
-        staff_id: editItem.staff_id,
-        on_leave_type_id: data.get("on_leave_type_id"),
-        start_date:
-          data.get("start_date").length == 0
-            ? editItem.start_date.split("T")[0]
-            : data.get("start_date"),
-        end_date:
-          data.get("end_date").length == 0
-            ? editItem.end_date.split("T")[0]
-            : data.get("end_date"),
-        reason: data.get("reason"),
-      };
-      UpdateOnLeave(URLList.AdminOnLeave, jsonData).then((data) => {
-        const { status, msg } = data;
-        if (status == "SUCCESS") {
-          fetchOnLeaveList();
-        } else {
-          console.log(data);
-        }
-      });
     }
   };
 
