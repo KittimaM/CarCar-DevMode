@@ -17,7 +17,7 @@ const AdminOnLeave = ({ permission }) => {
   const [onLeaveType, setOnLeaveType] = useState([]);
 
   const fetchOnLeaveList = () => {
-    GetAllOnLeave().then((data) => {
+    GetAllOnLeave(URLList.AdminOnLeave).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setOnLeaveList(msg);
@@ -57,7 +57,7 @@ const AdminOnLeave = ({ permission }) => {
       reason: data.get("reason"),
       on_leave_type_id: data.get("on_leave_type_id"),
     };
-    PostAddOnLeave(jsonData).then((data) => {
+    PostAddOnLeave(URLList.AdminOnLeave, jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchOnLeaveList();
@@ -89,7 +89,7 @@ const AdminOnLeave = ({ permission }) => {
       reason: data.get("reason"),
     };
 
-    UpdateOnLeave(jsonData).then((data) => {
+    UpdateOnLeave(URLList.AdminOnLeave, jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setEditItem(null);
@@ -105,7 +105,7 @@ const AdminOnLeave = ({ permission }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteOnLeave(jsonData).then((data) => {
+    DeleteOnLeave(URLList.AdminOnLeave, jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchOnLeaveList();
@@ -123,7 +123,7 @@ const AdminOnLeave = ({ permission }) => {
       id: id,
       on_leave_type_id: on_leave_type_id,
     };
-    ApproveOnLeave(jsonData).then((data) => {
+    ApproveOnLeave(URLList.AdminOnLeaveApprove, jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchOnLeaveList();
