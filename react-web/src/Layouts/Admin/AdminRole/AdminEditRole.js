@@ -179,8 +179,18 @@ const AdminEditRole = ({ editItem }) => {
   };
 
   const subAccessContent = (roleList, actionValue) => {
+    //action value
+    // 1 view
+    // 2 add
+    // 3 edit
+    // 4 delete
+    // 5 approve
     const { role } = roleList;
-    if (role !== "have_on_leave_list_access") {
+    if (role == "have_on_leave_personal_access") {
+      if (actionValue == 3 || actionValue == 4 || actionValue == 5) {
+        return "hidden";
+      }
+    } else if (role !== "have_on_leave_list_access") {
       if (actionValue == 5) {
         return "hidden";
       }

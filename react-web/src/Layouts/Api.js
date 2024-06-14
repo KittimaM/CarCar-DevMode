@@ -243,35 +243,34 @@ export const UpdateAccount = (jsonData) => {
   return putApi("admin/account", jsonData);
 };
 
-export const GetAllOnLeave = () => {
-  return getApi("admin/onleave");
+export const GetAllOnLeave = (url) => {
+  return getApi(url);
 };
 
-export const PostAddOnLeave = (jsonData) => {
-  return postApi("admin/onleave", jsonData);
+export const PostAddOnLeave = (url, jsonData) => {
+  return postApi(url, jsonData);
 };
 
-export const DeleteOnLeave = (jsonData) => {
-  return deleteApi("admin/onleave", jsonData);
+export const DeleteOnLeave = (url, jsonData) => {
+  return deleteApi(url, jsonData);
 };
 
-export const UpdateOnLeave = (jsonData) => {
-  return putApi("admin/onleave", jsonData);
+export const UpdateOnLeave = (url, jsonData) => {
+  return putApi(url, jsonData);
 };
 
-export const ApproveOnLeave = (jsonData) => {
+export const ApproveOnLeave = (url, jsonData) => {
+  return putApi(url, jsonData, true);
+};
+
+export const GetOnLeavePersonal = (url) => {
   const isUseToken = true;
-  return putApi("admin/onleave/approve", jsonData, isUseToken);
+  return getApi(url, null, isUseToken);
 };
 
-export const GetOnLeavePersonal = () => {
+export const PostAddOnLeavePersonal = (url, jsonData) => {
   const isUseToken = true;
-  return getApi("admin/onleave/personal", null, isUseToken);
-};
-
-export const PostAddOnLeavePersonal = (jsonData) => {
-  const isUseToken = true;
-  return postApi("admin/onleave/personal", jsonData, isUseToken);
+  return postApi(url, jsonData, isUseToken);
 };
 
 export const GetAllDayOff = () => {
