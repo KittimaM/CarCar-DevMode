@@ -5,7 +5,7 @@ const URLList = {
   ProvinceURL: "admin/province",
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
-  AdminOnLeaveType: "admin/onleave-type",
+  AdminOnLeaveType: "admin/onleave/type",
   AdminPaymentType: "admin/paymenttype",
   AdminStaff: "admin/user",
   AdminStatusGroup: "admin/status-group",
@@ -14,7 +14,9 @@ const URLList = {
   AdminRoleLabel: "admin/role-label",
   AdminOnLeavePersonal: "admin/onleave/personal",
   AdminOnLeave: "admin/onleave",
-  AdminOnLeaveApprove : "admin/onleave/approve",
+  AdminOnLeaveApprove: "admin/onleave/approve",
+  AdminLatestOnLeaveByTypePersonal: "admin/onleave/detail/latest/personal",
+  AdminLatestOnLeaveByTypeList: "admin/onleave/detail/latest/list",
 };
 
 export default URLList;

@@ -29,17 +29,7 @@ const AdminAddStaffUser = (req, res, next) => {
             res.json({ status: "ERROR", msg: error });
           } else {
             const insertId = result.insertId;
-            Conn.execute(
-              "INSERT INTO on_leave_followup(staff_id) VALUES (?)",
-              [insertId],
-              function (error, result) {
-                if (error) {
-                  res.json({ status: "ERROR", msg: error });
-                } else {
-                  res.json({ status: "SUCCESS", msg: "SUCCESS" });
-                }
-              }
-            );
+            res.json({ status: "SUCCESS", msg: insertId });
           }
         }
       );

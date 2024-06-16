@@ -3,21 +3,19 @@ const {
   AdminGetAllOnLeave,
   AdminAddOnLeave,
   AdminDeleteOnLeave,
-  AdminUpdateOnLeave,
   AdminApproveOnLeave,
   AdminGetOnLeavePersonal,
   AdminAddOnLeavePersonal,
-} = require("../../Controller/Admin/AdminOnLeave");
+} = require("../../../Controller/Admin/AdminOnLeave/AdminOnLeave");
 
 var router = express.Router();
 
 router.get("/", AdminGetAllOnLeave);
 router.post("/", AdminAddOnLeave);
 router.delete("/", AdminDeleteOnLeave);
-router.put("/", AdminUpdateOnLeave);
 router.put("/approve", AdminApproveOnLeave);
 
-//persona
+//personal
 router.get("/personal", AdminGetOnLeavePersonal);
 router.post("/personal", AdminAddOnLeavePersonal);
 

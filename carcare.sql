@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 10, 2024 at 05:26 PM
+-- Generation Time: Jun 16, 2024 at 05:15 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -225,62 +225,22 @@ CREATE TABLE `on_leave` (
   `reason` varchar(255) NOT NULL,
   `is_approved` tinyint(1) DEFAULT 0,
   `approved_by_id` int(11) DEFAULT NULL,
-  `on_leave_type_id` int(11) NOT NULL
+  `on_leave_type_id` int(11) NOT NULL,
+  `number_of_days` int(11) NOT NULL,
+  `remain_days` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `on_leave`
 --
 
-INSERT INTO `on_leave` (`id`, `staff_id`, `start_date`, `end_date`, `reason`, `is_approved`, `approved_by_id`, `on_leave_type_id`) VALUES
-(6, 6, '2024-02-04', NULL, '', 1, 6, 1),
-(7, 16, '2024-02-05', NULL, 'update reason', 0, NULL, 0),
-(9, 21, '2024-02-28', NULL, 'test update reason', 0, NULL, 0),
-(10, 6, '2024-02-06', NULL, 'sick leave', 1, 6, 1),
-(11, 6, '2024-03-03', '2024-03-04', 'test end_date edit', 1, 6, 1),
-(12, 6, '2024-03-06', '2024-03-07', 'test privacy leave', 1, 6, 2),
-(13, 6, '2024-03-04', '2024-03-04', 'test', 0, NULL, 4),
-(14, 34, '2024-03-04', '2024-03-04', 'test onleavefollowup', 1, 34, 1),
-(15, 34, '2024-03-04', '2024-03-04', '', 1, 34, 2),
-(16, 34, '2024-03-04', '2024-03-04', '', 1, 34, 1),
-(17, 34, '2024-03-04', '2024-03-04', '', 1, 34, 1),
-(18, 34, '2024-03-09', '2024-03-09', '', 1, 34, 4),
-(19, 34, '2024-03-04', '2024-03-04', '', 1, 34, 4),
-(20, 34, '2024-03-04', '2024-03-04', '', 1, 34, 1),
-(21, 34, '2024-03-04', '2024-03-04', '', 1, 34, 1),
-(22, 34, '2024-03-04', '2024-03-04', '', 1, 34, 4),
-(23, 34, '2024-03-04', '2024-03-04', '', 1, 34, 3),
-(24, 34, '2024-03-05', '2024-03-05', '1', 1, 34, 2),
-(25, 34, '2024-03-05', '2024-03-05', '1', 1, 34, 3),
-(26, 34, '2024-03-09', '2024-03-09', '2', 1, 34, 1),
-(27, 6, '2024-03-04', '2024-03-04', '5', 1, 34, 3);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `on_leave_followup`
---
-
-CREATE TABLE `on_leave_followup` (
-  `staff_id` int(11) NOT NULL,
-  `sick_leave_count` int(11) NOT NULL DEFAULT 0,
-  `privacy_leave_count` int(11) NOT NULL DEFAULT 0,
-  `birth_day_leave_count` int(11) NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `on_leave_followup`
---
-
-INSERT INTO `on_leave_followup` (`staff_id`, `sick_leave_count`, `privacy_leave_count`, `birth_day_leave_count`) VALUES
-(6, 4, 2, 0),
-(6, 3, 1, 0),
-(34, 6, 2, 3),
-(35, 0, 0, 0),
-(36, 0, 0, 0),
-(37, 0, 0, 0),
-(38, 0, 0, 0),
-(39, 0, 0, 0);
+INSERT INTO `on_leave` (`id`, `staff_id`, `start_date`, `end_date`, `reason`, `is_approved`, `approved_by_id`, `on_leave_type_id`, `number_of_days`, `remain_days`) VALUES
+(47, 6, '2024-06-01', '2024-06-30', 'test', 1, 6, 14, 30, 0),
+(48, 16, '2024-06-01', '2024-06-30', 'test', 1, 6, 14, 30, 0),
+(49, 17, '2024-06-22', '2024-06-25', 'test', 1, 6, 15, 4, 3),
+(50, 17, '2024-06-18', '2024-06-20', 'test', 1, 6, 14, 3, 4),
+(51, 6, '2024-06-01', '2024-06-01', 'test', 0, NULL, 15, 1, 6),
+(52, 6, '2024-06-07', '2024-06-08', 'test', 0, NULL, 15, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -300,7 +260,8 @@ CREATE TABLE `on_leave_type` (
 --
 
 INSERT INTO `on_leave_type` (`id`, `type`, `day_limit`, `is_available`) VALUES
-(13, 'test', 3, 0);
+(14, 'sick leave', 30, 1),
+(15, 'privacy leave', 7, 1);
 
 -- --------------------------------------------------------
 
@@ -451,7 +412,7 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `have_service_access`, `have_booking_access`, `have_role_access`, `have_account_access`, `have_schedule_access`, `have_payment_access`, `have_payment_type_access`, `have_on_leave_list_access`, `have_right_to_approve_on_leave`, `have_on_leave_personal_access`, `have_day_off_list_access`, `have_on_leave_type_access`, `have_channel_access`, `have_status_access`, `have_customer_access`, `have_master_table_access`, `have_user_access`) VALUES
-(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1'),
+(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1'),
 (2, 'user', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
 (3, 'new', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
@@ -649,7 +610,10 @@ ALTER TABLE `day_off`
 -- Indexes for table `on_leave`
 --
 ALTER TABLE `on_leave`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_on_leave_staff_id` (`staff_id`),
+  ADD KEY `fk_on_leave_on_leave_type_id` (`on_leave_type_id`),
+  ADD KEY `fk_on_leave_approved_by_id` (`approved_by_id`);
 
 --
 -- Indexes for table `on_leave_type`
@@ -756,13 +720,13 @@ ALTER TABLE `customer_car`
 -- AUTO_INCREMENT for table `on_leave`
 --
 ALTER TABLE `on_leave`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `on_leave_type`
 --
 ALTER TABLE `on_leave_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `payment_type`
@@ -828,6 +792,14 @@ ALTER TABLE `customer_car`
 --
 ALTER TABLE `day_off`
   ADD CONSTRAINT `day_off_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
+
+--
+-- Constraints for table `on_leave`
+--
+ALTER TABLE `on_leave`
+  ADD CONSTRAINT `fk_on_leave_approved_by_id` FOREIGN KEY (`approved_by_id`) REFERENCES `staff_user` (`id`),
+  ADD CONSTRAINT `fk_on_leave_on_leave_type_id` FOREIGN KEY (`on_leave_type_id`) REFERENCES `on_leave_type` (`id`),
+  ADD CONSTRAINT `fk_on_leave_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
 
 --
 -- Constraints for table `service`
