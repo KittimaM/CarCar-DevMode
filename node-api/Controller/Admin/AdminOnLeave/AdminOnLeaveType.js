@@ -1,6 +1,6 @@
 var bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-const Conn = require("../../db");
+const Conn = require("../../../db");
 const secret = process.env.SECRET_WORD;
 
 const AdminGetAllOnLeaveType = (req, res, next) => {

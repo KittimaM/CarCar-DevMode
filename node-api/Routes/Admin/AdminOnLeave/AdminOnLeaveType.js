@@ -4,7 +4,7 @@ const {
   AdminDeleteOnLeaveType,
   AdminUpdateOnLeaveType,
   AdminAddOnLeaveType,
-} = require("../../Controller/Admin/AdminOnLeaveType");
+} = require("../../../Controller/Admin/AdminOnLeave/AdminOnLeaveType");
 
 var router = express.Router();
 

@@ -65,7 +65,7 @@ const deleteApi = async (url, jsonData, isUseToken = false) => {
   }
 };
 
-const getApi = async (url, options = null, isUseToken = false) => {
+const getApi = async (url, jsonData = null, isUseToken = false) => {
   try {
     let headers = {};
     if (isUseToken) {
@@ -75,8 +75,8 @@ const getApi = async (url, options = null, isUseToken = false) => {
         Authorization: `Bearer ${token}`,
       };
     }
-    if (options) {
-      headers.params = options;
+    if (jsonData) {
+      headers.params = JSON.stringify(jsonData);
     }
     const response = await axios.get(initialUrl + url, { headers });
     const { status, msg } = response.data;
@@ -255,10 +255,6 @@ export const DeleteOnLeave = (url, jsonData) => {
   return deleteApi(url, jsonData);
 };
 
-export const UpdateOnLeave = (url, jsonData) => {
-  return putApi(url, jsonData);
-};
-
 export const ApproveOnLeave = (url, jsonData) => {
   return putApi(url, jsonData, true);
 };
@@ -393,4 +389,9 @@ export const UpdateAdminCustomerCar = (url, jsonData) => {
 
 export const GetAllAdminRoleLabel = (url) => {
   return getApi(url);
+};
+
+export const AdminGetLatestOnLeaveByType = (url, jsonData) => {
+  const isUseToken = true;
+  return getApi(url, jsonData, isUseToken);
 };

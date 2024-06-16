@@ -1,20 +1,22 @@
 import React, { useEffect, useState } from "react";
+import { differenceInDays, parseISO } from "date-fns";
 import {
   GetOnLeavePersonal,
-  UpdateOnLeave,
   DeleteOnLeave,
   PostAddOnLeavePersonal,
   GetAllOnLeaveType,
+  AdminGetLatestOnLeaveByType,
 } from "../Api";
 import URLList from "../Url/URLList";
 
 const AdminOnLeavePersonal = ({ permission }) => {
   const [onLeaveList, setOnLeaveList] = useState([]);
   const [onLeaveTypeList, setOnLeaveTypeList] = useState([]);
-  const [editItem, setEditItem] = useState(null);
   const [openAddForm, setOpenAddForm] = useState(false);
   const [errors, setErrors] = useState([]);
-  const [startDate, setStartDate] = useState(null);
+  const [selectedLeaveType, setSelectedLeaveType] = useState(null);
+  const [minEndDate, setMinEndDate] = useState(null);
+  const [maxEndDate, setMaxEndDate] = useState(null);
 
   const fetchOnLeaveList = () => {
     GetOnLeavePersonal(URLList.AdminOnLeavePersonal).then((data) => {
@@ -24,23 +26,27 @@ const AdminOnLeavePersonal = ({ permission }) => {
       } else {
         console.log(data);
       }
-      setOpenAddForm(false)
+      setMinEndDate(null);
+      setMaxEndDate(null);
+      setOpenAddForm(false);
       setErrors([]);
-      setEditItem(null);
-      setStartDate(null);
     });
   };
 
   useEffect(() => {
+    fetchOnLeaveList();
     GetAllOnLeaveType(URLList.AdminOnLeaveType).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
+        const selectedLeaveType = msg.find((item) => item.is_available == 1);
+        if (selectedLeaveType) {
+          setSelectedLeaveType(selectedLeaveType);
+        }
         setOnLeaveTypeList(msg);
       } else {
         console.log(data);
       }
     });
-    fetchOnLeaveList();
   }, []);
 
   const validateData = (data) => {
@@ -65,7 +71,36 @@ const AdminOnLeavePersonal = ({ permission }) => {
   };
 
   const handleSelectedStartDate = (event) => {
-    setStartDate(event.target.value);
+    const { value } = event.target;
+    const { id, day_limit } = selectedLeaveType;
+    setMinEndDate(value);
+    const initialDate = new Date(value);
+    const maxDate = new Date(initialDate);
+    AdminGetLatestOnLeaveByType(
+      URLList.AdminLatestOnLeaveByTypePersonal,
+      id
+    ).then((latestOnLeave) => {
+      const { status, msg } = latestOnLeave;
+      if (status == "SUCCESS") {
+        maxDate.setDate(maxDate.getDate() + (msg.remain_days - 1));
+        setMaxEndDate(maxDate.toISOString().split("T")[0]);
+      } else if (status == "NO DATA") {
+        maxDate.setDate(maxDate.getDate() + (day_limit - 1));
+        setMaxEndDate(maxDate.toISOString().split("T")[0]);
+      } else {
+        console.log(latestOnLeave);
+      }
+    });
+  };
+
+  const handleSelectedOnLeaveType = (event) => {
+    const { value } = event.target;
+    const selectedLeaveType = onLeaveTypeList.find(
+      (onLeaveType) => onLeaveType.id == value
+    );
+    if (selectedLeaveType) {
+      setSelectedLeaveType(selectedLeaveType);
+    }
   };
 
   const handleAddOnLeave = (event) => {
@@ -82,16 +117,38 @@ const AdminOnLeavePersonal = ({ permission }) => {
         end_date: data.get("end_date"),
         reason: data.get("reason"),
       };
-      PostAddOnLeavePersonal(URLList.AdminOnLeavePersonal, jsonData).then(
-        (data) => {
-          const { status, msg } = data;
-          if (status == "SUCCESS") {
-            fetchOnLeaveList();
-          } else {
-            console.log(data);
+      AdminGetLatestOnLeaveByType(
+        URLList.AdminLatestOnLeaveByTypePersonal,
+        jsonData.on_leave_type_id
+      ).then((latestOnLeave) => {
+        const startDate = parseISO(data.get("start_date"));
+        const endDate = parseISO(data.get("end_date"));
+        jsonData["number_of_days"] = differenceInDays(endDate, startDate) + 1;
+        if (
+          latestOnLeave.status == "SUCCESS" ||
+          latestOnLeave.status == "NO DATA"
+        ) {
+          if (latestOnLeave.status == "SUCCESS") {
+            const latestOnLeaveData = latestOnLeave.msg;
+            jsonData["remain_days"] =
+              latestOnLeaveData["remain_days"] - jsonData.number_of_days;
+          } else if (latestOnLeave.status == "NO DATA") {
+            jsonData["remain_days"] = selectedLeaveType.day_limit - jsonData.number_of_days;
           }
+          PostAddOnLeavePersonal(URLList.AdminOnLeavePersonal, jsonData).then(
+            (data) => {
+              const { status, msg } = data;
+              if (status == "SUCCESS") {
+                fetchOnLeaveList();
+              } else {
+                console.log(data);
+              }
+            }
+          );
+        } else {
+          console.log(latestOnLeave);
         }
-      );
+      });
     }
   };
 
@@ -113,7 +170,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
     <>
       <div className="ml-80 mt-16">
         <div className="text-lg bg-yellow-100 mb-5 ">On Leave</div>
-        {permission && permission.includes("2") && (
+        {permission.includes("2") && (
           <button
             className="btn"
             onClick={() => {
@@ -129,34 +186,36 @@ const AdminOnLeavePersonal = ({ permission }) => {
               <td>start_date</td>
               <td>end_date</td>
               <td>on_leave_type</td>
+              <td>number of days</td>
               <td>reason</td>
               <td>status</td>
-              {permission && permission.includes("4") && <td>Delete</td>}
+              {permission.includes("4") && <td>Delete</td>}
             </tr>
           </thead>
           <tbody>
             {onLeaveList &&
-              onLeaveList.map((item) => (
-                <tr key={item.id}>
-                  <td>{String(item.start_date).split("T")[0]}</td>
-                  <td>{String(item.end_date).split("T")[0]}</td>
+              onLeaveList.map((onLeave) => (
+                <tr key={onLeave.id}>
+                  <td>{String(onLeave.start_date).split("T")[0]}</td>
+                  <td>{String(onLeave.end_date).split("T")[0]}</td>
                   <td>
                     {onLeaveTypeList &&
                       onLeaveTypeList.map(
                         (leaveType) =>
-                          leaveType.id == item.on_leave_type_id &&
+                          leaveType.id == onLeave.on_leave_type_id &&
                           leaveType.type
                       )}
                   </td>
-                  <td>{item.reason}</td>
-                  <td>{item.is_approved == 1 ? "Approved" : "Pending"}</td>
-                  {permission && permission.includes("4") && (
+                  <td>{onLeave.number_of_days}</td>
+                  <td>{onLeave.reason}</td>
+                  <td>{onLeave.is_approved == 1 ? "Approved" : "Pending"}</td>
+                  {permission.includes("4") && (
                     <td>
                       <button
                         className="btn"
                         onClick={handleDeleteOnLeave}
-                        value={item.id}
-                        disabled={item.is_approved == 1}
+                        value={onLeave.id}
+                        disabled={onLeave.is_approved == 1}
                       >
                         Delete
                       </button>
@@ -176,6 +235,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
                     Type
                   </label>
                   <select
+                    onChange={handleSelectedOnLeaveType}
                     name="on_leave_type_id"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                   >
@@ -209,7 +269,12 @@ const AdminOnLeavePersonal = ({ permission }) => {
                   <label className="block text-gray-700 text-sm font-bold mb-2">
                     End Date
                   </label>
-                  <input name="end_date" type="date" min={startDate} />
+                  <input
+                    name="end_date"
+                    type="date"
+                    min={minEndDate}
+                    max={maxEndDate}
+                  />
                   {errors.end_date && (
                     <p className="mt-1 text-red-500 text-sm">
                       {errors.end_date}
