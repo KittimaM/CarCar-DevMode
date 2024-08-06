@@ -16,7 +16,7 @@ const CustomerLogin = () => {
       password: data.get("password"),
     };
     axios
-      .post("http://localhost:5000/api/customer/login", jsonData, {
+      .post("http://localhost:5000/customer/login", jsonData, {
         headers: {
           "Content-Type": "application/json",
         },

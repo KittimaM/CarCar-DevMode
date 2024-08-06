@@ -4,7 +4,6 @@ import {
   GetAllCarSize,
   PostAddCarSize,
   UpdateCarSize,
-  GetPermission,
 } from "../Api";
 import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
