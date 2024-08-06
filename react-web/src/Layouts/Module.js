@@ -36,7 +36,7 @@ export const DefaultTimeOptions = () => {
 
 export const FetchBooking = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/admin/booking");
+    const response = await axios.get("http://localhost:5000/admin/booking");
     const { status, msg } = response.data;
     if (status == "SUCCESS") {
       let bookedDateTime = {};
@@ -82,7 +82,7 @@ export const FetchBooking = async () => {
 
 export const FetchCarSize = async () => {
   try {
-    const response = await axios.get("http://localhost:5000/api/admin/carsize");
+    const response = await axios.get("http://localhost:5000/admin/carsize");
     const { status, msg } = response.data;
     if (status == "SUCCESS") {
       return msg;

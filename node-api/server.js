@@ -8,83 +8,86 @@ app.use(bodyParser.json());
 
 // customer
 const CustomerProfileRoute = require("./Routes/Customer/CustomerProfile");
-app.use("/api/customer/profile", CustomerProfileRoute);
+app.use("/customer/profile", CustomerProfileRoute);
 
 const CustomerRegisterRoute = require("./Routes/Customer/CustomerRegister");
-app.use("/api/customer/register", CustomerRegisterRoute);
+app.use("/customer/register", CustomerRegisterRoute);
 
 const CustomerLoginRoute = require("./Routes/Customer/CustomerLogin");
-app.use("/api/customer/login", CustomerLoginRoute);
+app.use("/customer/login", CustomerLoginRoute);
 
 const CustomerBookingRoute = require("./Routes/Customer/CustomerBooking");
-app.use("/api/customer/booking", CustomerBookingRoute);
+app.use("/customer/booking", CustomerBookingRoute);
 
 const CustomerIndexRoute = require("./Routes/Customer/CustomerIndex");
-app.use("/api/customer/index", CustomerIndexRoute);
+app.use("/customer/index", CustomerIndexRoute);
 
 const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
-app.use("/api/customer/car", CustomerCarRoute);
+app.use("/customer/car", CustomerCarRoute);
 
 //admin
+const AdminTemplateRoute = require("./Routes/Admin/AdminTemplate");
+app.use("/admin/template", AdminTemplateRoute);
+
 const AdminOnLeaveDetailRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeaveDetail");
-app.use("/api/admin/onleave/detail", AdminOnLeaveDetailRoute);
+app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
 
 const AdminRoleLabelRoute = require("./Routes/Admin/AdminRole/AdminRoleLabel");
-app.use("/api/admin/role-label", AdminRoleLabelRoute);
+app.use("/admin/role-label", AdminRoleLabelRoute);
 
 const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
-app.use("/api/admin/customer-car", AdminCustomerCarRoute);
+app.use("/admin/customer-car", AdminCustomerCarRoute);
 
 const AdminCustomerRoute = require("./Routes/Admin/AdminUser/AdminCustomer");
-app.use("/api/admin/customer", AdminCustomerRoute);
+app.use("/admin/customer", AdminCustomerRoute);
 
 const AdminStatusGroupRoute = require("./Routes/Admin/AdminStatusGroup");
-app.use("/api/admin/status-group", AdminStatusGroupRoute);
+app.use("/admin/status-group", AdminStatusGroupRoute);
 
 const AdminStatusRoute = require("./Routes/Admin/AdminStatus");
-app.use("/api/admin/status", AdminStatusRoute);
+app.use("/admin/status", AdminStatusRoute);
 
 const AdminChannelRoute = require("./Routes/Admin/AdminChannel");
-app.use("/api/admin/channel", AdminChannelRoute);
+app.use("/admin/channel", AdminChannelRoute);
 
 const AdminProvinceRoute = require("./Routes/Admin/AdminProvince");
-app.use("/api/admin/province", AdminProvinceRoute);
+app.use("/admin/province", AdminProvinceRoute);
 
 const AdminOnLeaveTypeRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeaveType");
-app.use("/api/admin/onleave/type", AdminOnLeaveTypeRoute);
+app.use("/admin/onleave/type", AdminOnLeaveTypeRoute);
 
 const AdminDayOffRoute = require("./Routes/Admin/AdminDayOff");
-app.use("/api/admin/dayoff", AdminDayOffRoute);
+app.use("/admin/dayoff", AdminDayOffRoute);
 
 const AdminOnLeaveRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeave");
-app.use("/api/admin/onleave", AdminOnLeaveRoute);
+app.use("/admin/onleave", AdminOnLeaveRoute);
 
 const AdminAccountRoute = require("./Routes/Admin/AdminAccount");
-app.use("/api/admin/account", AdminAccountRoute);
+app.use("/admin/account", AdminAccountRoute);
 
 const AdminPaymentTypeRoute = require("./Routes/Admin/AdminPaymentType");
-app.use("/api/admin/paymenttype", AdminPaymentTypeRoute);
+app.use("/admin/paymenttype", AdminPaymentTypeRoute);
 
 const AdminCarSizeRoute = require("./Routes/Admin/AdminCarSize");
-app.use("/api/admin/carsize", AdminCarSizeRoute);
+app.use("/admin/carsize", AdminCarSizeRoute);
 
 const AdminLoginRoute = require("./Routes/Admin/AdminLogin");
-app.use("/api/admin/login", AdminLoginRoute);
+app.use("/admin/login", AdminLoginRoute);
 
 const AdminBookingRoute = require("./Routes/Admin/AdminBooking");
-app.use("/api/admin/booking", AdminBookingRoute);
+app.use("/admin/booking", AdminBookingRoute);
 
 const AdminUserRoute = require("./Routes/Admin/AdminUser/AdminUser");
-app.use("/api/admin/user", AdminUserRoute);
+app.use("/admin/user", AdminUserRoute);
 
 const AdminServiceRoute = require("./Routes/Admin/AdminService");
-app.use("/api/admin/service", AdminServiceRoute);
+app.use("/admin/service", AdminServiceRoute);
 
 const AdminPermissionRoute = require("./Routes/Admin/AdminPermission");
-app.use("/api/admin/permission", AdminPermissionRoute);
+app.use("/admin/permission", AdminPermissionRoute);
 
 const AdminRoleRoute = require("./Routes/Admin/AdminRole/AdminRole");
-app.use("/api/admin/role", AdminRoleRoute);
+app.use("/admin/role", AdminRoleRoute);
 
 // Start the server
 app.listen(process.env.API_PORT, () => {

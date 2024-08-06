@@ -13,7 +13,7 @@ const AdminEditRole = ({ editItem }) => {
   const [notificationStatus, setNotificationStatus] = useState();
 
   const fetchRoleLabel = () => {
-    GetAllAdminRoleLabel(URLList.AdminRoleLabel).then((data) => {
+    GetAllAdminRoleLabel().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         msg.map((item) => {

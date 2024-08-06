@@ -1,6 +1,7 @@
 import axios from "axios";
+import URLList from "./Url/URLList";
 
-const initialUrl = "http://localhost:5000/api/";
+const initialUrl = "http://localhost:5000/";
 
 const putApi = async (url, jsonData, isUseToken = false) => {
   try {
@@ -91,7 +92,7 @@ const getApi = async (url, jsonData = null, isUseToken = false) => {
 
 export const GetPermission = () => {
   const isUseToken = true;
-  return getApi("admin/permission", null, isUseToken);
+  return getApi(URLList.AdminPermission, null, isUseToken);
 };
 
 export const GetAllAdminRole = (url) => {
@@ -387,11 +388,27 @@ export const UpdateAdminCustomerCar = (url, jsonData) => {
   return putApi(url, jsonData);
 };
 
-export const GetAllAdminRoleLabel = (url) => {
-  return getApi(url);
+export const GetAllAdminRoleLabel = () => {
+  return getApi(URLList.AdminRoleLabel);
 };
 
 export const AdminGetLatestOnLeaveByType = (url, jsonData) => {
   const isUseToken = true;
   return getApi(url, jsonData, isUseToken);
+};
+
+export const PostAdminTemplate = (jsonData) => {
+  return postApi(URLList.AdminTemplate, jsonData);
+};
+
+export const GetAdminAllTemplate = () => {
+  return getApi(URLList.AdminTemplate);
+};
+
+export const DeleteAdminTemplate = (jsonData) => {
+  return deleteApi(URLList.AdminTemplate, jsonData);
+};
+
+export const UpdateAdminTemplate = (jsonData) => {
+  return putApi(URLList.AdminTemplate, jsonData);
 };
