@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 16, 2024 at 05:15 PM
+-- Generation Time: Aug 08, 2024 at 04:29 PM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -404,17 +404,20 @@ CREATE TABLE `role` (
   `have_status_access` varchar(10) DEFAULT '0',
   `have_customer_access` varchar(10) DEFAULT '0',
   `have_master_table_access` varchar(10) DEFAULT '0',
-  `have_user_access` varchar(10) DEFAULT '0'
+  `have_user_access` varchar(10) DEFAULT '0',
+  `have_template_access` varchar(10) DEFAULT '0',
+  `have_search_access` varchar(10) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
 --
 
-INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `have_service_access`, `have_booking_access`, `have_role_access`, `have_account_access`, `have_schedule_access`, `have_payment_access`, `have_payment_type_access`, `have_on_leave_list_access`, `have_right_to_approve_on_leave`, `have_on_leave_personal_access`, `have_day_off_list_access`, `have_on_leave_type_access`, `have_channel_access`, `have_status_access`, `have_customer_access`, `have_master_table_access`, `have_user_access`) VALUES
-(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1'),
-(2, 'user', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
-(3, 'new', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `have_service_access`, `have_booking_access`, `have_role_access`, `have_account_access`, `have_schedule_access`, `have_payment_access`, `have_payment_type_access`, `have_on_leave_list_access`, `have_right_to_approve_on_leave`, `have_on_leave_personal_access`, `have_day_off_list_access`, `have_on_leave_type_access`, `have_channel_access`, `have_status_access`, `have_customer_access`, `have_master_table_access`, `have_user_access`, `have_template_access`, `have_search_access`) VALUES
+(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1', '1,3,2,4', '1,2,3,4'),
+(2, 'user', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+(3, 'new', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+(4, 'test', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
 
 -- --------------------------------------------------------
 
@@ -428,32 +431,54 @@ CREATE TABLE `role_label` (
   `label` varchar(100) NOT NULL,
   `module_level` int(11) NOT NULL DEFAULT 1,
   `header_module_id` int(11) NOT NULL DEFAULT 0,
-  `is_have_sub_role` tinyint(4) NOT NULL DEFAULT 0
+  `is_have_sub_role` tinyint(4) NOT NULL DEFAULT 0,
+  `data_value` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role_label`
 --
 
-INSERT INTO `role_label` (`id`, `role`, `label`, `module_level`, `header_module_id`, `is_have_sub_role`) VALUES
-(1, 'have_staff_access', 'staff', 2, 19, 0),
-(2, 'have_car_size_access', 'car size', 1, 0, 0),
-(3, 'have_service_access', 'service', 1, 0, 0),
-(4, 'have_booking_access', 'booking', 1, 0, 0),
-(5, 'have_role_access', 'role', 1, 0, 0),
-(6, 'have_account_access', 'account', 1, 0, 0),
-(7, 'have_schedule_access', 'schedule', 1, 0, 0),
-(8, 'have_payment_access', 'payment', 1, 0, 0),
-(9, 'have_payment_type_access', 'payment type', 2, 18, 0),
-(10, 'have_on_leave_list_access', 'onleave list', 1, 0, 0),
-(12, 'have_on_leave_personal_access', 'onleave personal', 1, 0, 0),
-(13, 'have_day_off_list_access', 'dayoff list', 1, 0, 0),
-(14, 'have_on_leave_type_access', 'onleave type', 2, 18, 0),
-(15, 'have_channel_access', 'channel', 1, 0, 0),
-(16, 'have_status_access', 'status', 1, 0, 0),
-(17, 'have_customer_access', 'customer', 2, 19, 0),
-(18, 'have_master_table_access', 'master table', 1, 0, 1),
-(19, 'have_user_access', 'user', 1, 0, 1);
+INSERT INTO `role_label` (`id`, `role`, `label`, `module_level`, `header_module_id`, `is_have_sub_role`, `data_value`) VALUES
+(1, 'have_staff_access', 'staff', 2, 19, 0, 'staff'),
+(2, 'have_car_size_access', 'car size', 1, 0, 0, 'carSize'),
+(3, 'have_service_access', 'service', 1, 0, 0, 'service'),
+(4, 'have_booking_access', 'booking', 1, 0, 0, 'booking'),
+(5, 'have_role_access', 'role', 1, 0, 0, 'role'),
+(6, 'have_account_access', 'account', 1, 0, 0, 'account'),
+(7, 'have_schedule_access', 'schedule', 1, 0, 0, 'schedule'),
+(8, 'have_payment_access', 'payment', 1, 0, 0, 'payment'),
+(9, 'have_payment_type_access', 'payment type', 2, 18, 0, 'paymentType'),
+(10, 'have_on_leave_list_access', 'onleave list', 1, 0, 0, 'onLeaveList'),
+(12, 'have_on_leave_personal_access', 'onleave personal', 1, 0, 0, 'onLeavePersonal'),
+(13, 'have_day_off_list_access', 'dayoff list', 1, 0, 0, 'dayOffList'),
+(14, 'have_on_leave_type_access', 'onleave type', 2, 18, 0, 'onLeaveType'),
+(15, 'have_channel_access', 'channel', 1, 0, 0, 'channel'),
+(16, 'have_status_access', 'status', 1, 0, 0, 'status'),
+(17, 'have_customer_access', 'customer', 2, 19, 0, 'customer'),
+(18, 'have_master_table_access', 'master table', 1, 0, 1, 'masterTable'),
+(19, 'have_user_access', 'user', 1, 0, 1, 'user'),
+(20, 'have_template_access', 'template', 1, 0, 0, 'template'),
+(21, 'have_search_access', 'Search', 1, 0, 0, 'search');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `search_filter`
+--
+
+CREATE TABLE `search_filter` (
+  `id` int(11) NOT NULL,
+  `filter_name` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `search_filter`
+--
+
+INSERT INTO `search_filter` (`id`, `filter_name`) VALUES
+(1, 'customer name'),
+(2, 'customer car no');
 
 -- --------------------------------------------------------
 
@@ -553,6 +578,26 @@ INSERT INTO `status_group` (`id`, `code`, `description`) VALUES
 (2, 'payment status', NULL),
 (3, 'on leave status', NULL);
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `template`
+--
+
+CREATE TABLE `template` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `template` text NOT NULL,
+  `is_available` tinyint(4) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `template`
+--
+
+INSERT INTO `template` (`id`, `name`, `template`, `is_available`) VALUES
+(29, 'test', '<p>test</p>', 0);
+
 --
 -- Indexes for dumped tables
 --
@@ -648,6 +693,12 @@ ALTER TABLE `role_label`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `search_filter`
+--
+ALTER TABLE `search_filter`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `service`
 --
 ALTER TABLE `service`
@@ -677,6 +728,12 @@ ALTER TABLE `status_group`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `template`
+--
+ALTER TABLE `template`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -702,7 +759,7 @@ ALTER TABLE `car_size`
 -- AUTO_INCREMENT for table `channel`
 --
 ALTER TABLE `channel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
 -- AUTO_INCREMENT for table `customer`
@@ -744,13 +801,19 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `role_label`
 --
 ALTER TABLE `role_label`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `search_filter`
+--
+ALTER TABLE `search_filter`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `service`
@@ -775,6 +838,12 @@ ALTER TABLE `status`
 --
 ALTER TABLE `status_group`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `template`
+--
+ALTER TABLE `template`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- Constraints for dumped tables
