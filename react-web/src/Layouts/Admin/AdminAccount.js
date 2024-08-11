@@ -6,7 +6,8 @@ import {
   UpdateAccount,
 } from "../Api";
 
-const AdminAccount = ({ permission }) => {
+const AdminAccount = ({ data }) => {
+  const { labelValue, permission } = data;
   const [list, setList] = useState([]);
   const [totalSummary, setTotalSummary] = useState(0);
   const [editItem, setEditItem] = useState(null);
@@ -136,7 +137,7 @@ const AdminAccount = ({ permission }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 "> Account page</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
         {permission && permission.includes("2") && (
           <div>

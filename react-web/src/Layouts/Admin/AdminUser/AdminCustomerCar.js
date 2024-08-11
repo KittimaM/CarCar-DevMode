@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
-  GetAllAdminCustomer,
-  GetAllAdminCustomerCar,
+  GetAdminCustomer,
+  GetAdminCustomerCar,
   GetAllCarSize,
   DeleteAdminCustomerCar,
   GetAllProvince,
@@ -20,7 +20,7 @@ const AdminCustomerCar = ({ permission }) => {
   const [errors, setErrors] = useState([]);
 
   const fetchCustomerCar = () => {
-    GetAllAdminCustomerCar(URLList.AdminCustomerCarURL).then((data) => {
+    GetAdminCustomerCar().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCustomerCarList(msg);
@@ -33,7 +33,7 @@ const AdminCustomerCar = ({ permission }) => {
   };
   useEffect(() => {
     fetchCustomerCar();
-    GetAllAdminCustomer(URLList.AdminCustomerURL).then((data) => {
+    GetAdminCustomer().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCustomerList(msg);

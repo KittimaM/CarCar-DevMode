@@ -10,7 +10,8 @@ import {
 import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
-const AdminService = ({ permission }) => {
+const AdminService = ({ data }) => {
+  const { labelValue, permission } = data;
   const [openAddForm, setOpenAddForm] = useState(false);
   const [carSizeList, setCarSizeList] = useState();
   const [serviceList, setServiceList] = useState();
@@ -195,7 +196,7 @@ const AdminService = ({ permission }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 "> Service page</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {showNotification && (
           <Notification
             message={notificationMessage}

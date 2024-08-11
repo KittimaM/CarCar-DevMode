@@ -356,8 +356,8 @@ export const DeleteStatusGroup = (url, jsonData) => {
   return deleteApi(url, jsonData);
 };
 
-export const GetAllAdminCustomer = (url) => {
-  return getApi(url);
+export const GetAdminCustomer = () => {
+  return getApi(URLList.AdminCustomerURL);
 };
 
 export const UpdateAdminCustomer = (url, jsonData) => {
@@ -372,8 +372,8 @@ export const DeleteAdminCustomer = (url, jsonData) => {
   return deleteApi(url, jsonData);
 };
 
-export const GetAllAdminCustomerCar = (url) => {
-  return getApi(url);
+export const GetAdminCustomerCar = () => {
+  return getApi(URLList.AdminCustomerCarURL);
 };
 
 export const DeleteAdminCustomerCar = (url, jsonData) => {
@@ -411,4 +411,12 @@ export const DeleteAdminTemplate = (jsonData) => {
 
 export const UpdateAdminTemplate = (jsonData) => {
   return putApi(URLList.AdminTemplate, jsonData);
+};
+
+export const GetAdminSearchFilter = () => {
+  return getApi(URLList.AdminSearch);
+};
+
+export const GetAdminSearchResult = (jsonData) => {
+  return postApi(URLList.AdminSearch, jsonData);
 };

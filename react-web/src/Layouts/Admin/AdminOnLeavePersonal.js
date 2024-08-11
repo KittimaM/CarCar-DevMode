@@ -9,7 +9,8 @@ import {
 } from "../Api";
 import URLList from "../Url/URLList";
 
-const AdminOnLeavePersonal = ({ permission }) => {
+const AdminOnLeavePersonal = ({ data }) => {
+  const { labelValue, permission } = data;
   const [onLeaveList, setOnLeaveList] = useState([]);
   const [onLeaveTypeList, setOnLeaveTypeList] = useState([]);
   const [openAddForm, setOpenAddForm] = useState(false);
@@ -133,7 +134,8 @@ const AdminOnLeavePersonal = ({ permission }) => {
             jsonData["remain_days"] =
               latestOnLeaveData["remain_days"] - jsonData.number_of_days;
           } else if (latestOnLeave.status == "NO DATA") {
-            jsonData["remain_days"] = selectedLeaveType.day_limit - jsonData.number_of_days;
+            jsonData["remain_days"] =
+              selectedLeaveType.day_limit - jsonData.number_of_days;
           }
           PostAddOnLeavePersonal(URLList.AdminOnLeavePersonal, jsonData).then(
             (data) => {
@@ -169,7 +171,7 @@ const AdminOnLeavePersonal = ({ permission }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 ">On Leave</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {permission.includes("2") && (
           <button
             className="btn"

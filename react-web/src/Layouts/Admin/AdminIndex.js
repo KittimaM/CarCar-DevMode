@@ -16,6 +16,7 @@ import AdminUser from "./AdminUser/AdminUser";
 import AdminBooking from "./AdminBooking";
 import AdminSchedule from "./AdminSchedule";
 import AdminTemplate from "./AdminTemplate/AdminTemplate";
+import AdminSearch from "./AdminSearch";
 
 function AdminIndex() {
   const [permission, setPermission] = useState(null);
@@ -36,6 +37,8 @@ function AdminIndex() {
   const [isBooking, setIsBooking] = useState(false);
   const [isSchedule, setIsSchedule] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const [data, setData] = useState({});
 
   useEffect(() => {
     GetPermission().then((data) => {
@@ -58,23 +61,33 @@ function AdminIndex() {
 
   const handleSelectedContent = (event) => {
     event.preventDefault();
-    const value = event.currentTarget.getAttribute("data-value");
-    setIsFirstPage(value == "firstPage" ? true : false);
-    setIsMasterTable(value == "masterTable" ? true : false);
-    setIsStatus(value == "status" ? true : false);
-    setIsChannel(value == "channel" ? true : false);
-    setIsDayOffList(value == "dayOffList" ? true : false);
-    setIsOnLeaveList(value == "onLeaveList" ? true : false);
-    setIsOnLeavePersonal(value == "onLeavePersonal" ? true : false);
-    setIsPayment(value == "payment" ? true : false);
-    setIsAccount(value == "account" ? true : false);
-    setIsRole(value == "role" ? true : false);
-    setIsService(value == "service" ? true : false);
-    setIsCarSize(value == "carSize" ? true : false);
-    setIsUser(value == "user" ? true : false);
-    setIsBooking(value == "booking" ? true : false);
-    setIsSchedule(value == "schedule" ? true : false);
-    setIsTemplate(value == "template" ? true : false);
+    const dataValue = event.currentTarget.getAttribute("data-value");
+    const labelValue = event.currentTarget.getAttribute("label-value");
+    const roleValue = event.currentTarget.getAttribute("role-value");
+
+    setIsFirstPage(dataValue == "firstPage" ? true : false);
+    setIsMasterTable(dataValue == "masterTable" ? true : false);
+    setIsStatus(dataValue == "status" ? true : false);
+    setIsChannel(dataValue == "channel" ? true : false);
+    setIsDayOffList(dataValue == "dayOffList" ? true : false);
+    setIsOnLeaveList(dataValue == "onLeaveList" ? true : false);
+    setIsOnLeavePersonal(dataValue == "onLeavePersonal" ? true : false);
+    setIsPayment(dataValue == "payment" ? true : false);
+    setIsAccount(dataValue == "account" ? true : false);
+    setIsRole(dataValue == "role" ? true : false);
+    setIsService(dataValue == "service" ? true : false);
+    setIsCarSize(dataValue == "carSize" ? true : false);
+    setIsUser(dataValue == "user" ? true : false);
+    setIsBooking(dataValue == "booking" ? true : false);
+    setIsSchedule(dataValue == "schedule" ? true : false);
+    setIsTemplate(dataValue == "template" ? true : false);
+    setIsSearch(dataValue == "search" ? true : false);
+
+    const data = {
+      labelValue: labelValue,
+      permission: permission[roleValue],
+    };
+    setData(data);
   };
   return (
     <div>
@@ -205,6 +218,8 @@ function AdminIndex() {
                         <a
                           onClick={handleSelectedContent}
                           data-value={roleLabel.data_value}
+                          label-value={roleLabel.label}
+                          role-value={roleLabel.role}
                           class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group"
                         >
                           <svg
@@ -237,45 +252,24 @@ function AdminIndex() {
           customerPermission={permission["have_customer_access"]}
         />
       )}
-      {isCarSize && (
-        <AdminCarSize permission={permission["have_car_size_access"]} />
-      )}
-      {isService && (
-        <AdminService permission={permission["have_service_access"]} />
-      )}
-      {isRole && <AdminRole permission={permission["have_role_access"]} />}
-      {isAccount && (
-        <AdminAccount permission={permission["have_account_access"]} />
-      )}
+      {isCarSize && <AdminCarSize data={data} />}
+      {isService && <AdminService data={data} />}
+      {isRole && <AdminRole data={data} />}
+      {isAccount && <AdminAccount data={data} />}
       {isPayment && <AdminPayment />}
-      {isOnLeavePersonal && (
-        <AdminOnLeavePersonal
-          permission={permission["have_on_leave_personal_access"]}
-        />
-      )}
-      {isOnLeaveList && (
-        <AdminOnLeaveList
-          permission={permission["have_on_leave_list_access"]}
-        />
-      )}
-      {isDayOffList && (
-        <AdminDayOff permission={permission["have_day_off_list_access"]} />
-      )}
-      {isChannel && (
-        <AdminChannel permission={permission["have_channel_access"]} />
-      )}
+      {isOnLeavePersonal && <AdminOnLeavePersonal data={data} />}
+      {isOnLeaveList && <AdminOnLeaveList data={data} />}
+      {isDayOffList && <AdminDayOff data={data} />}
+      {isChannel && <AdminChannel data={data} />}
       {isMasterTable && (
         <AdminMasterTable
           onLeaveTypePermission={permission["have_on_leave_type_access"]}
           paymentTypePermission={permission["have_payment_type_access"]}
         />
       )}
-      {isStatus && (
-        <AdminStatus permission={permission["have_status_access"]} />
-      )}
-      {isTemplate && (
-        <AdminTemplate permission={permission["have_template_access"]} />
-      )}
+      {isStatus && <AdminStatus data={data} />}
+      {isTemplate && <AdminTemplate data={data} />}
+      {isSearch && <AdminSearch data={data} />}
     </div>
   );
 }

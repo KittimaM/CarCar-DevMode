@@ -3,7 +3,8 @@ import { GetAllDayOff, GetAllStaff, UpdateDayOff } from "../Api";
 import { getDatesForCurrentWeek } from "../Module";
 import URLList from "../Url/URLList";
 
-const AdminDayOff = ({ permisison }) => {
+const AdminDayOff = ({ data }) => {
+  const { labelValue, permission } = data;
   const [staff, setStaff] = useState([]);
   const [dayOffList, setDayOffList] = useState([]);
   const [editItem, setEditItem] = useState();
@@ -75,7 +76,7 @@ const AdminDayOff = ({ permisison }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 "> Day off page</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
         {dayOffList && (
           <table>

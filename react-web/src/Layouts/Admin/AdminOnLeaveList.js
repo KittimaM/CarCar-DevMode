@@ -11,7 +11,8 @@ import {
 } from "../Api";
 import URLList from "../Url/URLList";
 
-const AdminOnLeave = ({ permission }) => {
+const AdminOnLeave = ({ data }) => {
+  const { labelValue, permission } = data;
   const [staffList, setStaffList] = useState([]);
   const [onLeaveList, setOnLeaveList] = useState([]);
   const [onLeaveTypeList, setOnLeaveTypeList] = useState([]);
@@ -210,7 +211,7 @@ const AdminOnLeave = ({ permission }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 ">On Leave List</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {permission.includes("2") && (
           <button
             className="btn"
@@ -240,7 +241,12 @@ const AdminOnLeave = ({ permission }) => {
             {onLeaveList &&
               onLeaveList.map((onLeave) => (
                 <tr>
-                  <td>{staffList.find(staff => staff.id == onLeave.staff_id).username}</td>
+                  <td>
+                    {
+                      staffList.find((staff) => staff.id == onLeave.staff_id)
+                        .username
+                    }
+                  </td>
                   <td>{String(onLeave.start_date).split("T")[0]}</td>
                   <td>{String(onLeave.end_date).split("T")[0]}</td>
                   <td>

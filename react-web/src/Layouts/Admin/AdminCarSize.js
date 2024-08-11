@@ -8,7 +8,8 @@ import {
 import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
-const AdminCarSize = ({ permission }) => {
+const AdminCarSize = ({ data }) => {
+  const { labelValue, permission } = data;
   const [carSizeList, setCarSizeList] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [openAddCarSizeForm, setOpenAddCarSizeForm] = useState(false);
@@ -163,7 +164,7 @@ const AdminCarSize = ({ permission }) => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 "> Car size page</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {showNotification && (
           <Notification
             message={notificationMessage}
