@@ -9,7 +9,8 @@ import {
 import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
-const AdminChannel = ({ permission }) => {
+const AdminChannel = ({ data }) => {
+  const { labelValue, permission } = data;
   const [openAddChannelForm, setOpenAddChannelForm] = useState(false);
   const [channelList, setChannelList] = useState();
   const [editItem, setEditItem] = useState(null);
@@ -210,7 +211,7 @@ const AdminChannel = ({ permission }) => {
   return (
     <div>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 ">Channel</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {showNotification && (
           <Notification
             message={notificationMessage}

@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import {
-  DeleteAdminTemplate,
-  GetAdminAllTemplate,
-} from "../../Api";
+import { DeleteAdminTemplate, GetAdminAllTemplate } from "../../Api";
 import AdminAddTemplate from "./AdminAddTemplate";
 import AdminEditTemplate from "./AdminEditTemplate";
 
-const AdminTemplate = ({ permission }) => {
+const AdminTemplate = ({ data }) => {
+  const { labelValue, permission } = data;
   const [isSelectedAllTemplate, setIsSelectedAllTemplate] = useState(true);
   const [isSelectedAddTemplate, setIsSelectedAddTemplate] = useState(false);
   const [templateList, setTemplateList] = useState();
@@ -64,7 +62,7 @@ const AdminTemplate = ({ permission }) => {
 
   return (
     <div className="ml-80 mt-16">
-      <div className="text-lg bg-yellow-100 mb-5 ">Template</div>
+      <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
       <button
         value="allTemplate"
         className="btn"

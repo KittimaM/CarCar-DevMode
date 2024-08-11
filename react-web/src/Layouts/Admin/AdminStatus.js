@@ -8,7 +8,8 @@ import {
 } from "../Api";
 import URLList from "../Url/URLList";
 
-const AdminStatus = ({ permission }) => {
+const AdminStatus = ({ data }) => {
+  const { labelValue, permission } = data;
   const [statusGroups, setStatusGroups] = useState();
   const [statuses, setStatuses] = useState();
   const [editItem, setEditItem] = useState(null);
@@ -95,7 +96,7 @@ const AdminStatus = ({ permission }) => {
   return (
     <div>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 ">Status</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
         {permission && permission.includes("2") && (
           <div>
             <form onSubmit={handleAddStatus}>

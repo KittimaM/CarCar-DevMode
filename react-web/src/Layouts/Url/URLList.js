@@ -19,6 +19,7 @@ const URLList = {
   AdminLatestOnLeaveByTypeList: "admin/onleave/detail/latest/list",
   AdminPermission: "admin/permission",
   AdminTemplate: "admin/template",
+  AdminSearch: "admin/search",
 };
 
 export default URLList;

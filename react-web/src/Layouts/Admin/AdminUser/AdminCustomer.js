@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   DeleteAdminCustomer,
-  GetAllAdminCustomer,
+  GetAdminCustomer,
   PostAdminAddCustomer,
   UpdateAdminCustomer,
 } from "../../Api";
@@ -12,7 +12,7 @@ const AdminCustomer = ({ permission }) => {
   const [editItem, setEditItem] = useState();
   const [openAddCustomerForm, setOpenAddCustomerForm] = useState(false);
   const fetchCustomer = () => {
-    GetAllAdminCustomer(URLList.AdminCustomerURL).then((data) => {
+    GetAdminCustomer().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCustomer(msg);

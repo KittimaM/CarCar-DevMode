@@ -5,7 +5,8 @@ import { DeleteRole, GetAllAdminRole } from "../../Api";
 import URLList from "../../Url/URLList";
 import Notification from "../../Notification/Notification";
 
-const AdminRole = ({ permission }) => {
+const AdminRole = ({ data }) => {
+  const { labelValue, permission } = data;
   const [roleList, setRoleList] = useState();
   const [isSelectedAddRole, setIsSelectedAddRole] = useState(false);
   const [isSelecteadRoleTable, setIsSelectedRoleTable] = useState(true);
@@ -88,7 +89,7 @@ const AdminRole = ({ permission }) => {
         <Notification message={notificationMessage} type={notificationStatus} />
       )}
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-50 mb-5 ">Role</div>
+        <div className="text-lg bg-yellow-50 mb-5 ">{labelValue}</div>
         <button
           value="role-table"
           className="btn"
