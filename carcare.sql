@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 08, 2024 at 04:29 PM
+-- Generation Time: Aug 11, 2024 at 04:12 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -469,16 +469,17 @@ INSERT INTO `role_label` (`id`, `role`, `label`, `module_level`, `header_module_
 
 CREATE TABLE `search_filter` (
   `id` int(11) NOT NULL,
-  `filter_name` varchar(50) NOT NULL
+  `label` varchar(50) NOT NULL,
+  `data_value` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `search_filter`
 --
 
-INSERT INTO `search_filter` (`id`, `filter_name`) VALUES
-(1, 'customer name'),
-(2, 'customer car no');
+INSERT INTO `search_filter` (`id`, `label`, `data_value`) VALUES
+(1, 'customer name', 'customer_name'),
+(2, 'customer car no', 'customer_carno');
 
 -- --------------------------------------------------------
 
