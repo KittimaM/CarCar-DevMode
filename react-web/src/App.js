@@ -19,10 +19,8 @@ function App() {
         <Route path="/" element={<Index />} />
         {/* customer */}
         <Route path="/customer/profile" element={<CustomerProfile />} />
-        <Route path="/customer/index" element={<CustomerIndex />} />
+        <Route path="/customer/main" element={<CustomerIndex />} />
         <Route path="/customer/booking" element={<CustomerBooking />} />
-        <Route path="/customer/register" element={<CustomerRegister />} />
-        <Route path="/customer/login" element={<CustomerLogin />} />
         <Route path="/customer/car" element={<CustomerCar />} />
         <Route path="/customer" element={<CustomerFirstPage />} />
 

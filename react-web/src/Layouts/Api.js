@@ -119,8 +119,8 @@ export const PostAddStaffUser = (url, jsonData) => {
   return postApi(url, jsonData);
 };
 
-export const PostLogin = (jsonData) => {
-  return postApi("admin/login", jsonData);
+export const PostAdminLogin = (jsonData) => {
+  return postApi(URLList.AdminLogin, jsonData);
 };
 
 export const PostUpDateBookingStatus = (jsonData) => {
@@ -300,12 +300,12 @@ export const GetAllProvince = (url) => {
 
 export const GetCustomerProfile = () => {
   const isUseToken = true;
-  return getApi("customer/profile", null, isUseToken);
+  return getApi(URLList.CustomerProfile, null, isUseToken);
 };
 
 export const UpdateCustomerProfile = (jsonData) => {
   const isUseToken = true;
-  return putApi("customer/profile", jsonData, isUseToken);
+  return putApi(URLList.CustomerProfile, jsonData, isUseToken);
 };
 
 export const GetChannel = (url) => {
@@ -419,4 +419,8 @@ export const GetAdminSearchFilter = () => {
 
 export const GetAdminSearchResult = (jsonData) => {
   return postApi(URLList.AdminSearch, jsonData);
+};
+
+export const PostCustomerLogin = (jsonData) => {
+  return postApi(URLList.CustomerLogin, jsonData);
 };

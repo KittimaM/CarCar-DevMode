@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PostLogin } from "../Api";
+import { PostAdminLogin } from "../Api";
 import LoginImg from "../../assets/login-2.jpeg";
 
 const AdminLogin = () => {
@@ -14,7 +14,7 @@ const AdminLogin = () => {
       password: data.get("password"),
     };
 
-    PostLogin(jsonData).then((data) => {
+    PostAdminLogin(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         localStorage.setItem("token", msg);
