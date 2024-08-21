@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 11, 2024 at 04:12 PM
+-- Generation Time: Aug 21, 2024 at 08:27 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,6 +53,48 @@ INSERT INTO `account` (`id`, `label`, `income`, `expense`, `is_expense`, `is_inc
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `admin_role_label`
+--
+
+CREATE TABLE `admin_role_label` (
+  `id` int(11) NOT NULL,
+  `role` varchar(100) NOT NULL,
+  `label` varchar(100) NOT NULL,
+  `module_level` int(11) NOT NULL DEFAULT 1,
+  `header_module_id` int(11) NOT NULL DEFAULT 0,
+  `is_have_sub_role` tinyint(4) NOT NULL DEFAULT 0,
+  `data_value` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `admin_role_label`
+--
+
+INSERT INTO `admin_role_label` (`id`, `role`, `label`, `module_level`, `header_module_id`, `is_have_sub_role`, `data_value`) VALUES
+(1, 'have_staff_access', 'staff', 2, 19, 0, 'staff'),
+(2, 'have_car_size_access', 'car size', 1, 0, 0, 'carSize'),
+(3, 'have_service_access', 'service', 1, 0, 0, 'service'),
+(4, 'have_booking_access', 'booking', 1, 0, 0, 'booking'),
+(5, 'have_role_access', 'role', 1, 0, 0, 'role'),
+(6, 'have_account_access', 'account', 1, 0, 0, 'account'),
+(7, 'have_schedule_access', 'schedule', 1, 0, 0, 'schedule'),
+(8, 'have_payment_access', 'payment', 1, 0, 0, 'payment'),
+(9, 'have_payment_type_access', 'payment type', 2, 18, 0, 'paymentType'),
+(10, 'have_on_leave_list_access', 'onleave list', 1, 0, 0, 'onLeaveList'),
+(12, 'have_on_leave_personal_access', 'onleave personal', 1, 0, 0, 'onLeavePersonal'),
+(13, 'have_day_off_list_access', 'dayoff list', 1, 0, 0, 'dayOffList'),
+(14, 'have_on_leave_type_access', 'onleave type', 2, 18, 0, 'onLeaveType'),
+(15, 'have_channel_access', 'channel', 1, 0, 0, 'channel'),
+(16, 'have_status_access', 'status', 1, 0, 0, 'status'),
+(17, 'have_customer_access', 'customer', 2, 19, 0, 'customer'),
+(18, 'have_master_table_access', 'master table', 1, 0, 1, 'masterTable'),
+(19, 'have_user_access', 'user', 1, 0, 1, 'user'),
+(20, 'have_template_access', 'template', 1, 0, 0, 'template'),
+(21, 'have_search_access', 'Search', 1, 0, 0, 'search');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `booking`
 --
 
@@ -73,23 +115,24 @@ CREATE TABLE `booking` (
   `created_by_id` varchar(255) DEFAULT NULL,
   `created_by` varchar(255) DEFAULT NULL,
   `processing_status` varchar(255) DEFAULT 'Waiting',
-  `service_price` int(11) DEFAULT NULL
+  `service_price` int(11) DEFAULT NULL,
+  `customer_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `booking`
 --
 
-INSERT INTO `booking` (`id`, `car_no`, `car_size_id`, `car_size`, `car_color`, `customer_phone`, `customer_name`, `service`, `service_usetime`, `start_service_datetime`, `end_service_datetime`, `payment_type_id`, `created_at`, `created_by_id`, `created_by`, `processing_status`, `service_price`) VALUES
-(169, 'admin', 12, 'super car', 'admin', 'admin', 'admin', '[9, 10]', 90, '2024-02-04 12:30:00', '2024-02-04 14:00:00', 1, '2024-02-04 05:13:05', '6', 'admin', 'Paid', 300),
-(170, 'newcar', 13, 's', 'pink', '000', '000', '[11]', 30, '2024-02-28 08:00:00', '2024-02-28 08:30:00', 1, '2024-02-27 13:59:09', '000', '000', 'Paid', 50),
-(171, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[]', 0, '2024-02-28 08:30:00', '2024-02-28 08:30:00', 1, '2024-02-27 14:30:31', '000', '000', 'Paid', 0),
-(172, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[10]', 60, '2024-02-28 17:00:00', '2024-02-28 18:00:00', 1, '2024-02-27 14:31:12', '000', '000', 'Paid', 200),
-(182, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', NULL, '2024-04-05 16:18:24', NULL, NULL, '', 300),
-(183, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:19:24', NULL, NULL, '', 300),
-(184, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:20:11', '1', '000', '', 300),
-(185, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 08:00:00', '2024-04-06 09:30:00', 3, '2024-04-05 16:21:18', '1', '000', '', 300),
-(186, '1กข990', 12, 'super car', 'silver', '000', 'name surname', '[9]', 30, '2024-04-10 14:30:00', '2024-04-10 15:00:00', 1, '2024-04-09 16:01:58', '1', 'name surname', '', 100);
+INSERT INTO `booking` (`id`, `car_no`, `car_size_id`, `car_size`, `car_color`, `customer_phone`, `customer_name`, `service`, `service_usetime`, `start_service_datetime`, `end_service_datetime`, `payment_type_id`, `created_at`, `created_by_id`, `created_by`, `processing_status`, `service_price`, `customer_id`) VALUES
+(169, 'admin', 12, 'super car', 'admin', 'admin', 'admin', '[9, 10]', 90, '2024-02-04 12:30:00', '2024-02-04 14:00:00', 1, '2024-02-04 05:13:05', '6', 'admin', 'Paid', 300, 0),
+(170, 'newcar', 13, 's', 'pink', '000', '000', '[11]', 30, '2024-02-28 08:00:00', '2024-02-28 08:30:00', 1, '2024-02-27 13:59:09', '000', '000', 'Paid', 50, 0),
+(171, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[]', 0, '2024-02-28 08:30:00', '2024-02-28 08:30:00', 1, '2024-02-27 14:30:31', '000', '000', 'Paid', 0, 0),
+(172, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[10]', 60, '2024-02-28 17:00:00', '2024-02-28 18:00:00', 1, '2024-02-27 14:31:12', '000', '000', 'Paid', 200, 0),
+(182, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', NULL, '2024-04-05 16:18:24', NULL, NULL, '', 300, 0),
+(183, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:19:24', NULL, NULL, '', 300, 0),
+(184, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:20:11', '1', '000', '', 300, 0),
+(185, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 08:00:00', '2024-04-06 09:30:00', 3, '2024-04-05 16:21:18', '1', '000', '', 300, 0),
+(186, '1กข990', 12, 'super car', 'silver', '000', 'name surname', '[9]', 30, '2024-04-10 14:30:00', '2024-04-10 15:00:00', 1, '2024-04-09 16:01:58', '1', 'name surname', '', 100, 0);
 
 -- --------------------------------------------------------
 
@@ -155,7 +198,8 @@ CREATE TABLE `customer` (
 
 INSERT INTO `customer` (`id`, `phone`, `name`, `password`) VALUES
 (1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG'),
-(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.');
+(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.'),
+(8, '222', '222', '$2b$10$ctAa4KFdPZh4Zhv9PrY4ze/hIKdkV6VvWe3kuTHKcwWLYNN6bWn3O');
 
 -- --------------------------------------------------------
 
@@ -184,7 +228,8 @@ CREATE TABLE `customer_car` (
 --
 
 INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `prefix`, `postfix`, `province`, `brand`, `model`, `size_id`, `color`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(23, 1, 'abc1234', 'abc', '1234', 'สมุทรปราการ', 'aespa', 'kwangya', 86, 'black mamba', '2024-06-05 11:58:35', NULL, NULL);
+(23, 1, 'abc1234', 'abc', '1234', 'สมุทรปราการ', 'aespa', 'kwangya', 86, 'black mamba', '2024-06-05 11:58:35', NULL, NULL),
+(24, 6, 'รกจ980', 'รกจ', '980', 'กรุงเทพมหานคร', 'yamaha', 'series 1', 86, 'test', '2024-08-21 06:25:20', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -422,48 +467,6 @@ INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `
 -- --------------------------------------------------------
 
 --
--- Table structure for table `role_label`
---
-
-CREATE TABLE `role_label` (
-  `id` int(11) NOT NULL,
-  `role` varchar(100) NOT NULL,
-  `label` varchar(100) NOT NULL,
-  `module_level` int(11) NOT NULL DEFAULT 1,
-  `header_module_id` int(11) NOT NULL DEFAULT 0,
-  `is_have_sub_role` tinyint(4) NOT NULL DEFAULT 0,
-  `data_value` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `role_label`
---
-
-INSERT INTO `role_label` (`id`, `role`, `label`, `module_level`, `header_module_id`, `is_have_sub_role`, `data_value`) VALUES
-(1, 'have_staff_access', 'staff', 2, 19, 0, 'staff'),
-(2, 'have_car_size_access', 'car size', 1, 0, 0, 'carSize'),
-(3, 'have_service_access', 'service', 1, 0, 0, 'service'),
-(4, 'have_booking_access', 'booking', 1, 0, 0, 'booking'),
-(5, 'have_role_access', 'role', 1, 0, 0, 'role'),
-(6, 'have_account_access', 'account', 1, 0, 0, 'account'),
-(7, 'have_schedule_access', 'schedule', 1, 0, 0, 'schedule'),
-(8, 'have_payment_access', 'payment', 1, 0, 0, 'payment'),
-(9, 'have_payment_type_access', 'payment type', 2, 18, 0, 'paymentType'),
-(10, 'have_on_leave_list_access', 'onleave list', 1, 0, 0, 'onLeaveList'),
-(12, 'have_on_leave_personal_access', 'onleave personal', 1, 0, 0, 'onLeavePersonal'),
-(13, 'have_day_off_list_access', 'dayoff list', 1, 0, 0, 'dayOffList'),
-(14, 'have_on_leave_type_access', 'onleave type', 2, 18, 0, 'onLeaveType'),
-(15, 'have_channel_access', 'channel', 1, 0, 0, 'channel'),
-(16, 'have_status_access', 'status', 1, 0, 0, 'status'),
-(17, 'have_customer_access', 'customer', 2, 19, 0, 'customer'),
-(18, 'have_master_table_access', 'master table', 1, 0, 1, 'masterTable'),
-(19, 'have_user_access', 'user', 1, 0, 1, 'user'),
-(20, 'have_template_access', 'template', 1, 0, 0, 'template'),
-(21, 'have_search_access', 'Search', 1, 0, 0, 'search');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `search_filter`
 --
 
@@ -610,6 +613,12 @@ ALTER TABLE `account`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `admin_role_label`
+--
+ALTER TABLE `admin_role_label`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `booking`
 --
 ALTER TABLE `booking`
@@ -688,12 +697,6 @@ ALTER TABLE `role`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `role_label`
---
-ALTER TABLE `role_label`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `search_filter`
 --
 ALTER TABLE `search_filter`
@@ -745,6 +748,12 @@ ALTER TABLE `account`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
+-- AUTO_INCREMENT for table `admin_role_label`
+--
+ALTER TABLE `admin_role_label`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
 -- AUTO_INCREMENT for table `booking`
 --
 ALTER TABLE `booking`
@@ -766,13 +775,13 @@ ALTER TABLE `channel`
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -803,12 +812,6 @@ ALTER TABLE `province`
 --
 ALTER TABLE `role`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `role_label`
---
-ALTER TABLE `role_label`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
