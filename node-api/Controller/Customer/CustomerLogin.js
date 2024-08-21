@@ -13,7 +13,7 @@ const CustomerLogin = (req, res, next) => {
         res.json({ status: "ERROR", error });
       }
       if (result.length == 0) {
-        res.json({ status: "NOT FOUND" });
+        res.json({ status: "ERROR", msg: "NO DATA" });
       } else {
         const customerPassword = result[0].password;
         const customerName = result[0].name;

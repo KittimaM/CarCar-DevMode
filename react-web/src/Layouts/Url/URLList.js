@@ -1,8 +1,8 @@
 const URLList = {
+  //Admin
   AdminCustomerURL: "admin/customer",
   AdminCustomerCarURL: "admin/customer-car",
   AdminCarSizeURL: "admin/carsize",
-  ProvinceURL: "admin/province",
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
   AdminOnLeaveType: "admin/onleave/type",
@@ -20,6 +20,14 @@ const URLList = {
   AdminPermission: "admin/permission",
   AdminTemplate: "admin/template",
   AdminSearch: "admin/search",
+  AdminLogin: "admin/login",
+
+  //customer
+  CustomerLogin: "customer/login",
+  CustomerProfile: "customer/profile",
+
+  //others
+  ProvinceURL: "admin/province",
 };
 
 export default URLList;

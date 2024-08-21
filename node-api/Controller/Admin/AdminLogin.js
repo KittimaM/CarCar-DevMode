@@ -13,7 +13,7 @@ const AdminLogin = (req, res, next) => {
       if (error) {
         res.json({ status: "ERROR", msg: error });
       } else if (result.length == 0) {
-        res.json({ status: "ERROR ", msg: "NO DATA" });
+        res.json({ status: "ERROR", msg: "NO DATA" });
       } else {
         const { id, username, password, role_id, role } = result[0];
         bcrypt.compare(passWord, password, function (error, result) {

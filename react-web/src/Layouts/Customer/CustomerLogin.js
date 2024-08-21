@@ -1,12 +1,10 @@
-import React from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-// ------------
-
 import LoginImg from "../../assets/login-2.jpeg";
+import { PostCustomerLogin } from "../Api";
 
 const CustomerLogin = () => {
+  const [errors, setErrors] = useState();
   const navigate = useNavigate();
   const handleLogin = (event) => {
     event.preventDefault();
@@ -15,19 +13,21 @@ const CustomerLogin = () => {
       phone: data.get("phone"),
       password: data.get("password"),
     };
-    axios
-      .post("http://localhost:5000/customer/login", jsonData, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      })
-      .then((response) => {
-        const { status, msg } = response.data;
-        if (status == "SUCCESS") {
-          localStorage.setItem("token", msg);
-          navigate("/customer/index");
+    PostCustomerLogin(jsonData).then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        localStorage.setItem("token", msg);
+        navigate("/customer/main");
+      } else {
+        if (msg == "NO DATA") {
+          setErrors("No User");
+        } else if (msg == "Wrong Password") {
+          setErrors("Wrong Password");
+        } else {
+          console.log(data);
         }
-      });
+      }
+    });
   };
   return (
     <>
@@ -50,7 +50,6 @@ const CustomerLogin = () => {
               <input
                 type="text"
                 name="phone"
-                required
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
@@ -63,9 +62,11 @@ const CustomerLogin = () => {
               <input
                 type="password"
                 name="password"
-                required
                 className="input input-bordered w-full max-w-xs"
               />
+            </label>
+            <label className="form-control w-full flex flex-col p-2 ">
+              {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
             </label>
 
             <div className="py-4">
@@ -76,14 +77,6 @@ const CustomerLogin = () => {
           </form>
         </div>
       </div>
-
-      {/* <form onSubmit={handleLogin}>
-      <label name="phone">phone</label>
-      <input type="text" name="phone" required />
-      <label name="password">password</label>
-      <input type="password" name="password" required />
-      <button type="submit">Submit</button>
-    </form> */}
     </>
   );
 };
