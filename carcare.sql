@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 21, 2024 at 08:27 AM
+-- Generation Time: Aug 25, 2024 at 12:01 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -182,28 +182,6 @@ INSERT INTO `channel` (`id`, `name`, `is_available`, `description`, `service`) V
 -- --------------------------------------------------------
 
 --
--- Table structure for table `customer`
---
-
-CREATE TABLE `customer` (
-  `id` int(11) NOT NULL,
-  `phone` varchar(20) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `password` varchar(150) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `customer`
---
-
-INSERT INTO `customer` (`id`, `phone`, `name`, `password`) VALUES
-(1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG'),
-(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.'),
-(8, '222', '222', '$2b$10$ctAa4KFdPZh4Zhv9PrY4ze/hIKdkV6VvWe3kuTHKcwWLYNN6bWn3O');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `customer_car`
 --
 
@@ -230,6 +208,28 @@ CREATE TABLE `customer_car` (
 INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `prefix`, `postfix`, `province`, `brand`, `model`, `size_id`, `color`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (23, 1, 'abc1234', 'abc', '1234', 'สมุทรปราการ', 'aespa', 'kwangya', 86, 'black mamba', '2024-06-05 11:58:35', NULL, NULL),
 (24, 6, 'รกจ980', 'รกจ', '980', 'กรุงเทพมหานคร', 'yamaha', 'series 1', 86, 'test', '2024-08-21 06:25:20', NULL, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `customer_user`
+--
+
+CREATE TABLE `customer_user` (
+  `id` int(11) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `password` varchar(150) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer_user`
+--
+
+INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`) VALUES
+(1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG'),
+(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.'),
+(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm');
 
 -- --------------------------------------------------------
 
@@ -640,13 +640,6 @@ ALTER TABLE `channel`
   ADD UNIQUE KEY `channel_name` (`name`);
 
 --
--- Indexes for table `customer`
---
-ALTER TABLE `customer`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `phone` (`phone`);
-
---
 -- Indexes for table `customer_car`
 --
 ALTER TABLE `customer_car`
@@ -654,6 +647,13 @@ ALTER TABLE `customer_car`
   ADD UNIQUE KEY `unique_plate_no` (`plate_no`),
   ADD KEY `fk_customer_id` (`customer_id`),
   ADD KEY `fk_size_id` (`size_id`);
+
+--
+-- Indexes for table `customer_user`
+--
+ALTER TABLE `customer_user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `phone` (`phone`);
 
 --
 -- Indexes for table `day_off`
@@ -772,16 +772,16 @@ ALTER TABLE `channel`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
 
 --
--- AUTO_INCREMENT for table `customer`
---
-ALTER TABLE `customer`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
-
---
 -- AUTO_INCREMENT for table `customer_car`
 --
 ALTER TABLE `customer_car`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `customer_user`
+--
+ALTER TABLE `customer_user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -857,7 +857,7 @@ ALTER TABLE `template`
 -- Constraints for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  ADD CONSTRAINT `fk_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer` (`id`),
+  ADD CONSTRAINT `fk_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer_user` (`id`),
   ADD CONSTRAINT `fk_size_id` FOREIGN KEY (`size_id`) REFERENCES `car_size` (`id`);
 
 --

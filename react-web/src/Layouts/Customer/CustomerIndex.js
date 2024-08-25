@@ -1,12 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { Button } from "../Module";
-import { DeleteCustomerBooking, GetAllCustomerBooking } from "../Api";
+import {
+  DeleteCustomerBooking,
+  GetAllCustomerBooking,
+  GetCustomerProfile,
+} from "../Api";
 
 const CustomerIndex = () => {
   const [booking, setBooking] = useState(null);
+  const [profile, setProfile] = useState();
 
   useEffect(() => {
     fetchCustomerBooking();
+    GetCustomerProfile().then((data) => {
+      console.log("profile : ", data);
+
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        setProfile(msg[0]);
+      } else {
+        console.log(data);
+      }
+    });
   }, []);
 
   const fetchCustomerBooking = () => {
@@ -44,9 +59,6 @@ const CustomerIndex = () => {
           </a>
         </div>
         <div className="flex-none gap-2">
-          {/* <div className="form-control">
-                  <input type="text" placeholder="Search" className="input input-bordered w-24 md:w-auto" />
-                </div> */}
           <div>
             <Button to="/customer/car" name="Customer Car" />
           </div>
@@ -70,12 +82,7 @@ const CustomerIndex = () => {
               tabIndex={0}
               className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
             >
-              <div className="badge m-2">Phattraporn Bunjongket</div>
-              {/* <li>
-                      <a className="justify-between">
-                        Profile
-                      </a>
-                    </li> */}
+              <div className="badge m-2">{profile && profile.name}</div>
               <li>
                 <a>Settings</a>
               </li>

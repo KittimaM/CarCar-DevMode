@@ -1,7 +1,6 @@
 var jwt = require("jsonwebtoken");
 const Conn = require("../../db");
 const secret = process.env.SECRET_WORD;
-
 const CustomerBooking = (req, res, next) => {
   try {
     const token = req.headers.authorization.split(" ")[1];

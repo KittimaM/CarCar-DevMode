@@ -16,7 +16,7 @@ const AdminGetAllSearchFilters = (req, res, next) => {
 const AdminGetSearchResult = (req, res, next) => {
   const { car_id, customer_id } = req.body;
   Conn.execute(
-    "SELECT customer.name, customer_car.plate_no FROM customer LEFT JOIN customer_car ON customer.id = customer_car.customer_id WHERE customer.id = ? OR customer_car.id = ?",
+    "SELECT customer_user.name, customer_car.plate_no FROM customer_user LEFT JOIN customer_car ON customer_user.id = customer_car.customer_id WHERE customer_user.id = ? OR customer_car.id = ?",
     [customer_id, car_id],
     function (error, results) {
       if (error) {

@@ -14,7 +14,7 @@ const CustomerIndex = (req, res, next) => {
         if (error) {
           res.json({ status: "ERROR", msg: error });
         } else if (result.length == 0) {
-          res.json({ status: "NO DATA" , msg: "NO DATA"});
+          res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
           res.json({ status: "SUCCESS", msg: result });
         }
