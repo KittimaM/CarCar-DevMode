@@ -3,7 +3,7 @@ const Conn = require("../../../db");
 const saltRounds = 10;
 
 const AdminGetAllCustomer = (req, res, next) => {
-  Conn.execute("SELECT * FROM customer", function (error, results) {
+  Conn.execute("SELECT * FROM customer_user", function (error, results) {
     if (error) {
       res.json({ status: "ERROR", msg: error });
     }
@@ -22,7 +22,7 @@ const AdminAddCustomer = (req, res, next) => {
       res.json({ status: "ERROR", msg: error });
     } else {
       Conn.execute(
-        `INSERT INTO customer (phone, name, password) VALUES (?,?,?)`,
+        `INSERT INTO customer_user (phone, name, password) VALUES (?,?,?)`,
         [phone, name, hash],
         function (error, result) {
           if (error) {
@@ -44,7 +44,7 @@ const AdminUpdateCustomer = (req, res, next) => {
       res.json({ status: "ERROR", msg: error });
     } else {
       Conn.execute(
-        `UPDATE customer SET phone = ? , name = ?, password = ? WHERE id = ?`,
+        `UPDATE customer_user SET phone = ? , name = ?, password = ? WHERE id = ?`,
         [phone, name, hash, id],
         function (error, result) {
           if (error) {
@@ -61,7 +61,7 @@ const AdminUpdateCustomer = (req, res, next) => {
 const AdminDeleteCustomer = (req, res, next) => {
   const { id } = req.body;
   Conn.execute(
-    "DELETE FROM customer WHERE id = ?",
+    "DELETE FROM customer_user WHERE id = ?",
     [id],
     function (error, result) {
       if (error) {

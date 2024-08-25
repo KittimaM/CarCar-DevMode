@@ -6,7 +6,7 @@ const secret = process.env.SECRET_WORD;
 const CustomerLogin = (req, res, next) => {
   const { phone, password } = req.body;
   Conn.execute(
-    "SELECT id, password, name FROM customer WHERE phone = ?",
+    "SELECT id, password, name FROM customer_user WHERE phone = ?",
     [phone],
     function (error, result) {
       if (error) {

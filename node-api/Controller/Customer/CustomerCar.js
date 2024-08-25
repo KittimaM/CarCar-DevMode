@@ -43,17 +43,7 @@ const CustomerAddCustomerCar = (req, res, next) => {
       `INSERT INTO 
       customer_car(customer_id, plate_no, prefix, postfix, province, brand, model, size_id, color) 
       VALUES (?,?,?,?,?,?,?,?,?)`,
-      [
-        id,
-        plate_no,
-        prefix,
-        postfix,
-        province,
-        brand,
-        model,
-        size_id,
-        color,
-      ],
+      [id, plate_no, prefix, postfix, province, brand, model, size_id, color],
       function (error, result) {
         if (error) {
           res.json({ status: "ERROR", msg: error });

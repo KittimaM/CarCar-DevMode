@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { PostAddCustomer } from "../Api";
+import { PostAddCustomer, PostCustomerLogin } from "../Api";
 
 // -----------
 import LoginImg from "../../assets/login-2.jpeg";
@@ -19,7 +19,20 @@ const CustomerRegister = () => {
     PostAddCustomer(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
-        navigate("/customer/main");
+        console.log("success");
+        const loginData = {
+          phone: jsonData.phone,
+          password: jsonData.password,
+        };
+        PostCustomerLogin(loginData).then((data) => {
+          const { status, msg } = data;
+          if (status == "SUCCESS") {
+            localStorage.setItem("token", msg);
+            navigate("/customer/main");
+          } else {
+            console.log(data);
+          }
+        });
       } else {
         console.log(data);
       }
@@ -88,16 +101,6 @@ const CustomerRegister = () => {
           </form>
         </div>
       </div>
-
-      {/* <form onSubmit={handleRegister}>
-      <label name="phone">phone</label>
-      <input type="text" name="phone" required />
-      <label name="name">name</label>
-      <input type="text" name="name" required />
-      <label name="password">password</label>
-      <input type="password" name="password" required />
-      <button type="submit">Submit</button>
-    </form> */}
     </>
   );
 };
