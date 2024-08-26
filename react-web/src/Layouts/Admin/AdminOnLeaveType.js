@@ -5,7 +5,6 @@ import {
   GetAllOnLeaveType,
   UpdateOnLeaveType,
 } from "../Api";
-import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
 const AdminOnLeaveType = ({ permission }) => {
@@ -18,7 +17,7 @@ const AdminOnLeaveType = ({ permission }) => {
   const [notificationStatus, setNotificationStatus] = useState();
 
   const fetchOnLeaveType = () => {
-    GetAllOnLeaveType(URLList.AdminOnLeaveType).then((data) => {
+    GetAllOnLeaveType().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setOnLeaveTypeList(msg);
@@ -74,7 +73,7 @@ const AdminOnLeaveType = ({ permission }) => {
         day_limit: data.get("day_limit"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      AddOnLeaveType(URLList.AdminOnLeaveType, jsonData).then((data) => {
+      AddOnLeaveType(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success add onleavetype = ${jsonData.type}`);
@@ -115,7 +114,7 @@ const AdminOnLeaveType = ({ permission }) => {
         day_limit: data.get("day_limit"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      UpdateOnLeaveType(URLList.AdminOnLeaveType, jsonData).then((data) => {
+      UpdateOnLeaveType(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success edit onleavetype = ${jsonData.type}`);
@@ -143,7 +142,7 @@ const AdminOnLeaveType = ({ permission }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteOnLeaveType(URLList.AdminOnLeaveType, jsonData).then((data) => {
+    DeleteOnLeaveType(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success deleted");

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostAddCustomer, PostCustomerLogin } from "../Api";
 
@@ -6,6 +6,7 @@ import { PostAddCustomer, PostCustomerLogin } from "../Api";
 import LoginImg from "../../assets/login-2.jpeg";
 
 const CustomerRegister = () => {
+  const [errors, setErrors] = useState(null);
   const navigate = useNavigate();
   const handleRegister = (event) => {
     event.preventDefault();
@@ -33,6 +34,8 @@ const CustomerRegister = () => {
             console.log(data);
           }
         });
+      } else if (status == "ER_DUP_ENTRY") {
+        setErrors(msg);
       } else {
         console.log(data);
       }
@@ -92,7 +95,9 @@ const CustomerRegister = () => {
                 className="input input-bordered w-full max-w-xs"
               />
             </label>
-
+            <label className="form-control w-full flex flex-col p-2 ">
+              {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
+            </label>
             <div className="py-4">
               <button type="submit" className="btn btn-warning w-full">
                 LOGIN

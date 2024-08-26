@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import AdminAddRole from "./AdminAddRole";
 import AdminEditRole from "./AdminEditRole";
 import { DeleteRole, GetAllAdminRole } from "../../Api";
-import URLList from "../../Url/URLList";
 import Notification from "../../Notification/Notification";
 
 const AdminRole = ({ data }) => {
@@ -25,7 +24,7 @@ const AdminRole = ({ data }) => {
   };
 
   const fetchAllRole = () => {
-    GetAllAdminRole(URLList.AdminRole).then((data) => {
+    GetAllAdminRole().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setRoleList(msg);
@@ -62,7 +61,7 @@ const AdminRole = ({ data }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteRole(URLList.AdminRole, jsonData).then((data) => {
+    DeleteRole(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success deleted");

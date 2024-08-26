@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from "react";
-import { Button } from "../Module";
-import {
-  DeleteCustomerBooking,
-  GetAllCustomerBooking,
-  GetCustomerProfile,
-} from "../Api";
+import { GetCustomerProfile } from "../Api";
+import CustomerCar from "./CustomerCar";
+import CustomerProfile from "./CustomerProfile";
+import CustomerBooking from "./CustomerBooking";
 
 const CustomerIndex = () => {
   const [booking, setBooking] = useState(null);
   const [profile, setProfile] = useState();
+  const [isSelectedCustomerCar, setIsSelectedCustomerCar] = useState(false);
+  const [isSelectedProfile, setIsSelectedProfile] = useState(false);
+  const [isSelectedBooking, setIsSelectedBooking] = useState(false);
+  const [isSelectedIndex, setIsSelectedIndex] = useState(false);
 
   useEffect(() => {
-    fetchCustomerBooking();
     GetCustomerProfile().then((data) => {
-      console.log("profile : ", data);
-
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setProfile(msg[0]);
@@ -24,46 +23,49 @@ const CustomerIndex = () => {
     });
   }, []);
 
-  const fetchCustomerBooking = () => {
-    GetAllCustomerBooking().then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
-        setBooking(msg);
-      } else {
-        setBooking(null);
-        console.log(data);
-      }
-    });
-  };
-
-  const handleDeleteCustomerBooking = (event) => {
+  const handleSelectedContent = (event) => {
     event.preventDefault();
-    const jsonData = {
-      id: event.target.value,
-    };
-    DeleteCustomerBooking(jsonData).then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
-        fetchCustomerBooking();
-      } else {
-        console.log(data);
-      }
-    });
+    const { value } = event.target;
+    setIsSelectedCustomerCar(value == "customer_car" ? true : false);
+    setIsSelectedProfile(value == "profile" ? true : false);
+    setIsSelectedBooking(value == "booking" ? true : false);
+    setIsSelectedIndex(value == "index" ? true : false);
   };
   return (
     <>
       <div className="navbar bg-neutral text-neutral-content">
         <div className="flex-1">
-          <a to="/customer/index" className="btn btn-ghost text-xl">
+          <button value="index" className="btn" onClick={handleSelectedContent}>
             Carcare
-          </a>
+          </button>
         </div>
         <div className="flex-none gap-2">
           <div>
-            <Button to="/customer/car" name="Customer Car" />
+            <button
+              className="btn"
+              value="customer_car"
+              onClick={handleSelectedContent}
+            >
+              Customer's car
+            </button>
           </div>
           <div>
-            <Button to="/customer/profile" name="Profile" />
+            <button
+              className="btn"
+              value="profile"
+              onClick={handleSelectedContent}
+            >
+              Profile
+            </button>
+          </div>
+          <div>
+            <button
+              className="btn"
+              value="booking"
+              onClick={handleSelectedContent}
+            >
+              Booking
+            </button>
           </div>
           <div className="dropdown dropdown-end">
             <div
@@ -94,66 +96,28 @@ const CustomerIndex = () => {
         </div>
       </div>
 
-      <div className="hero min-h-screen bg-[url('https://images.pexels.com/photos/1056516/pexels-photo-1056516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')]">
-        <div className="hero-overlay bg-opacity-60"></div>
-        <div className="hero-content text-center text-neutral-content">
-          <div className="max-w-md">
-            <h1 className="mb-5 text-5xl font-bold">
-              OPEN EVERYDAY 10.00-20.00
-            </h1>
-            <p className="mb-5">
-              Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-              excepturi exercitationem quasi. In deleniti eaque aut repudiandae
-              et a id nisi.
-            </p>
-
-            <Button
-              to="/customer/booking"
-              className="btn btn-warning"
-              name="Booking"
-            >
-              BOOK HERE!
-            </Button>
-          </div>
-        </div>
-      </div>
-
       <div>
-        {/* <Button to="/customer/booking" name="Booking" className="bg-black"/>
-              <Button to="/customer/car" name="Customer Car" /> */}
-        {booking && (
-          <table>
-            <thead>
-              <tr>
-                <td>id</td>
-                <td>car_no</td>
-                <td>start_service_datetime</td>
-                <td>processing_status</td>
-                <td></td>
-              </tr>
-            </thead>
-            <tbody>
-              {booking.map((item) => (
-                <tr key={item.id}>
-                  <td>{item.id}</td>
-                  <td>{item.car_no}</td>
-                  <td>{item.start_service_datetime}</td>
-                  <td>{item.processing_status}</td>
-                  <td>
-                    {item.processing_status == "Waiting" && (
-                      <button
-                        className="btn"
-                        onClick={handleDeleteCustomerBooking}
-                        value={item.id}
-                      >
-                        Delete
-                      </button>
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        {isSelectedCustomerCar && <CustomerCar />}
+        {isSelectedProfile && <CustomerProfile />}
+        {isSelectedBooking && <CustomerBooking />}
+        {isSelectedIndex && (
+          <div>
+            <div className="hero min-h-screen bg-[url('https://images.pexels.com/photos/1056516/pexels-photo-1056516.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1')]">
+              <div className="hero-overlay bg-opacity-60"></div>
+              <div className="hero-content text-center text-neutral-content">
+                <div className="max-w-md">
+                  <h1 className="mb-5 text-5xl font-bold">
+                    OPEN EVERYDAY 10.00-20.00
+                  </h1>
+                  <p className="mb-5">
+                    Provident cupiditate voluptatem et in. Quaerat fugiat ut
+                    assumenda excepturi exercitationem quasi. In deleniti eaque
+                    aut repudiandae et a id nisi.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>

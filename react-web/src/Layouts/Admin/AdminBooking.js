@@ -6,7 +6,6 @@ import {
   GetAllService,
   GetAllPaymentType,
 } from "../Api";
-import URLList from "../Url/URLList";
 
 const AdminBooking = () => {
   const defaultTime = new Date();
@@ -20,7 +19,7 @@ const AdminBooking = () => {
   const [paymentType, setPaymentType] = useState();
 
   useEffect(() => {
-    GetAllPaymentType(URLList.AdminPaymentType).then((data) => {
+    GetAllPaymentType().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setPaymentType(msg);
@@ -28,7 +27,7 @@ const AdminBooking = () => {
         console.log(data);
       }
     });
-    GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
+    GetAllCarSize().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCarSize(msg);
@@ -60,7 +59,7 @@ const AdminBooking = () => {
       customer_phone: data.get("customer_phone"),
     };
 
-    GetAllService(URLList.AdminService).then((data) => {
+    GetAllService().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         const availableService = msg.filter(

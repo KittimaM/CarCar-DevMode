@@ -6,7 +6,6 @@ import {
   PostAddChannel,
   UpdateChannel,
 } from "../Api";
-import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
 const AdminChannel = ({ data }) => {
@@ -22,7 +21,7 @@ const AdminChannel = ({ data }) => {
   const [notificationStatus, setNotificationStatus] = useState();
 
   const fetchChannel = () => {
-    GetChannel(URLList.AdminChannel).then((data) => {
+    GetChannel().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setChannelList(msg);
@@ -36,7 +35,7 @@ const AdminChannel = ({ data }) => {
   };
   useEffect(() => {
     fetchChannel();
-    GetAllService(URLList.AdminService).then((data) => {
+    GetAllService().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         msg.map((item) => {
@@ -93,7 +92,7 @@ const AdminChannel = ({ data }) => {
         is_available: data.get("is_available") !== null ? 1 : 0,
         service: selectedServiceIds.join(","),
       };
-      PostAddChannel(URLList.AdminChannel, jsonData).then((data) => {
+      PostAddChannel(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success add channel = ${jsonData.name}`);
@@ -154,7 +153,7 @@ const AdminChannel = ({ data }) => {
         is_available: data.get("is_available") !== null ? 1 : 0,
         service: selectedServiceIds.join(","),
       };
-      UpdateChannel(URLList.AdminChannel, jsonData).then((data) => {
+      UpdateChannel(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success edit channel = ${jsonData.name}`);
@@ -182,7 +181,7 @@ const AdminChannel = ({ data }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteChannel(URLList.AdminChannel, jsonData).then((data) => {
+    DeleteChannel(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success deleted");

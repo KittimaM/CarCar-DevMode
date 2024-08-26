@@ -41,7 +41,7 @@ const AdminCustomerCar = ({ permission }) => {
         console.log(data);
       }
     });
-    GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
+    GetAllCarSize().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCarSizeList(msg);

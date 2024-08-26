@@ -95,16 +95,16 @@ export const GetPermission = () => {
   return getApi(URLList.AdminPermission, null, isUseToken);
 };
 
-export const GetAllAdminRole = (url) => {
-  return getApi(url);
+export const GetAllAdminRole = () => {
+  return getApi(URLList.AdminRole);
 };
 
 export const PostAdminAddRole = (url, jsonData) => {
   return postApi(url, jsonData);
 };
 
-export const DeleteRole = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteRole = (jsonData) => {
+  return deleteApi(URLList.AdminRole, jsonData);
 };
 
 export const UpdateRole = (url, jsonData) => {
@@ -115,8 +115,8 @@ export const GetAllBooking = (options = null) => {
   return getApi("admin/booking", options);
 };
 
-export const PostAddStaffUser = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddStaffUser = (jsonData) => {
+  return postApi(URLList.AdminStaff, jsonData);
 };
 
 export const PostAdminLogin = (jsonData) => {
@@ -127,48 +127,48 @@ export const PostUpDateBookingStatus = (jsonData) => {
   return postApi("admin/booking/update-status", jsonData);
 };
 
-export const GetAllStaff = (url) => {
-  return getApi(url);
+export const GetAllStaff = () => {
+  return getApi(URLList.AdminStaff);
 };
 
-export const DeleteStaffUser = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteStaffUser = (jsonData) => {
+  return deleteApi(URLList.AdminStaff, jsonData);
 };
 
-export const UpdateStaffUser = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateStaffUser = (jsonData) => {
+  return putApi(URLList.AdminStaff, jsonData);
 };
 
-export const GetAllCarSize = (url) => {
-  return getApi(url);
+export const GetAllCarSize = () => {
+  return getApi(URLList.AdminCarSizeURL);
 };
 
-export const PostAddCarSize = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddCarSize = (jsonData) => {
+  return postApi(URLList.AdminCarSizeURL, jsonData);
 };
 
-export const DeleteCarSize = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteCarSize = (jsonData) => {
+  return deleteApi(URLList.AdminCarSizeURL, jsonData);
 };
 
-export const UpdateCarSize = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateCarSize = (jsonData) => {
+  return putApi(URLList.AdminCarSizeURL, jsonData);
 };
 
-export const GetAllService = (url) => {
-  return getApi(url);
+export const GetAllService = () => {
+  return getApi(URLList.AdminService);
 };
 
-export const PostAddService = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddService = (jsonData) => {
+  return postApi(URLList.AdminService, jsonData);
 };
 
-export const DeleteService = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteService = (jsonData) => {
+  return deleteApi(URLList.AdminService, jsonData);
 };
 
-export const UpdateService = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateService = (jsonData) => {
+  return putApi(URLList.AdminService, jsonData);
 };
 
 export const GetCustomerCar = () => {
@@ -212,20 +212,20 @@ export const PostAddAdminBooking = (jsonData) => {
   return postApi("admin/booking", jsonData, isUseToken);
 };
 
-export const PostAddPaymentType = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddPaymentType = (jsonData) => {
+  return postApi(URLList.AdminPaymentType, jsonData);
 };
 
-export const GetAllPaymentType = (url) => {
-  return getApi(url);
+export const GetAllPaymentType = () => {
+  return getApi(URLList.AdminPaymentType);
 };
 
-export const UpdatePaymentType = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdatePaymentType = (jsonData) => {
+  return putApi(URLList.AdminPaymentType, jsonData);
 };
 
-export const DeletePaymentType = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeletePaymentType = (jsonData) => {
+  return deleteApi(URLList.AdminPaymentType, jsonData);
 };
 
 export const GetAllAccount = () => {
@@ -244,30 +244,28 @@ export const UpdateAccount = (jsonData) => {
   return putApi("admin/account", jsonData);
 };
 
-export const GetAllOnLeave = (url) => {
-  return getApi(url);
+export const GetAllOnLeave = () => {
+  return getApi(URLList.AdminOnLeave);
 };
 
-export const PostAddOnLeave = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddOnLeave = (jsonData) => {
+  return postApi(URLList.AdminOnLeave, jsonData);
 };
 
-export const DeleteOnLeave = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteOnLeave = (jsonData) => {
+  return deleteApi(URLList.AdminOnLeave, jsonData);
 };
 
-export const ApproveOnLeave = (url, jsonData) => {
-  return putApi(url, jsonData, true);
+export const ApproveOnLeave = (jsonData) => {
+  return putApi(URLList.AdminOnLeaveApprove, jsonData, true);
 };
 
-export const GetOnLeavePersonal = (url) => {
-  const isUseToken = true;
-  return getApi(url, null, isUseToken);
+export const GetOnLeavePersonal = () => {
+  return getApi(URLList.AdminOnLeavePersonal, null, true);
 };
 
-export const PostAddOnLeavePersonal = (url, jsonData) => {
-  const isUseToken = true;
-  return postApi(url, jsonData, isUseToken);
+export const PostAddOnLeavePersonal = (jsonData) => {
+  return postApi(URLList.AdminOnLeavePersonal, jsonData, true);
 };
 
 export const GetAllDayOff = () => {
@@ -278,20 +276,20 @@ export const UpdateDayOff = (jsonData) => {
   return putApi("admin/dayoff", jsonData);
 };
 
-export const GetAllOnLeaveType = (url) => {
-  return getApi(url);
+export const GetAllOnLeaveType = () => {
+  return getApi(URLList.AdminOnLeaveType);
 };
 
-export const DeleteOnLeaveType = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteOnLeaveType = (jsonData) => {
+  return deleteApi(URLList.AdminOnLeaveType, jsonData);
 };
 
-export const UpdateOnLeaveType = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateOnLeaveType = (jsonData) => {
+  return putApi(URLList.AdminOnLeaveType, jsonData);
 };
 
-export const AddOnLeaveType = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const AddOnLeaveType = (jsonData) => {
+  return postApi(URLList.AdminOnLeaveType, jsonData);
 };
 
 export const GetAllProvince = (url) => {
@@ -308,20 +306,20 @@ export const UpdateCustomerProfile = (jsonData) => {
   return putApi(URLList.CustomerProfile, jsonData, isUseToken);
 };
 
-export const GetChannel = (url) => {
-  return getApi(url);
+export const GetChannel = () => {
+  return getApi(URLList.AdminChannel);
 };
 
-export const PostAddChannel = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddChannel = (jsonData) => {
+  return postApi(URLList.AdminChannel, jsonData);
 };
 
-export const DeleteChannel = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteChannel = (jsonData) => {
+  return deleteApi(URLList.AdminChannel, jsonData);
 };
 
-export const UpdateChannel = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateChannel = (jsonData) => {
+  return putApi(URLList.AdminChannel, jsonData);
 };
 
 export const GetAllStatus = (url) => {
@@ -392,9 +390,8 @@ export const GetAllAdminRoleLabel = () => {
   return getApi(URLList.AdminRoleLabel);
 };
 
-export const AdminGetLatestOnLeaveByType = (url, jsonData) => {
-  const isUseToken = true;
-  return getApi(url, jsonData, isUseToken);
+export const AdminGetLatestOnLeaveByType = (jsonData) => {
+  return getApi(URLList.AdminLatestOnLeaveByTypePersonal, jsonData, true);
 };
 
 export const PostAdminTemplate = (jsonData) => {

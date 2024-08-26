@@ -5,7 +5,6 @@ import {
   PostAddCarSize,
   UpdateCarSize,
 } from "../Api";
-import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
 const AdminCarSize = ({ data }) => {
@@ -27,7 +26,7 @@ const AdminCarSize = ({ data }) => {
   };
 
   const fetchCarSize = async () => {
-    GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
+    GetAllCarSize().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCarSizeList(msg);
@@ -73,7 +72,7 @@ const AdminCarSize = ({ data }) => {
         description: data.get("description"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      PostAddCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
+      PostAddCarSize(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success add carsize = ${jsonData.size}`);
@@ -105,7 +104,7 @@ const AdminCarSize = ({ data }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
+    DeleteCarSize(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success delete");
@@ -138,7 +137,7 @@ const AdminCarSize = ({ data }) => {
         description: data.get("description"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      UpdateCarSize(URLList.AdminCarSizeURL, jsonData).then((data) => {
+      UpdateCarSize(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success edit carsize = ${jsonData.size}`);
