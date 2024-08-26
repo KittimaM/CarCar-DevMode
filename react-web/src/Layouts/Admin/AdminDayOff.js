@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetAllDayOff, GetAllStaff, UpdateDayOff } from "../Api";
 import { getDatesForCurrentWeek } from "../Module";
-import URLList from "../Url/URLList";
 
 const AdminDayOff = ({ data }) => {
   const { labelValue, permission } = data;
@@ -37,7 +36,7 @@ const AdminDayOff = ({ data }) => {
 
   useEffect(() => {
     fetchDayOff();
-    GetAllStaff(URLList.AdminStaff).then((data) => {
+    GetAllStaff().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setStaff(msg);

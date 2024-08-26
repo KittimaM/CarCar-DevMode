@@ -13,7 +13,14 @@ const CustomerRegister = (req, res, next) => {
         [phone, name, hash],
         function (error, result) {
           if (error) {
-            res.json({ status: "ERROR", msg: error });
+            if (error.code == "ER_DUP_ENTRY") {
+              res.json({
+                status: error.code,
+                msg: "This Phone Number Already In System",
+              });
+            } else {
+              res.json({ status: "ERROR", msg: error });
+            }
           } else {
             const insertId = result.insertId;
             res.json({ status: "SUCCESS", msg: insertId });

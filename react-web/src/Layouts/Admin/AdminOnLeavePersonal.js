@@ -7,7 +7,6 @@ import {
   GetAllOnLeaveType,
   AdminGetLatestOnLeaveByType,
 } from "../Api";
-import URLList from "../Url/URLList";
 
 const AdminOnLeavePersonal = ({ data }) => {
   const { labelValue, permission } = data;
@@ -20,7 +19,7 @@ const AdminOnLeavePersonal = ({ data }) => {
   const [maxEndDate, setMaxEndDate] = useState(null);
 
   const fetchOnLeaveList = () => {
-    GetOnLeavePersonal(URLList.AdminOnLeavePersonal).then((data) => {
+    GetOnLeavePersonal().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setOnLeaveList(msg);
@@ -36,7 +35,7 @@ const AdminOnLeavePersonal = ({ data }) => {
 
   useEffect(() => {
     fetchOnLeaveList();
-    GetAllOnLeaveType(URLList.AdminOnLeaveType).then((data) => {
+    GetAllOnLeaveType().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         const selectedLeaveType = msg.find((item) => item.is_available == 1);
@@ -77,10 +76,7 @@ const AdminOnLeavePersonal = ({ data }) => {
     setMinEndDate(value);
     const initialDate = new Date(value);
     const maxDate = new Date(initialDate);
-    AdminGetLatestOnLeaveByType(
-      URLList.AdminLatestOnLeaveByTypePersonal,
-      id
-    ).then((latestOnLeave) => {
+    AdminGetLatestOnLeaveByType(id).then((latestOnLeave) => {
       const { status, msg } = latestOnLeave;
       if (status == "SUCCESS") {
         maxDate.setDate(maxDate.getDate() + (msg.remain_days - 1));
@@ -118,39 +114,36 @@ const AdminOnLeavePersonal = ({ data }) => {
         end_date: data.get("end_date"),
         reason: data.get("reason"),
       };
-      AdminGetLatestOnLeaveByType(
-        URLList.AdminLatestOnLeaveByTypePersonal,
-        jsonData.on_leave_type_id
-      ).then((latestOnLeave) => {
-        const startDate = parseISO(data.get("start_date"));
-        const endDate = parseISO(data.get("end_date"));
-        jsonData["number_of_days"] = differenceInDays(endDate, startDate) + 1;
-        if (
-          latestOnLeave.status == "SUCCESS" ||
-          latestOnLeave.status == "NO DATA"
-        ) {
-          if (latestOnLeave.status == "SUCCESS") {
-            const latestOnLeaveData = latestOnLeave.msg;
-            jsonData["remain_days"] =
-              latestOnLeaveData["remain_days"] - jsonData.number_of_days;
-          } else if (latestOnLeave.status == "NO DATA") {
-            jsonData["remain_days"] =
-              selectedLeaveType.day_limit - jsonData.number_of_days;
-          }
-          PostAddOnLeavePersonal(URLList.AdminOnLeavePersonal, jsonData).then(
-            (data) => {
+      AdminGetLatestOnLeaveByType(jsonData.on_leave_type_id).then(
+        (latestOnLeave) => {
+          const startDate = parseISO(data.get("start_date"));
+          const endDate = parseISO(data.get("end_date"));
+          jsonData["number_of_days"] = differenceInDays(endDate, startDate) + 1;
+          if (
+            latestOnLeave.status == "SUCCESS" ||
+            latestOnLeave.status == "NO DATA"
+          ) {
+            if (latestOnLeave.status == "SUCCESS") {
+              const latestOnLeaveData = latestOnLeave.msg;
+              jsonData["remain_days"] =
+                latestOnLeaveData["remain_days"] - jsonData.number_of_days;
+            } else if (latestOnLeave.status == "NO DATA") {
+              jsonData["remain_days"] =
+                selectedLeaveType.day_limit - jsonData.number_of_days;
+            }
+            PostAddOnLeavePersonal(jsonData).then((data) => {
               const { status, msg } = data;
               if (status == "SUCCESS") {
                 fetchOnLeaveList();
               } else {
                 console.log(data);
               }
-            }
-          );
-        } else {
-          console.log(latestOnLeave);
+            });
+          } else {
+            console.log(latestOnLeave);
+          }
         }
-      });
+      );
     }
   };
 
@@ -159,7 +152,7 @@ const AdminOnLeavePersonal = ({ data }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteOnLeave(URLList.AdminOnLeave, jsonData).then((data) => {
+    DeleteOnLeave(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchOnLeaveList();

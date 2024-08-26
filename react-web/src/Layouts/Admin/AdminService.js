@@ -7,7 +7,6 @@ import {
   PostAddService,
   UpdateService,
 } from "../Api";
-import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
 const AdminService = ({ data }) => {
@@ -23,7 +22,7 @@ const AdminService = ({ data }) => {
   const [notificationStatus, setNotificationStatus] = useState();
 
   const fetchService = () => {
-    GetAllService(URLList.AdminService).then((data) => {
+    GetAllService().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setServiceList(msg);
@@ -38,7 +37,7 @@ const AdminService = ({ data }) => {
 
   useEffect(() => {
     fetchService();
-    GetAllCarSize(URLList.AdminCarSizeURL).then((data) => {
+    GetAllCarSize().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setCarSizeList(msg);
@@ -46,7 +45,7 @@ const AdminService = ({ data }) => {
         console.log(data);
       }
     });
-    GetAllStaff(URLList.AdminStaff).then((data) => {
+    GetAllStaff().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setStaffList(msg);
@@ -107,7 +106,7 @@ const AdminService = ({ data }) => {
         used_people: data.get("used_people"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      PostAddService(URLList.AdminService, jsonData).then((data) => {
+      PostAddService(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success add service = ${jsonData.service}`);
@@ -152,7 +151,7 @@ const AdminService = ({ data }) => {
         used_people: data.get("used_people"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      UpdateService(URLList.AdminService, jsonData).then((data) => {
+      UpdateService(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success edit carsize = ${jsonData.service}`);
@@ -180,7 +179,7 @@ const AdminService = ({ data }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteService(URLList.AdminService, jsonData).then((data) => {
+    DeleteService(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success deleted");

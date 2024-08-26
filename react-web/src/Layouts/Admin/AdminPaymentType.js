@@ -5,7 +5,6 @@ import {
   PostAddPaymentType,
   UpdatePaymentType,
 } from "../Api";
-import URLList from "../Url/URLList";
 import Notification from "../Notification/Notification";
 
 const AdminPaymentType = ({ permission }) => {
@@ -22,7 +21,7 @@ const AdminPaymentType = ({ permission }) => {
   }, []);
 
   const fetchPaymentType = () => {
-    GetAllPaymentType(URLList.AdminPaymentType).then((data) => {
+    GetAllPaymentType().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setPaymentTypeList(msg);
@@ -70,7 +69,7 @@ const AdminPaymentType = ({ permission }) => {
         type: data.get("type"),
         is_available: data.get("is_available") !== null ? 1 : 0,
       };
-      PostAddPaymentType(URLList.AdminPaymentType, jsonData).then((data) => {
+      PostAddPaymentType(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setNotificationMessage(`success add paymenttype = ${jsonData.type}`);
@@ -103,7 +102,7 @@ const AdminPaymentType = ({ permission }) => {
       type: data.get("type"),
       is_available: data.get("is_available"),
     };
-    UpdatePaymentType(URLList.AdminPaymentType, jsonData).then((data) => {
+    UpdatePaymentType(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage(`success edit paymenttype = ${jsonData.type}`);
@@ -129,7 +128,7 @@ const AdminPaymentType = ({ permission }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeletePaymentType(URLList.AdminPaymentType, jsonData).then((data) => {
+    DeletePaymentType(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setNotificationMessage("success deleted");
