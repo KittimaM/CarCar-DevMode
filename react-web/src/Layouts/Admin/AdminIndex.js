@@ -17,6 +17,7 @@ import AdminBooking from "./AdminBooking";
 import AdminSchedule from "./AdminSchedule";
 import AdminTemplate from "./AdminTemplate/AdminTemplate";
 import AdminSearch from "./AdminSearch";
+import AdminGeneralSetting from "./AdminGeneralSetting";
 
 function AdminIndex() {
   const [permission, setPermission] = useState(null);
@@ -38,6 +39,7 @@ function AdminIndex() {
   const [isSchedule, setIsSchedule] = useState(false);
   const [isTemplate, setIsTemplate] = useState(false);
   const [isSearch, setIsSearch] = useState(false);
+  const [isGeneralSetting, setIsGeneralSetting] = useState(false);
   const [data, setData] = useState({});
 
   useEffect(() => {
@@ -82,6 +84,7 @@ function AdminIndex() {
     setIsSchedule(dataValue == "schedule" ? true : false);
     setIsTemplate(dataValue == "template" ? true : false);
     setIsSearch(dataValue == "search" ? true : false);
+    setIsGeneralSetting(dataValue == "generalSetting" ? true : false);
 
     const data = {
       labelValue: labelValue,
@@ -270,6 +273,7 @@ function AdminIndex() {
       {isStatus && <AdminStatus data={data} />}
       {isTemplate && <AdminTemplate data={data} />}
       {isSearch && <AdminSearch data={data} />}
+      {isGeneralSetting && <AdminGeneralSetting data={data} />}
     </div>
   );
 }

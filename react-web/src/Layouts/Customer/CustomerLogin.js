@@ -1,17 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginImg from "../../assets/login-2.jpeg";
-import { PostCustomerLogin } from "../Api";
+import { GetAdminGeneralSetting, PostCustomerLogin } from "../Api";
 
 const CustomerLogin = () => {
   const [errors, setErrors] = useState();
+  const [settings, setSettings] = useState();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    GetAdminGeneralSetting().then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        setSettings(msg[0]);
+      } else {
+        console.log(data);
+      }
+    });
+  }, []);
   const handleLogin = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const jsonData = {
       phone: data.get("phone"),
       password: data.get("password"),
+      customer_failed_login_limit: settings.customer_failed_login_limit,
+      customer_user_login_mins_limit: settings.customer_user_login_mins_limit,
     };
     PostCustomerLogin(jsonData).then((data) => {
       const { status, msg } = data;
@@ -19,13 +33,7 @@ const CustomerLogin = () => {
         localStorage.setItem("token", msg);
         navigate("/customer/main");
       } else {
-        if (msg == "NO DATA") {
-          setErrors("No User");
-        } else if (msg == "Wrong Password") {
-          setErrors("Wrong Password");
-        } else {
-          console.log(data);
-        }
+        setErrors(msg);
       }
     });
   };

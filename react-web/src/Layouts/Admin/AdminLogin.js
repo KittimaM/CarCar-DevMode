@@ -1,17 +1,30 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { PostAdminLogin } from "../Api";
+import { GetAdminGeneralSetting, PostAdminLogin } from "../Api";
 import LoginImg from "../../assets/login-2.jpeg";
 
 const AdminLogin = () => {
   const [errors, setErrors] = useState();
+  const [settings, setSettings] = useState();
   const navigate = useNavigate();
+  useEffect(() => {
+    GetAdminGeneralSetting().then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        setSettings(msg[0]);
+      } else {
+        console.log(data);
+      }
+    });
+  }, []);
   const handleLogin = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     const jsonData = {
       username: data.get("username"),
       password: data.get("password"),
+      staff_failed_login_limit: settings.staff_failed_login_limit,
+      staff_user_login_mins_limit: settings.staff_user_login_mins_limit,
     };
 
     PostAdminLogin(jsonData).then((data) => {
@@ -20,13 +33,7 @@ const AdminLogin = () => {
         localStorage.setItem("token", msg);
         navigate("/admin/main");
       } else {
-        if (msg == "NO DATA") {
-          setErrors("No User");
-        } else if (msg == "Wrong Password") {
-          setErrors("Wrong Password");
-        } else {
-          console.log(data);
-        }
+        setErrors(msg);
       }
     });
   };
