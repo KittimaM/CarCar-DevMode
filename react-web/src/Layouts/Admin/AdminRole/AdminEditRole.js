@@ -194,6 +194,8 @@ const AdminEditRole = ({ editItem }) => {
       if (actionValue == 3) {
         return "hidden";
       }
+    } else if (role == "have_general_setting_access") {
+      return "hidden";
     } else if (role !== "have_on_leave_list_access") {
       if (actionValue == 5) {
         return "hidden";

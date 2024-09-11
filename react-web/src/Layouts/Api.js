@@ -421,3 +421,11 @@ export const GetAdminSearchResult = (jsonData) => {
 export const PostCustomerLogin = (jsonData) => {
   return postApi(URLList.CustomerLogin, jsonData);
 };
+
+export const GetAdminGeneralSetting = () => {
+  return getApi(URLList.AdminGeneralSetting);
+};
+
+export const UpdateAdminGeneralSetting = (jsonData) => {
+  return putApi(URLList.AdminGeneralSetting, jsonData)
+}

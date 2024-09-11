@@ -5,12 +5,11 @@ import CustomerProfile from "./CustomerProfile";
 import CustomerBooking from "./CustomerBooking";
 
 const CustomerIndex = () => {
-  const [booking, setBooking] = useState(null);
   const [profile, setProfile] = useState();
   const [isSelectedCustomerCar, setIsSelectedCustomerCar] = useState(false);
   const [isSelectedProfile, setIsSelectedProfile] = useState(false);
   const [isSelectedBooking, setIsSelectedBooking] = useState(false);
-  const [isSelectedIndex, setIsSelectedIndex] = useState(false);
+  const [isSelectedIndex, setIsSelectedIndex] = useState(true);
 
   useEffect(() => {
     GetCustomerProfile().then((data) => {
