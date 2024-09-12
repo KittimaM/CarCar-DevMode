@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 25, 2024 at 12:01 PM
+-- Generation Time: Sep 12, 2024 at 05:21 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,7 +90,8 @@ INSERT INTO `admin_role_label` (`id`, `role`, `label`, `module_level`, `header_m
 (18, 'have_master_table_access', 'master table', 1, 0, 1, 'masterTable'),
 (19, 'have_user_access', 'user', 1, 0, 1, 'user'),
 (20, 'have_template_access', 'template', 1, 0, 0, 'template'),
-(21, 'have_search_access', 'Search', 1, 0, 0, 'search');
+(21, 'have_search_access', 'Search', 1, 0, 0, 'search'),
+(22, 'have_general_setting_access', 'General Setting', 1, 0, 0, 'generalSetting');
 
 -- --------------------------------------------------------
 
@@ -207,7 +208,8 @@ CREATE TABLE `customer_car` (
 
 INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `prefix`, `postfix`, `province`, `brand`, `model`, `size_id`, `color`, `created_at`, `updated_at`, `deleted_at`) VALUES
 (23, 1, 'abc1234', 'abc', '1234', 'สมุทรปราการ', 'aespa', 'kwangya', 86, 'black mamba', '2024-06-05 11:58:35', NULL, NULL),
-(24, 6, 'รกจ980', 'รกจ', '980', 'กรุงเทพมหานคร', 'yamaha', 'series 1', 86, 'test', '2024-08-21 06:25:20', NULL, NULL);
+(24, 6, 'รกจ980', 'รกจ', '980', 'กรุงเทพมหานคร', 'yamaha', 'series 1', 86, 'test', '2024-08-21 06:25:20', NULL, NULL),
+(25, 43, 'test1422', 'test', '1422', 'กรุงเทพมหานคร', 'test', 'test', 86, 'test', '2024-08-26 13:08:40', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -219,17 +221,22 @@ CREATE TABLE `customer_user` (
   `id` int(11) NOT NULL,
   `phone` varchar(20) NOT NULL,
   `name` varchar(50) NOT NULL,
-  `password` varchar(150) NOT NULL
+  `password` varchar(150) NOT NULL,
+  `is_active` tinyint(4) NOT NULL DEFAULT 0,
+  `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
+  `is_locked` tinyint(4) NOT NULL DEFAULT 0,
+  `locked_reason` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_user`
 --
 
-INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`) VALUES
-(1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG'),
-(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.'),
-(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm');
+INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
+(1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG', 0, 0, 0, NULL),
+(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.', 0, 0, 0, NULL),
+(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm', 0, 0, 0, NULL),
+(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -255,6 +262,29 @@ INSERT INTO `day_off` (`staff_id`, `day_off`) VALUES
 (20, 'Sunday'),
 (21, 'Friday'),
 (30, 'Sunday');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `general_setting`
+--
+
+CREATE TABLE `general_setting` (
+  `id` int(11) NOT NULL,
+  `staff_failed_login_limit` int(11) NOT NULL,
+  `customer_failed_login_limit` int(11) NOT NULL,
+  `staff_user_login_mins_limit` int(11) NOT NULL,
+  `customer_user_login_mins_limit` int(11) NOT NULL,
+  `staff_inactive_limit` int(11) NOT NULL,
+  `customer_inactive_limit` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `general_setting`
+--
+
+INSERT INTO `general_setting` (`id`, `staff_failed_login_limit`, `customer_failed_login_limit`, `staff_user_login_mins_limit`, `customer_user_login_mins_limit`, `staff_inactive_limit`, `customer_inactive_limit`) VALUES
+(1, 3, 0, 0, 0, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -451,18 +481,20 @@ CREATE TABLE `role` (
   `have_master_table_access` varchar(10) DEFAULT '0',
   `have_user_access` varchar(10) DEFAULT '0',
   `have_template_access` varchar(10) DEFAULT '0',
-  `have_search_access` varchar(10) DEFAULT '0'
+  `have_search_access` varchar(10) DEFAULT '0',
+  `have_general_setting_access` varchar(10) DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
 --
 
-INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `have_service_access`, `have_booking_access`, `have_role_access`, `have_account_access`, `have_schedule_access`, `have_payment_access`, `have_payment_type_access`, `have_on_leave_list_access`, `have_right_to_approve_on_leave`, `have_on_leave_personal_access`, `have_day_off_list_access`, `have_on_leave_type_access`, `have_channel_access`, `have_status_access`, `have_customer_access`, `have_master_table_access`, `have_user_access`, `have_template_access`, `have_search_access`) VALUES
-(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1', '1,3,2,4', '1,2,3,4'),
-(2, 'user', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
-(3, 'new', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
-(4, 'test', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0');
+INSERT INTO `role` (`id`, `role`, `have_staff_access`, `have_car_size_access`, `have_service_access`, `have_booking_access`, `have_role_access`, `have_account_access`, `have_schedule_access`, `have_payment_access`, `have_payment_type_access`, `have_on_leave_list_access`, `have_right_to_approve_on_leave`, `have_on_leave_personal_access`, `have_day_off_list_access`, `have_on_leave_type_access`, `have_channel_access`, `have_status_access`, `have_customer_access`, `have_master_table_access`, `have_user_access`, `have_template_access`, `have_search_access`, `have_general_setting_access`) VALUES
+(1, 'admin', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,4,5', '1,2,3,4,5', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1,2,3,4', '1', '1', '1,3,2,4', '1,2,3,4', '1'),
+(2, 'user', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+(3, 'new', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+(4, 'test', '0', '1', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0'),
+(5, 'test gener', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '0', '1');
 
 -- --------------------------------------------------------
 
@@ -521,22 +553,26 @@ CREATE TABLE `staff_user` (
   `username` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role_id` int(11) NOT NULL
+  `role_id` int(11) NOT NULL,
+  `is_active` tinyint(4) NOT NULL DEFAULT 1,
+  `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
+  `is_locked` tinyint(4) NOT NULL DEFAULT 0,
+  `locked_reason` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `staff_user`
 --
 
-INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`) VALUES
-(6, 'admin', 'admin', '$2b$10$ooW8uNmzu485Kbk7kbCCyubNukNbJhBEqEw0qRRbLuAs2zf0iWJJK', 1),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1),
-(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1),
-(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 2),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2),
-(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1),
-(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1),
-(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 2);
+INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
+(6, 'admin', 'admin', '$2b$10$ooW8uNmzu485Kbk7kbCCyubNukNbJhBEqEw0qRRbLuAs2zf0iWJJK', 1, 1, 0, 0, NULL),
+(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, 0, NULL),
+(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, 0, NULL),
+(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 2, 0, 0, 0, NULL),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2, 0, 0, 0, NULL),
+(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 0, 0, 0, NULL),
+(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 0, 0, 0, NULL),
+(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 2, 0, 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -662,6 +698,12 @@ ALTER TABLE `day_off`
   ADD PRIMARY KEY (`staff_id`);
 
 --
+-- Indexes for table `general_setting`
+--
+ALTER TABLE `general_setting`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `on_leave`
 --
 ALTER TABLE `on_leave`
@@ -751,7 +793,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT for table `admin_role_label`
 --
 ALTER TABLE `admin_role_label`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- AUTO_INCREMENT for table `booking`
@@ -775,13 +817,19 @@ ALTER TABLE `channel`
 -- AUTO_INCREMENT for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `customer_user`
 --
 ALTER TABLE `customer_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=36;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+
+--
+-- AUTO_INCREMENT for table `general_setting`
+--
+ALTER TABLE `general_setting`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -811,7 +859,7 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
