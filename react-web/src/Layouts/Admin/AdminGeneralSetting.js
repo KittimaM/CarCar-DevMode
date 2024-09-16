@@ -4,7 +4,7 @@ import { GetAdminGeneralSetting, UpdateAdminGeneralSetting } from "../Api";
 const AdminGeneralSetting = ({ data }) => {
   const { labelValue, permission } = data;
   const [settings, setSettings] = useState();
-  const [isEditSettings, setISEditSettings] = useState(true);
+  const [isEditSettings, setIsEditSettings] = useState(true);
 
   useEffect(() => {
     GetAdminGeneralSetting().then((data) => {
@@ -18,7 +18,7 @@ const AdminGeneralSetting = ({ data }) => {
   }, []);
 
   const handleEdit = () => {
-    setISEditSettings(false);
+    setIsEditSettings(false);
   };
 
   const handleSubmit = (event) => {
@@ -26,11 +26,18 @@ const AdminGeneralSetting = ({ data }) => {
     const data = new FormData(event.currentTarget);
     const jsonData = {
       staff_failed_login_limit: data.get("staff_failed_login_limit"),
+      staff_user_login_mins_limit: data.get("staff_user_login_mins_limit"),
+      staff_inactive_limit: data.get("staff_inactive_limit"),
+      customer_failed_login_limit: data.get("customer_failed_login_limit"),
+      customer_user_login_mins_limit: data.get(
+        "customer_user_login_mins_limit"
+      ),
+      customer_inactive_limit: data.get("customer_inactive_limit"),
     };
     UpdateAdminGeneralSetting(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
-        setISEditSettings(true);
+        setIsEditSettings(true);
       } else {
         console.log(data);
       }
@@ -39,21 +46,85 @@ const AdminGeneralSetting = ({ data }) => {
   return (
     <div className="ml-80 mt-16">
       <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
-      <button className="btn" onClick={handleEdit}>
+      <button className="btn" onClick={handleEdit} disabled={!isEditSettings}>
         edit
       </button>
       <form onSubmit={handleSubmit}>
-        <label>staff failed login count Settings</label>
-        <input
-          name="staff_failed_login_limit"
-          type="number"
-          defaultValue={settings && settings.staff_failed_login_limit}
-          disabled={isEditSettings}
-        />
+        <div>
+          <label>staff_failed_login_limit</label>
+          <input
+            name="staff_failed_login_limit"
+            type="number"
+            defaultValue={settings && settings.staff_failed_login_limit}
+            disabled={isEditSettings}
+          />
+          times
+        </div>
+        <div>
+          <label>staff_user_login_mins_limit</label>
+          <input
+            name="staff_user_login_mins_limit"
+            type="number"
+            defaultValue={settings && settings.staff_user_login_mins_limit}
+            disabled={isEditSettings}
+          />
+          mins
+        </div>
+        <div>
+          <label>staff_inactive_limit</label>
+          <input
+            name="staff_inactive_limit"
+            type="number"
+            defaultValue={settings && settings.staff_inactive_limit}
+            disabled={isEditSettings}
+          />
+          days
+        </div>
+        <div>
+          <label>customer_failed_login_limit</label>
+          <input
+            name="customer_failed_login_limit"
+            type="number"
+            defaultValue={settings && settings.customer_failed_login_limit}
+            disabled={isEditSettings}
+          />
+          times
+        </div>
+        <div>
+          <label>customer_user_login_mins_limit</label>
+          <input
+            name="customer_user_login_mins_limit"
+            type="number"
+            defaultValue={settings && settings.customer_user_login_mins_limit}
+            disabled={isEditSettings}
+          />
+          mins
+        </div>
+        <div>
+          <label>customer_inactive_limit</label>
+          <input
+            name="customer_inactive_limit"
+            type="number"
+            defaultValue={settings && settings.customer_inactive_limit}
+            disabled={isEditSettings}
+          />
+          days
+        </div>
+
         {!isEditSettings && (
-          <button type="submit" className="btn">
-            Submit
-          </button>
+          <div>
+            <button type="submit" className="btn">
+              Submit
+            </button>
+            <button
+              className="btn"
+              onClick={() => {
+                setIsEditSettings(true);
+              }}
+            >
+              Cancel
+            </button>
+          </div>
         )}
       </form>
     </div>

@@ -17,10 +17,30 @@ const AdminGetGeneralSetting = (req, res, next) => {
 };
 
 const AdminUpdateGeneralSetting = (req, res, next) => {
-  const { staff_failed_login_limit } = req.body;
+  const {
+    staff_failed_login_limit,
+    staff_user_login_mins_limit,
+    staff_inactive_limit,
+    customer_failed_login_limit,
+    customer_user_login_mins_limit,
+    customer_inactive_limit,
+  } = req.body;
   Conn.execute(
-    "UPDATE general_setting SET staff_failed_login_limit = ?",
-    [staff_failed_login_limit],
+    `UPDATE general_setting SET 
+    staff_failed_login_limit = ?,
+    staff_user_login_mins_limit = ?,
+    staff_inactive_limit = ?,
+    customer_failed_login_limit = ?,
+    customer_user_login_mins_limit = ?,
+    customer_inactive_limit = ?`,
+    [
+      staff_failed_login_limit,
+      staff_user_login_mins_limit,
+      staff_inactive_limit,
+      customer_failed_login_limit,
+      customer_user_login_mins_limit,
+      customer_inactive_limit,
+    ],
     function (error, result) {
       staff_failed_login_limit;
       if (error) {
