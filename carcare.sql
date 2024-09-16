@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2024 at 05:21 PM
+-- Generation Time: Sep 16, 2024 at 04:31 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -284,7 +284,7 @@ CREATE TABLE `general_setting` (
 --
 
 INSERT INTO `general_setting` (`id`, `staff_failed_login_limit`, `customer_failed_login_limit`, `staff_user_login_mins_limit`, `customer_user_login_mins_limit`, `staff_inactive_limit`, `customer_inactive_limit`) VALUES
-(1, 3, 0, 0, 0, 0, 0);
+(1, 3, 0, 480, 480, 0, 1);
 
 -- --------------------------------------------------------
 

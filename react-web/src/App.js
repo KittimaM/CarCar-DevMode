@@ -2,8 +2,6 @@ import React from "react";
 import "./App.css";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import CustomerFirstPage from "./Layouts/Customer/CustomerFirstPage";
-import CustomerRegister from "./Layouts/Customer/CustomerRegister";
-import CustomerLogin from "./Layouts/Customer/CustomerLogin";
 import AdminLogin from "./Layouts/Admin/AdminLogin";
 import Index from "./Layouts/Index";
 import CustomerBooking from "./Layouts/Customer/CustomerBooking";
