@@ -73,9 +73,41 @@ const AdminDeleteCustomer = (req, res, next) => {
   );
 };
 
+const AdminActiveCustomer = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "UPDATE customer_user SET is_active = 1 WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        res.json({ status: "ERROR", msg: error });
+      } else {
+        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    }
+  );
+};
+
+const AdminUnlockCustomer = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    `UPDATE customer_user SET is_locked = 0, failed_login_count = 0, locked_reason = NULL WHERE id = ?`,
+    [id],
+    function (error, result) {
+      if (error) {
+        res.json({ status: "ERROR", msg: error });
+      } else {
+        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    }
+  );
+};
+
 module.exports = {
   AdminGetAllCustomer,
   AdminAddCustomer,
   AdminUpdateCustomer,
   AdminDeleteCustomer,
+  AdminActiveCustomer,
+  AdminUnlockCustomer,
 };

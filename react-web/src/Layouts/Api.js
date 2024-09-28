@@ -358,16 +358,16 @@ export const GetAdminCustomer = () => {
   return getApi(URLList.AdminCustomerURL);
 };
 
-export const UpdateAdminCustomer = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateAdminCustomer = (jsonData) => {
+  return putApi(URLList.AdminCustomerURL, jsonData);
 };
 
-export const PostAdminAddCustomer = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAdminAddCustomer = (jsonData) => {
+  return postApi(URLList.AdminCustomerURL, jsonData);
 };
 
-export const DeleteAdminCustomer = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteAdminCustomer = (jsonData) => {
+  return deleteApi(URLList.AdminCustomerURL, jsonData);
 };
 
 export const GetAdminCustomerCar = () => {
@@ -427,5 +427,21 @@ export const GetAdminGeneralSetting = () => {
 };
 
 export const UpdateAdminGeneralSetting = (jsonData) => {
-  return putApi(URLList.AdminGeneralSetting, jsonData)
-}
+  return putApi(URLList.AdminGeneralSetting, jsonData);
+};
+
+export const UpdateAdminActiveCustomer = (jsonData) => {
+  return putApi(URLList.AdminCustomerURL + "/active-user", jsonData);
+};
+
+export const UpdateAdminUnlockCustomer = (jsonData) => {
+  return putApi(URLList.AdminCustomerURL + "/unlock-user", jsonData);
+};
+
+export const UpdateAdminActiveStaff = (jsonData) => {
+  return putApi(URLList.AdminStaff + "/active-user", jsonData);
+};
+
+export const UpdateAdminUnlockStaff = (jsonData) => {
+  return putApi(URLList.AdminStaff + "/unlock-user", jsonData);
+};

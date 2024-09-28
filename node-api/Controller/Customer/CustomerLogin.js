@@ -11,7 +11,7 @@ const CustomerLogin = (req, res, next) => {
     customer_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    "SELECT id, password, name, failed_login_count, is_locked FROM customer_user WHERE phone = ?",
+    "SELECT id, password, name, failed_login_count, is_locked, is_active FROM customer_user WHERE phone = ?",
     [phone],
     function (error, result) {
       if (error) {
@@ -26,35 +26,26 @@ const CustomerLogin = (req, res, next) => {
           id,
           failed_login_count,
           is_locked,
+          is_active,
         } = result[0];
         if (is_locked == 1) {
           res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${customer_failed_login_limit} times`,
           });
+        } else if (is_active != 1) {
+          res.json({
+            status: "INACTIVE",
+            msg: `this user is inactive`,
+          });
         } else {
           bcrypt.compare(password, customerPassword, function (error, result) {
             if (error) {
               res.json({ status: "ERROR", msg: error });
             } else {
-              // if (result) {
-              //   const token = jwt.sign(
-              //     { id: customerId, phone: phone, name: customerName },
-              //     secret,
-              //     {
-              //       expiresIn: `${customer_user_login_mins_limit}m`,
-              //     }
-              //   );
-              //   res.json({ status: "SUCCESS", msg: token });
-              // } else {
-              //   res.json({
-              //     status: "ERROR",
-              //     msg: "Wrong username or password",
-              //   });
-              // }
               if (result) {
                 Conn.execute(
-                  `UPDATE customer_user SET failed_login_count = 0, is_locked = 0 WHERE id = ?`,
+                  `UPDATE customer_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL, latest_logged_in = CURRENT_TIMESTAMP WHERE id = ?`,
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {
@@ -87,7 +78,7 @@ const CustomerLogin = (req, res, next) => {
                         });
                       } else {
                         Conn.execute(
-                          `UPDATE customer_user SET is_locked = 1 WHERE id = ?`,
+                          `UPDATE customer_user SET is_locked = 1, locked_reason = 'This user locked due to failed login more than ${customer_failed_login_limit} times' WHERE id = ?`,
                           [id],
                           function (lockedError, lockedResult) {
                             if (lockedError) {
