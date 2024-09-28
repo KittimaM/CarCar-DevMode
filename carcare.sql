@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 16, 2024 at 04:31 PM
+-- Generation Time: Sep 28, 2024 at 09:39 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -225,18 +225,19 @@ CREATE TABLE `customer_user` (
   `is_active` tinyint(4) NOT NULL DEFAULT 0,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
   `is_locked` tinyint(4) NOT NULL DEFAULT 0,
-  `locked_reason` varchar(150) DEFAULT NULL
+  `locked_reason` varchar(150) DEFAULT NULL,
+  `latest_logged_in` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_user`
 --
 
-INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
-(1, '000', 'name surname', '$2b$10$OLc9DX1quiDIJJieDklyqO.tQVA3AcTqxiMhLRZP2bS7AFG5cDFnG', 0, 0, 0, NULL),
-(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.', 0, 0, 0, NULL),
-(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm', 0, 0, 0, NULL),
-(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, 0, NULL);
+INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`) VALUES
+(1, '0000', 'name surname 0000', '$2b$10$GAA5SQm1Dio/yviAKVaHw.FChyPs8NQwHFwrfpEGt/dhQrbII9x8W', 1, 0, 0, NULL, '2024-09-28 19:33:11'),
+(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.', 1, 0, 0, NULL, NULL),
+(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm', 1, 0, 0, NULL, NULL),
+(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 1, 0, 0, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -284,7 +285,7 @@ CREATE TABLE `general_setting` (
 --
 
 INSERT INTO `general_setting` (`id`, `staff_failed_login_limit`, `customer_failed_login_limit`, `staff_user_login_mins_limit`, `customer_user_login_mins_limit`, `staff_inactive_limit`, `customer_inactive_limit`) VALUES
-(1, 3, 0, 480, 480, 0, 1);
+(1, 4, 3, 480, 480, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -557,22 +558,23 @@ CREATE TABLE `staff_user` (
   `is_active` tinyint(4) NOT NULL DEFAULT 1,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
   `is_locked` tinyint(4) NOT NULL DEFAULT 0,
-  `locked_reason` varchar(150) DEFAULT NULL
+  `locked_reason` varchar(150) DEFAULT NULL,
+  `latest_logged_in` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `staff_user`
 --
 
-INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
-(6, 'admin', 'admin', '$2b$10$ooW8uNmzu485Kbk7kbCCyubNukNbJhBEqEw0qRRbLuAs2zf0iWJJK', 1, 1, 0, 0, NULL),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, 0, NULL),
-(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, 0, NULL),
-(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 2, 0, 0, 0, NULL),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2, 0, 0, 0, NULL),
-(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 0, 0, 0, NULL),
-(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 0, 0, 0, NULL),
-(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 2, 0, 0, 0, NULL);
+INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`) VALUES
+(6, 'admin', 'admin', '$2b$10$ooW8uNmzu485Kbk7kbCCyubNukNbJhBEqEw0qRRbLuAs2zf0iWJJK', 1, 1, 0, 0, NULL, '2024-09-28 19:38:32'),
+(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 1, 0, 0, NULL, NULL),
+(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 1, 0, 0, NULL, '2024-09-28 19:38:42'),
+(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 2, 1, 0, 0, NULL, '2024-09-28 19:38:40'),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2, 1, 0, 0, NULL, '2024-09-28 19:38:44'),
+(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 1, 0, 0, NULL, '2024-09-28 19:38:44'),
+(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 1, 0, 0, NULL, '2024-09-28 19:38:45'),
+(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 2, 1, 0, 0, NULL, '2024-09-28 19:38:45');
 
 -- --------------------------------------------------------
 

@@ -3,9 +3,10 @@ import {
   DeleteAdminCustomer,
   GetAdminCustomer,
   PostAdminAddCustomer,
+  UpdateAdminActiveCustomer,
   UpdateAdminCustomer,
+  UpdateAdminUnlockCustomer,
 } from "../../Api";
-import URLList from "../../Url/URLList";
 
 const AdminCustomer = ({ permission }) => {
   const [customer, setCustomer] = useState();
@@ -39,7 +40,7 @@ const AdminCustomer = ({ permission }) => {
       name: data.get("name"),
       password: data.get("password"),
     };
-    UpdateAdminCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
+    UpdateAdminCustomer(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchCustomer();
@@ -58,7 +59,7 @@ const AdminCustomer = ({ permission }) => {
       phone: data.get("phone"),
       password: data.get("password"),
     };
-    PostAdminAddCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
+    PostAdminAddCustomer(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setOpenAddCustomerForm(false);
@@ -74,7 +75,37 @@ const AdminCustomer = ({ permission }) => {
     const jsonData = {
       id: event.target.value,
     };
-    DeleteAdminCustomer(URLList.AdminCustomerURL, jsonData).then((data) => {
+    DeleteAdminCustomer(jsonData).then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        fetchCustomer();
+      } else {
+        console.log(data);
+      }
+    });
+  };
+
+  const handleActiveUser = (event) => {
+    event.preventDefault();
+    const jsonData = {
+      id: event.target.value,
+    };
+    UpdateAdminActiveCustomer(jsonData).then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        fetchCustomer();
+      } else {
+        console.log(data);
+      }
+    });
+  };
+
+  const handleUnlockUser = (event) => {
+    event.preventDefault();
+    const jsonData = {
+      id: event.target.value,
+    };
+    UpdateAdminUnlockCustomer(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         fetchCustomer();
@@ -94,6 +125,9 @@ const AdminCustomer = ({ permission }) => {
       <table className="table table-lg">
         <thead>
           <tr>
+            <td>is active</td>
+            <td>is locked</td>
+            <td>locked reason</td>
             <td>phone</td>
             <td>name</td>
             {permission && permission.includes("3") && <td>Edit</td>}
@@ -104,6 +138,33 @@ const AdminCustomer = ({ permission }) => {
           {customer &&
             customer.map((item) => (
               <tr key={item.id}>
+                <td>
+                  {item.is_active == 1 ? (
+                    "-"
+                  ) : (
+                    <button
+                      className="btn"
+                      value={item.id}
+                      onClick={handleActiveUser}
+                    >
+                      inactive
+                    </button>
+                  )}
+                </td>
+                <td>
+                  {item.is_locked == 1 ? (
+                    <button
+                      className="btn"
+                      value={item.id}
+                      onClick={handleUnlockUser}
+                    >
+                      Locked
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td>{item.locked_reason ? item.locked_reason : "-"}</td>
                 <td>{item.phone}</td>
                 <td>{item.name}</td>
                 {permission && permission.includes("3") && (

@@ -73,9 +73,41 @@ const AdminUpdateStaffUser = (req, res, next) => {
   });
 };
 
+const AdminActiveStaff = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "UPDATE staff_user SET is_active = 1 WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        res.json({ status: "ERROR", msg: error });
+      } else {
+        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    }
+  );
+};
+
+const AdminUnlockStaff = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    `UPDATE staff_user SET is_locked = 0, failed_login_count = 0, locked_reason = NULL WHERE id = ?`,
+    [id],
+    function (error, result) {
+      if (error) {
+        res.json({ status: "ERROR", msg: error });
+      } else {
+        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    }
+  );
+};
+
 module.exports = {
   AdminUser,
   AdminAddStaffUser,
   AdminDeleteStaffUser,
   AdminUpdateStaffUser,
+  AdminActiveStaff,
+  AdminUnlockStaff,
 };

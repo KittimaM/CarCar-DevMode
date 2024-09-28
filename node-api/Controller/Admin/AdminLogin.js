@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    `SELECT id, username, password, role_id, failed_login_count, is_locked FROM staff_user WHERE username = ? LIMIT 1`,
+    `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -26,11 +26,17 @@ const AdminLogin = (req, res, next) => {
           role_id,
           failed_login_count,
           is_locked,
+          is_active,
         } = result[0];
         if (is_locked == 1) {
           res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${staff_failed_login_limit} times`,
+          });
+        } else if (is_active != 1) {
+          res.json({
+            status: "INACTIVE",
+            msg: `this user is inactive`,
           });
         } else {
           bcrypt.compare(passWord, password, function (error, result) {
@@ -39,7 +45,7 @@ const AdminLogin = (req, res, next) => {
             } else {
               if (result) {
                 Conn.execute(
-                  `UPDATE staff_user SET failed_login_count = 0, is_locked = 0 WHERE id = ?`,
+                  `UPDATE staff_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL, latest_logged_in = CURRENT_TIMESTAMP WHERE id = ?`,
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {
@@ -70,7 +76,7 @@ const AdminLogin = (req, res, next) => {
                         });
                       } else {
                         Conn.execute(
-                          `UPDATE staff_user SET is_locked = 1 WHERE id = ?`,
+                          `UPDATE staff_user SET is_locked = 1, locked_reason = 'This user locked due to failed login more than ${staff_failed_login_limit} times' WHERE id = ?`,
                           [id],
                           function (lockedError, lockedResult) {
                             if (lockedError) {

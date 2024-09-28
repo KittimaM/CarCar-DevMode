@@ -5,6 +5,8 @@ import {
   GetAllAdminRole,
   UpdateStaffUser,
   PostAddStaffUser,
+  UpdateAdminActiveStaff,
+  UpdateAdminUnlockStaff,
 } from "../../Api";
 
 const AdminStaff = ({ permission }) => {
@@ -95,6 +97,36 @@ const AdminStaff = ({ permission }) => {
     });
   };
 
+  const handleActiveUser = (event) => {
+    event.preventDefault();
+    const jsonData = {
+      id: event.target.value,
+    };
+    UpdateAdminActiveStaff(jsonData).then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        fetchStaff();
+      } else {
+        console.log(data);
+      }
+    });
+  };
+
+  const handleUnlockUser = (event) => {
+    event.preventDefault();
+    const jsonData = {
+      id: event.target.value,
+    };
+    UpdateAdminUnlockStaff(jsonData).then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        fetchStaff();
+      } else {
+        console.log(data);
+      }
+    });
+  };
+
   return (
     <div>
       {permission && permission.includes("2") && (
@@ -107,6 +139,9 @@ const AdminStaff = ({ permission }) => {
         <table className="table table-lg">
           <thead>
             <tr>
+              <td>is active</td>
+              <td>is locked</td>
+              <td>locked reason</td>
               <td>username</td>
               <td>name</td>
               {permission && permission.includes("3") && <td>Edit</td>}
@@ -116,6 +151,33 @@ const AdminStaff = ({ permission }) => {
           <tbody>
             {user.map((item) => (
               <tr key={item.id}>
+                <td>
+                  {item.is_active == 1 ? (
+                    "-"
+                  ) : (
+                    <button
+                      className="btn"
+                      value={item.id}
+                      onClick={handleActiveUser}
+                    >
+                      inactive
+                    </button>
+                  )}
+                </td>
+                <td>
+                  {item.is_locked == 1 ? (
+                    <button
+                      className="btn"
+                      value={item.id}
+                      onClick={handleUnlockUser}
+                    >
+                      Locked
+                    </button>
+                  ) : (
+                    "-"
+                  )}
+                </td>
+                <td>{item.locked_reason ? item.locked_reason : "-"}</td>
                 <td>{item.username}</td>
                 <td>{item.name}</td>
                 {permission && permission.includes("3") && (
