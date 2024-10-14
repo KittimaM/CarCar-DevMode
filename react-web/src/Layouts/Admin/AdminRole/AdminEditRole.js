@@ -105,75 +105,77 @@ const AdminEditRole = ({ editItem }) => {
         return;
       } else {
         return (
-          <div>
-            <div className={subAccessContent(headerRole, 2)}>
+          <tr>
+            <td className={subAccessContent(headerRole, 2)}>
               <input
                 checked={headerRole.access.includes(2)}
-                className="toggle"
+                className="checkbox"
                 type="checkbox"
                 name={headerRole.role}
                 value="2"
                 onChange={handleEnableAccess}
               />
               <label>add</label>
-            </div>
-            <div className={subAccessContent(headerRole, 3)}>
+            </td>
+            <td className={subAccessContent(headerRole, 3)}>
               <input
                 checked={headerRole.access.includes(3)}
-                className="toggle"
+                className="checkbox"
                 type="checkbox"
                 name={headerRole.role}
                 value="3"
                 onChange={handleEnableAccess}
               />
               <label>edit</label>
-            </div>
-            <div className={subAccessContent(headerRole, 4)}>
+            </td>
+            <td className={subAccessContent(headerRole, 4)}>
               <input
                 checked={headerRole.access.includes(4)}
-                className="toggle"
+                className="checkbox"
                 type="checkbox"
                 name={headerRole.role}
                 value="4"
                 onChange={handleEnableAccess}
               />
               <label>delete</label>
-            </div>
-            <div className={subAccessContent(headerRole, 5)}>
+            </td>
+            <td className={subAccessContent(headerRole, 5)}>
               <input
                 checked={headerRole.access.includes(5)}
-                className="toggle"
+                className="checkbox"
                 type="checkbox"
                 name={headerRole.role}
                 value="5"
                 onChange={handleEnableAccess}
               />
               <label>approve</label>
-            </div>
-          </div>
+            </td>
+          </tr>
         );
       }
     } else {
       return (
-        <div>
+        <tbody>
           {subRole.map(
             (role) =>
               role.module_level == 2 && (
-                <div>
-                  <input
-                    checked={role.access.includes(1)}
-                    className="toggle"
-                    type="checkbox"
-                    name={role.role}
-                    value="1"
-                    onChange={handleEnableAccess}
-                  />
-                  <label>{role.label}</label>
-                  {role.access.includes(1) && subRoleContent(role)}
-                </div>
+                <tr>
+                  <td>
+                    <input
+                      checked={role.access.includes(1)}
+                      className="toggle"
+                      type="checkbox"
+                      name={role.role}
+                      value="1"
+                      onChange={handleEnableAccess}
+                    />
+                    <label>{role.label}</label>
+                    {role.access.includes(1) && subRoleContent(role)}
+                  </td>
+                </tr>
               )
           )}
-        </div>
+        </tbody>
       );
     }
   };
@@ -251,44 +253,56 @@ const AdminEditRole = ({ editItem }) => {
         <Notification message={notificationMessage} type={notificationStatus} />
       )}
       <form onSubmit={handleEditRole}>
-        <div>
-          <label>Role Name</label>
-          <input
-            type="text"
-            name="role"
-            defaultValue={editItem.role}
-            value={roleName}
-            onChange={handleRoleName}
-          />
-          {errors.role && errors.role}
+        <div className="flex h-screen">
+          <div className="flex-1 p-6">
+            <div className="overflow-x-auto">
+              <div>
+                <label>Role Name</label>
+                <input
+                  type="text"
+                  name="role"
+                  defaultValue={editItem.role}
+                  value={roleName}
+                  onChange={handleRoleName}
+                />
+                {errors.role && errors.role}
+              </div>
+              <table className="table w-full">
+                <tbody>
+                  {roleLabelList &&
+                    roleLabelList.map(
+                      (roleLabel) =>
+                        roleLabel.module_level == 1 && (
+                          <tr>
+                            <td>
+                              <input
+                                checked={roleLabel.access.includes(1)}
+                                className="toggle"
+                                type="checkbox"
+                                name={roleLabel.role}
+                                value="1"
+                                onChange={handleEnableAccess}
+                              />
+                              <label>{roleLabel.label}</label>
+                            </td>
+
+                            {roleLabel.access.includes(1) &&
+                              subRoleContent(roleLabel)}
+                          </tr>
+                        )
+                    )}
+                </tbody>
+              </table>
+              <button type="submit" className="btn">
+                Submit
+              </button>
+              <button className="btn" onClick={fetchRoleLabel}>
+                Cancel
+              </button>
+            </div>
+          </div>
         </div>
-        <div>
-          {roleLabelList &&
-            roleLabelList.map(
-              (roleLabel) =>
-                roleLabel.module_level == 1 && (
-                  <div>
-                    <input
-                      checked={roleLabel.access.includes(1)}
-                      className="toggle"
-                      type="checkbox"
-                      name={roleLabel.role}
-                      value="1"
-                      onChange={handleEnableAccess}
-                    />
-                    <label>{roleLabel.label}</label>
-                    {roleLabel.access.includes(1) && subRoleContent(roleLabel)}
-                  </div>
-                )
-            )}
-        </div>
-        <button type="submit" className="btn">
-          Submit
-        </button>
       </form>
-      <button className="btn" onClick={fetchRoleLabel}>
-        Cancel
-      </button>
     </div>
   );
 };
