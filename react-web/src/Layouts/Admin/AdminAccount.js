@@ -10,7 +10,9 @@ const AdminAccount = ({ data }) => {
   const { labelValue, permission } = data;
   const [list, setList] = useState([]);
   const [totalSummary, setTotalSummary] = useState(0);
-  const [editItem, setEditItem] = useState(null);
+  const [openAddIncomeForm, setOpenAddIncomeForm] = useState(false);
+  const [openAddExpenseForm, setOpenAddExpneseForm] = useState(false);
+  const [editItem, setEditItem] = useState();
 
   const fetchAccount = () => {
     GetAllAccount().then((data) => {
@@ -141,28 +143,12 @@ const AdminAccount = ({ data }) => {
 
         {permission && permission.includes("2") && (
           <div>
-            <form onSubmit={handleAddIncome}>
-              <label>Income</label>
-              <input type="text" name="label" />
-              <label>Price</label>
-              <input type="number" name="price" />
-              <label>date</label>
-              <input type="date" name="date" />
-              <button className="btn" type="submit">
-                Add Income
-              </button>
-            </form>
-            <form onSubmit={handleAddExpense}>
-              <label>Expense</label>
-              <input type="text" name="label" />
-              <label>Price</label>
-              <input type="number" name="price" />
-              <label>date</label>
-              <input type="date" name="date" />
-              <button className="btn" type="submit">
-                Add Expense
-              </button>
-            </form>
+            <button className="btn" onClick={() => setOpenAddIncomeForm(true)}>
+              Add Income
+            </button>
+            <button className="btn" onClick={() => setOpenAddExpneseForm(true)}>
+              Add Expnese
+            </button>
           </div>
         )}
 
@@ -184,7 +170,7 @@ const AdminAccount = ({ data }) => {
                   <td>{item.label}</td>
                   <td>{item.is_income == 1 && item.income}</td>
                   <td>{item.is_expense == 1 && item.expense}</td>
-                  <td>{item.date.split("T")[0]}</td>
+                  <td>{item.date}</td>
                   {permission && permission.includes("3") && (
                     <td>
                       <button
@@ -212,33 +198,193 @@ const AdminAccount = ({ data }) => {
           </tbody>
         </table>
         <p>total : {totalSummary && totalSummary}</p>
-        {permission && permission.includes("3") && editItem && (
-          <form onSubmit={handleEditAccount}>
-            <label>label</label>
-            <input type="text" name="label" defaultValue={editItem.label} />
-            <label>Price</label>
-            <input
-              type="number"
-              name="price"
-              defaultValue={
-                editItem.is_income == 1 ? editItem.income : editItem.expense
-              }
-            />
-            <label>date</label>
-            <input type="date" name="date" placeholder={editItem.date} />
-            <select
-              name="account_type"
-              defaultValue={
-                editItem.is_income == 1 ? "is_income" : "is_expense"
-              }
-            >
-              <option value="is_income">is_income</option>
-              <option value="is_expense">is_expense</option>
-            </select>
-            <button className="btn" type="submit">
-              Submit Edit
-            </button>
-          </form>
+        {openAddIncomeForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-2xl mb-4">Add Income</h2>
+              <form onSubmit={handleAddIncome}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Income
+                  </label>
+                  <input
+                    type="text"
+                    name="label"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Price
+                  </label>
+                  <input
+                    min="0"
+                    type="number"
+                    name="price"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      setOpenAddIncomeForm(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {openAddExpenseForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-2xl mb-4">Add Expense</h2>
+              <form onSubmit={handleAddExpense}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Expnese
+                  </label>
+                  <input
+                    type="text"
+                    name="label"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Price
+                  </label>
+                  <input
+                    min="0"
+                    type="number"
+                    name="price"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Date
+                  </label>
+                  <input
+                    type="date"
+                    name="date"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      setOpenAddExpneseForm(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+        {editItem && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-2xl mb-4">Edit</h2>
+              <form onSubmit={handleEditAccount}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Income/Expense
+                  </label>
+                  <select
+                    name="account_type"
+                    defaultValue={
+                      editItem.is_income == 1 ? "is_income" : "is_expense"
+                    }
+                  >
+                    <option value="is_income">is_income</option>
+                    <option value="is_expense">is_expense</option>
+                  </select>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    label
+                  </label>
+                  <input
+                    defaultValue={editItem.label}
+                    type="text"
+                    name="label"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Price
+                  </label>
+                  <input
+                    defaultValue={editItem.price}
+                    min="0"
+                    type="number"
+                    name="price"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    Date
+                  </label>
+                  <input
+                    defaultValue={editItem.date}
+                    type="date"
+                    name="date"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      setEditItem();
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
       </div>
     </>

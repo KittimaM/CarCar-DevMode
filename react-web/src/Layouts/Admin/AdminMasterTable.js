@@ -16,32 +16,35 @@ const AdminMasterTable = ({ onLeaveTypePermission, paymentTypePermission }) => {
     <div>
       <div className="ml-80 mt-16">
         <div className="text-lg bg-yellow-100 mb-5 ">Master Table</div>
-        {onLeaveTypePermission && onLeaveTypePermission.includes("1") && (
-          <button
-            onClick={handleSelectedContent}
-            data-value="onLeaveType"
-            className="btn"
-            disabled={isOnLeaveType}
+        <div role="tablist" className="tabs tabs-lifted">
+          <input
+            type="radio"
+            name="tab"
+            role="tab"
+            className="tab"
+            aria-label="Onleave Type"
+          />
+          <div
+            role="tabpanel"
+            className="tab-content bg-base-100 border-base-300 rounded-box p-6"
           >
-            OnLeave Type
-          </button>
-        )}
-        {paymentTypePermission && paymentTypePermission.includes("1") && (
-          <button
-            onClick={handleSelectedContent}
-            data-value="paymentType"
-            className="btn"
-            disabled={isPaymentType}
+            <AdminOnLeaveType permission={onLeaveTypePermission} />
+          </div>
+
+          <input
+            type="radio"
+            name="tab"
+            role="tab"
+            className="tab"
+            aria-label="Payment Type"
+          />
+          <div
+            role="tabpanel"
+            className="tab-content bg-base-100 border-base-300 rounded-box p-6"
           >
-            paymentType
-          </button>
-        )}
-        {isOnLeaveType && (
-          <AdminOnLeaveType permission={onLeaveTypePermission} />
-        )}
-        {isPaymentType && (
-          <AdminPaymentType permission={paymentTypePermission} />
-        )}
+            <AdminPaymentType permission={paymentTypePermission} />
+          </div>
+        </div>
       </div>
     </div>
   );
