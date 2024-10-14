@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 28, 2024 at 09:39 PM
+-- Generation Time: Oct 14, 2024 at 05:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -42,13 +42,13 @@ CREATE TABLE `account` (
 --
 
 INSERT INTO `account` (`id`, `label`, `income`, `expense`, `is_expense`, `is_income`, `date`) VALUES
-(6, 'testchangecar_no', 100, 0, 0, 1, '2024-02-04'),
 (7, 'testexpense', 0, 20, 1, 0, '2024-02-04'),
 (8, 'admin', 0, 300, 1, 0, '2024-02-04'),
 (9, 'admin', 300, 0, 0, 1, '2024-06-02'),
 (10, 'newcar', 50, 0, 0, 1, '2024-06-02'),
 (11, 'testchangecar_no', 0, 0, 0, 1, '2024-06-02'),
-(12, 'testchangecar_no', 200, 0, 0, 1, '2024-06-02');
+(12, 'testchangecar_no', 200, 0, 0, 1, '2024-06-02'),
+(13, 'test', 0, 3, 1, 0, '0000-00-00');
 
 -- --------------------------------------------------------
 
@@ -567,8 +567,8 @@ CREATE TABLE `staff_user` (
 --
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`) VALUES
-(6, 'admin', 'admin', '$2b$10$ooW8uNmzu485Kbk7kbCCyubNukNbJhBEqEw0qRRbLuAs2zf0iWJJK', 1, 1, 0, 0, NULL, '2024-09-28 19:38:32'),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 1, 0, 0, NULL, NULL),
+(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 1, 0, 0, NULL, '2024-10-14 15:40:43'),
+(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 1, 0, 0, NULL, '2024-10-14 14:43:52'),
 (17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 1, 0, 0, NULL, '2024-09-28 19:38:42'),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 2, 1, 0, 0, NULL, '2024-09-28 19:38:40'),
 (19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2, 1, 0, 0, NULL, '2024-09-28 19:38:44'),
@@ -789,7 +789,7 @@ ALTER TABLE `template`
 -- AUTO_INCREMENT for table `account`
 --
 ALTER TABLE `account`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `admin_role_label`
@@ -861,7 +861,7 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
