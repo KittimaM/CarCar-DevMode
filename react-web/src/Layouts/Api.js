@@ -322,24 +322,24 @@ export const UpdateChannel = (jsonData) => {
   return putApi(URLList.AdminChannel, jsonData);
 };
 
-export const GetAllStatus = (url) => {
-  return getApi(url);
+export const GetAllStatus = () => {
+  return getApi(URLList.AdminStatus);
 };
 
-export const PostAddStatus = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddStatus = (jsonData) => {
+  return postApi(URLList.AdminStatus, jsonData);
 };
 
-export const UpdateStatus = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateStatus = (jsonData) => {
+  return putApi(URLList.AdminStatus, jsonData);
 };
 
-export const DeleteStatus = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteStatus = (jsonData) => {
+  return deleteApi(URLList.AdminStatus, jsonData);
 };
 
-export const GetAllStatusGroup = (url) => {
-  return getApi(url);
+export const GetAllStatusGroup = () => {
+  return getApi(URLList.AdminStatusGroup);
 };
 
 export const PostAddStatusGroup = (url, jsonData) => {
