@@ -15,7 +15,7 @@ import AdminCarSize from "./AdminCarSize";
 import AdminUser from "./AdminUser/AdminUser";
 import AdminBooking from "./AdminBooking";
 import AdminSchedule from "./AdminSchedule";
-import AdminTemplate from "./AdminTemplate/AdminTemplate";
+import AdminTemplate from "./AdminTemplate";
 import AdminSearch from "./AdminSearch";
 import AdminGeneralSetting from "./AdminGeneralSetting";
 

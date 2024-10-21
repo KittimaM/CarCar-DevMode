@@ -1,17 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import AdminOnLeaveType from "./AdminOnLeaveType";
 import AdminPaymentType from "./AdminPaymentType";
 
 const AdminMasterTable = ({ onLeaveTypePermission, paymentTypePermission }) => {
-  const [isOnLeaveType, setIsOnLeaveType] = useState(false);
-  const [isPaymentType, setIsPaymentType] = useState(false);
-
-  const handleSelectedContent = (event) => {
-    event.preventDefault();
-    const value = event.currentTarget.getAttribute("data-value");
-    setIsOnLeaveType(value == "onLeaveType" ? true : false);
-    setIsPaymentType(value == "paymentType" ? true : false);
-  };
   return (
     <div>
       <div className="ml-80 mt-16">
