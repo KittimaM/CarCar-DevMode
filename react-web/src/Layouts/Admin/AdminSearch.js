@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import {
+  GetAdminAllActiveTemplate,
   GetAdminCustomer,
   GetAdminCustomerCar,
   GetAdminSearchFilter,
@@ -11,6 +12,10 @@ const AdminSearch = ({ data }) => {
   const [filterList, setFilterList] = useState([]);
   const [subOptions, setSubOptions] = useState({});
   const [searchResults, setSearchResults] = useState();
+  const [isShowOptions, setIsShowOptions] = useState(false);
+  const [customer, setCustomer] = useState([]);
+  const [template, setTemplate] = useState();
+  const printRef = useRef();
 
   useEffect(() => {
     GetAdminSearchFilter().then((data) => {
@@ -77,16 +82,47 @@ const AdminSearch = ({ data }) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setSearchResults(msg);
+        setIsShowOptions(true);
       } else {
-        console.log(data);
+        setSearchResults(null);
       }
     });
+  };
+
+  const handleSelectCustomer = (event) => {
+    const { value, checked } = event.target;
+    if (checked) {
+      setCustomer((item) => [...item, value]);
+    } else {
+      setCustomer((item) => item.filter((item) => item !== value));
+    }
+  };
+
+  const handlePrint = (event) => {
+    const printContents = printRef.current.innerHTML;
+    const originalContents = document.body.innerHTML;
+
+    // Set the page content to the specific element's content
+    document.body.innerHTML = printContents;
+    window.print();
+
+    // Restore original content after printing
+    document.body.innerHTML = originalContents;
   };
 
   return (
     <div>
       <div className="ml-80 mt-16">
         <div className="text-lg bg-yellow-100 mb-5">{labelValue}</div>
+        {isShowOptions && (
+          <div>
+            {/* temp */}
+            <p ref={printRef}>sss6666 777</p>
+            <button className="btn" onClick={handlePrint}>
+              Print
+            </button>
+          </div>
+        )}
         <form onSubmit={handleSearch}>
           {filterList &&
             filterList.map((filter, index) => (
@@ -108,12 +144,36 @@ const AdminSearch = ({ data }) => {
             SEARCH
           </button>
         </form>
-        {searchResults &&
-          searchResults.map((item) => (
-            <p>
-              {item.name} {item.plate_no}
-            </p>
-          ))}
+
+        <table className="table table-lg">
+          <thead>
+            <tr>
+              <th></th>
+              <th>name</th>
+              <th>plate_no</th>
+            </tr>
+          </thead>
+          <tbody>
+            {searchResults
+              ? searchResults.map((item) => (
+                  <tr key={item.customer_id}>
+                    <td>
+                      <label>
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          value={item.customer_id}
+                          onChange={handleSelectCustomer}
+                        />
+                      </label>
+                    </td>
+                    <td>{item.customer_name}</td>
+                    <td>{item.plate_no}</td>
+                  </tr>
+                ))
+              : "NO DATA"}
+          </tbody>
+        </table>
       </div>
     </div>
   );

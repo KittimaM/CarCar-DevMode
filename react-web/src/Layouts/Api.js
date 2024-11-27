@@ -445,3 +445,11 @@ export const UpdateAdminActiveStaff = (jsonData) => {
 export const UpdateAdminUnlockStaff = (jsonData) => {
   return putApi(URLList.AdminStaff + "/unlock-user", jsonData);
 };
+
+export const GetAdminAllTemplateField = () => {
+  return getApi(URLList.AdminTemplateField);
+};
+
+export const GetAdminAllActiveTemplate = () => {
+  return getApi(URLList.AdminActiveTemplate);
+};

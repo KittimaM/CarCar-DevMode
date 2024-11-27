@@ -22,6 +22,8 @@ const URLList = {
   AdminSearch: "admin/search",
   AdminLogin: "admin/login",
   AdminGeneralSetting: "admin/general_setting",
+  AdminTemplateField: "admin/template/field",
+  AdminActiveTemplate: "admin/template/active",
 
   //customer
   CustomerLogin: "customer/login",

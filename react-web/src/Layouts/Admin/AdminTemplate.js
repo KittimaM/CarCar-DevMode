@@ -4,6 +4,7 @@ import "react-quill/dist/quill.snow.css";
 import {
   DeleteAdminTemplate,
   GetAdminAllTemplate,
+  GetAdminAllTemplateField,
   PostAdminTemplate,
   UpdateAdminTemplate,
 } from "../Api";
@@ -15,6 +16,7 @@ const AdminTemplate = ({ data }) => {
   const [previewTemplate, setPreviewTemplate] = useState(null);
   const [openAddForm, setOpenAddForm] = useState(false);
   const [template, setTemplate] = useState();
+  const [templateField, setTemplateField] = useState();
 
   const modules = {
     toolbar: [
@@ -47,6 +49,16 @@ const AdminTemplate = ({ data }) => {
 
   useEffect(() => {
     fetchAllTemplate();
+    GetAdminAllTemplateField().then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        setTemplateField(msg);
+      } else if (status == "NO DATA") {
+        setTemplateField(null);
+      } else {
+        console.log(data);
+      }
+    });
   }, []);
 
   const handleSelectEditId = (selectedItem) => {
@@ -57,11 +69,21 @@ const AdminTemplate = ({ data }) => {
   const handleEditTemplate = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    let fieldList = [];
+    templateField.forEach((field) => {
+      let fieldName = "[" + field.field_name + "]";
+      if (template.includes(fieldName)) {
+        fieldList.push(field.id);
+      }
+    });
+
     const jsonData = {
       id: editItem.id,
       name: data.get("name"),
       is_available: data.get("is_available") !== null ? 1 : 0,
       template: template,
+      is_have_custom_field: fieldList.length == 0 ? 0 : 1,
+      custom_field: fieldList.join(","),
     };
     UpdateAdminTemplate(jsonData).then((data) => {
       const { status, msg } = data;
@@ -94,15 +116,26 @@ const AdminTemplate = ({ data }) => {
     event.preventDefault();
     if (template != undefined) {
       const data = new FormData(event.currentTarget);
+      let fieldList = [];
+      templateField.forEach((field) => {
+        let fieldName = "[" + field.field_name + "]";
+        if (template.includes(fieldName)) {
+          fieldList.push(field.id);
+        }
+      });
+
       const jsonData = {
         name: data.get("name"),
         is_available: data.get("is_available") !== null ? 1 : 0,
         template: template,
+        is_have_custom_field: fieldList.length == 0 ? 0 : 1,
+        custom_field: fieldList.join(","),
       };
       PostAdminTemplate(jsonData).then((data) => {
         const { status, msg } = data;
         if (status == "SUCCESS") {
           setOpenAddForm(false);
+          setTemplate(null);
           fetchAllTemplate();
         } else {
           console.log(data);
@@ -111,6 +144,13 @@ const AdminTemplate = ({ data }) => {
     } else {
       console.log("need value in template");
     }
+  };
+
+  const handleSelectTemplateField = (event) => {
+    const updatedTemplate = `${template != null ? template : ""} ${
+      event.target.value == "" ? "" : "[" + event.target.value + "]"
+    }`;
+    setTemplate(updatedTemplate);
   };
 
   return (
@@ -222,6 +262,24 @@ const AdminTemplate = ({ data }) => {
                 </label>
               </div>
               <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Field
+                </label>
+                <select
+                  onChange={handleSelectTemplateField}
+                  name="templateField"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="">Select Field</option>
+                  {templateField &&
+                    templateField.map((field) => (
+                      <option value={field.field_name} key={field.id}>
+                        {field.field_name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="mb-4">
                 <ReactQuill
                   value={template}
                   onChange={setTemplate}
@@ -280,8 +338,27 @@ const AdminTemplate = ({ data }) => {
                 </label>
               </div>
               <div className="mb-4">
+                <label className="block text-gray-700 text-sm font-bold mb-2">
+                  Field
+                </label>
+                <select
+                  onChange={handleSelectTemplateField}
+                  name="templateField"
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                >
+                  <option value="">Select Field</option>
+                  {templateField &&
+                    templateField.map((field) => (
+                      <option value={field.field_name} key={field.id}>
+                        {field.field_name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+              <div className="mb-4">
                 <ReactQuill
                   defaultValue={template}
+                  value={template}
                   onChange={setTemplate}
                   modules={modules}
                   style={{ height: "200px", overflowY: "auto" }}
