@@ -3,7 +3,7 @@ import CustomerLogin from "./CustomerLogin";
 import CustomerRegister from "./CustomerRegister";
 
 const CustomerFirstPage = () => {
-  const [login, setLogin] = useState(false);
+  const [login, setLogin] = useState(true);
   const [register, setRegister] = useState(false);
 
   const handleSelectedContent = (event) => {
@@ -20,13 +20,19 @@ const CustomerFirstPage = () => {
         </div>
 
         <div className="navbar-end">
-          <button className="btn" value="login" onClick={handleSelectedContent}>
+          <button
+            className="btn"
+            value="login"
+            onClick={handleSelectedContent}
+            disabled={login}
+          >
             Login
           </button>
           <button
             className="btn"
             value="register"
             onClick={handleSelectedContent}
+            disabled={register}
           >
             register
           </button>
