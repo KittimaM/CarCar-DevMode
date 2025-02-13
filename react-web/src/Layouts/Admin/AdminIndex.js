@@ -1,5 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { GetPermission, GetAllAdminRoleLabel } from "../Api";
+
+
+import 'remixicon/fonts/remixicon.css';
+import { NavLink } from 'react-router-dom';
+
+
 import AdminFirstPage from "./AdminFirstPage";
 import AdminMasterTable from "./AdminMasterTable";
 import AdminStatus from "./AdminStatus";
@@ -92,9 +98,28 @@ function AdminIndex() {
     };
     setData(data);
   };
+
+// -----------------------------------------------------
+
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+
+
+  const handleMenuClick = (id) => {
+    setActiveMenu(activeMenu === id ? null : id);
+};
+
+const toggleSidebar = () => {
+    setIsSidebarOpen(!isSidebarOpen);
+};
+
+
+
+
   return (
     <div>
-      <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
+      {/* <nav class="fixed top-0 z-50 w-full bg-white border-b border-gray-200 dark:bg-gray-800 dark:border-gray-700">
         <div class="px-3 py-3 lg:px-5 lg:pl-3">
           <div class="flex items-center justify-between">
             <div class="flex items-center justify-start rtl:justify-end">
@@ -103,7 +128,8 @@ function AdminIndex() {
                 data-drawer-toggle="logo-sidebar"
                 aria-controls="logo-sidebar"
                 type="button"
-                class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
+                class="inline-flex items-center p-2 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600 "
+                
               >
                 <span class="sr-only">Open sidebar</span>
                 <svg
@@ -121,7 +147,6 @@ function AdminIndex() {
                 </svg>
               </button>
               <a class="flex ms-2 md:me-24">
-                {/* <img src="https://flowbite.com/docs/images/logo.svg" class="h-8 me-3" alt="FlowBite Logo" /> */}
                 <span class="self-center text-xl font-semibold sm:text-2xl whitespace-nowrap dark:text-white">
                   Carcare
                 </span>
@@ -183,14 +208,22 @@ function AdminIndex() {
             </div>
           </div>
         </div>
-      </nav>
+      </nav> */}
 
-      <aside
+      {/* <aside
+      
         id="logo-sidebar"
-        class="fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
+        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full bg-white border-r border-gray-200 sm:translate-x-0 dark:bg-gray-800 dark:border-gray-700"
         aria-label="Sidebar"
       >
+
         <div class="h-full px-3 pb-4 overflow-y-auto bg-white dark:bg-gray-800">
+        <div className='flex justify-between items-center p-5'>
+                    <h1 className='text-2xl font-bold'>Sidebar</h1>
+                    <button className='lg:hidden rounded-full hover:bg-gray-700 w-10' onClick={toggleSidebar}>
+                        <i class="ri-close-large-line text-xl"></i>
+                    </button>
+                </div>
           <ul class="space-y-2 font-medium">
             <li>
               <a
@@ -243,7 +276,61 @@ function AdminIndex() {
               ))}
           </ul>
         </div>
-      </aside>
+      </aside> */}
+
+  <div className='lg:flex'>
+            <div className={`fixed inset-y-0 left-0 overflow-y-auto z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:static lg:inset-auto`}>
+                <div className='flex justify-between items-center p-5'>
+                    <h1 className='text-2xl font-bold'>Sidebar</h1>
+                    <button className='lg:hidden rounded-full hover:bg-gray-700 w-10' onClick={toggleSidebar}>
+                        <i class="ri-close-large-line text-xl"></i>
+                    </button>
+                </div>
+
+                <div className='overflow-y-auto'>
+                {roleLabelList &&
+                  roleLabelList.map((roleLabel) => (
+                    <div>
+                      {roleLabel.module_level == 1 &&
+                        permission &&
+                        permission[roleLabel.role].includes("1") && (
+
+                           <div key={roleLabel.id}>
+                              
+                            <div className='flex items-center p-4 hover:bg-gray-700 cursor-pointer' onClick={handleSelectedContent}>
+                                <div className='mr-4'>  </div>
+                                <div>{roleLabel.label}</div>
+                                {roleLabel.submenu && (
+                                    <div className={`ml-auto transition-transform ${activeMenu === roleLabel.id ? 'rotate-90' : ''}`}>
+                                        <i className="ri-arrow-right-s-line"></i>
+                                    </div>
+                                )}
+                            </div>
+                            {roleLabel.submenu && activeMenu === roleLabel.id && (
+                                <div className='ml-8'>
+                                    {roleLabel.submenu.map((subitem) => (
+                                        <NavLink to={subitem.path} key={subitem.id} className='flex items-center p-4 hover:bg-gray-700' activeClassName='bg-gray-700'>
+                                            <div>{subitem.name}</div>
+                                        </NavLink>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+
+                        )}
+                      </div>  
+                       
+                    ))}
+                </div>
+            </div>
+            <div className='flex-1 p-4'>
+                <button className='lg:hidden' onClick={toggleSidebar}>
+                    <i className="ri-menu-line text-2xl"></i>
+                </button>
+                {/* Main content goes here */}
+            </div>
+        </div>
+
       {isFirstPage && <AdminFirstPage />}
       {isSchedule && (
         <AdminSchedule permission={permission["have_schedule_access"]} />
