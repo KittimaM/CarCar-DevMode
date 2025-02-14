@@ -197,12 +197,12 @@ const AdminCarSize = ({ data }) => {
                   {permission && permission.includes("2") && (
                   <div className="flex justify-center items-center">
                     <button
-                    className="btn max-w-md  bg-[#879fff] text-xl my-4 hover:text-black items-center "
+                    className="btn max-w-md  bg-[#4672DD] rounded-md  text-white text-xl my-4 hover:text-black items-center "
                     onClick={() => {
                       setOpenAddCarSizeForm(true);
                     }}
                   >
-                    Add Car Size
+                    Add 
                   </button>
 
                   </div>

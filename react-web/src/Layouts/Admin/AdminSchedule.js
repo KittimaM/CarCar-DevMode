@@ -81,15 +81,17 @@ const AdminSchedule = ({ permission }) => {
   return (
     <>
       <div className="">
-        <div className="bg-[#e9e9e9] lg:ml-[250px] mt-14">
+        <div className="bg-[#e9e9e9] ml-[250px] h-screen overflow-y-auto">
+              
+            <div className="container mx-auto bg-white p-3 mt-36 ">
+
               <div>
-                  <h1 className="flex justify-start items-center text-4xl font-bold py-12 pl-10">Schedule page | ตารางงาน </h1>
+                  <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">Schedule page | ตารางงาน </h1>
               </div>
-            <div className="container mx-auto bg-white p-3 ">
 
               {/* header search */}
               <div className="py-6">
-                  <form className="flex justify-start items-center space-x-5 ">
+                  <form className="flex justify-start items-center space-x-5 px-5 ">
 
                       {/* date */}
                     
@@ -118,14 +120,14 @@ const AdminSchedule = ({ permission }) => {
 
                       {/*ปุ่ม search ค้นหา */}
                       <div className="flex w-full max-w-[150px] mt-5 ">
-                          <button type="submit" className="btn bg-[#5d6dff] text-white text-xl hover:text-black w-full max-w-[150px]">ค้นหา</button>
+                          <button type="submit" className="btn bg-[#4672DD] rounded-md text-white text-xl hover:text-black w-full max-w-[120px]">ค้นหา</button>
                       </div>
 
                   </form>
 
                    {/* auto search ค้นหา */}
                    <form className="">
-                      <div className="flex justify-start items-center space-x-2 py-5">
+                      <div className="flex justify-start items-center space-x-2 py-5 px-5">
                           <div className="">
                               <label className="w-full justify-center items-center p-3">
                                   <span className="label-text text-xl">Search:</span>                  
