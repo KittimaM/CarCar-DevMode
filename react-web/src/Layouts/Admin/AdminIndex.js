@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { GetPermission, GetAllAdminRoleLabel, GetAllAdminMenuItems } from "../Api";
-
+import {
+  GetPermission,
+  GetAllAdminRoleLabel,
+  GetAllAdminMenuItems,
+} from "../Api";
 
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 
-
-import 'remixicon/fonts/remixicon.css';
-import { NavLink } from 'react-router-dom';
-
+import "remixicon/fonts/remixicon.css";
+import { NavLink } from "react-router-dom";
 
 import AdminFirstPage from "./AdminFirstPage";
 import AdminMasterTable from "./AdminMasterTable";
@@ -77,13 +78,13 @@ function AdminIndex() {
       } else {
         console.log(data);
       }
-    })
+    });
   }, []);
 
-  const handleSelectedContent = (event , id) => {
+  const handleSelectedContent = (event, id) => {
     event.preventDefault();
-    const dataValue = event.currentTarget.getAttribute("data-value");  //path
-    const labelValue = event.currentTarget.getAttribute("label-value");  //name
+    const dataValue = event.currentTarget.getAttribute("data-value"); //path
+    const labelValue = event.currentTarget.getAttribute("label-value"); //name
     const roleValue = event.currentTarget.getAttribute("role-value"); //role
 
     setIsFirstPage(dataValue == "firstPage" ? true : false);
@@ -110,39 +111,30 @@ function AdminIndex() {
       permission: permission[roleValue],
     };
     setData(data);
-
-    
   };
 
-// -----------------------------------------------------
+  // -----------------------------------------------------
 
   const [activeMenu, setActiveMenu] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-
-
   const handleMenuClick = (id) => {
     setActiveMenu(activeMenu === id ? null : id);
-};
+  };
 
-const toggleSidebar = () => {
+  const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
-};
+  };
 
+  const [menuItems, setMenuItems] = useState([]);
+  const [openSubmenus, setOpenSubmenus] = useState({});
 
-
-
-
-    const [menuItems, setMenuItems] = useState([]);
-    const [openSubmenus, setOpenSubmenus] = useState({});
-
-    
-    const toggleSubmenu = (id) => {
-        setOpenSubmenus((prev) => ({
-            ...prev,
-            [id]: !prev[id],
-        }));
-    };
+  const toggleSubmenu = (id) => {
+    setOpenSubmenus((prev) => ({
+      ...prev,
+      [id]: !prev[id],
+    }));
+  };
 
   return (
     <div>
@@ -305,65 +297,74 @@ const toggleSidebar = () => {
         </div>
       </aside> */}
 
+      <div className="lg:flex">
+        <div
+          className={`fixed inset-y-0 left-0 overflow-y-auto z-50 transform ${
+            isSidebarOpen ? "translate-x-0" : "-translate-x-full"
+          } transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:static lg:inset-auto`}
+        >
+          <div className="flex justify-between items-center p-5">
+            <h1 className="text-2xl font-bold">Sidebar</h1>
+            <button
+              className="lg:hidden rounded-full hover:bg-gray-700 w-10"
+              onClick={toggleSidebar}
+            >
+              <i class="ri-close-large-line text-xl"></i>
+            </button>
+          </div>
 
+          <ul className="space-y-2">
+            {menuItemsList
+              .filter((item) => !item.parent_id)
+              .map((item) => {
+                const subItems = menuItemsList.filter(
+                  (sub) => sub.parent_id === item.id
+                );
+                const hasSubmenu = subItems.length > 0;
 
-        <div className='lg:flex'>
-                <div className={`fixed inset-y-0 left-0 overflow-y-auto z-50 transform ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:static lg:inset-auto`}>
-                        <div className='flex justify-between items-center p-5'>
-                            <h1 className='text-2xl font-bold'>Sidebar</h1>
-                            <button className='lg:hidden rounded-full hover:bg-gray-700 w-10' onClick={toggleSidebar}>
-                                <i class="ri-close-large-line text-xl"></i>
-                            </button>
-                        </div>
-
-                <ul className="space-y-2">
-                {menuItemsList
-                    .filter((item) => !item.parent_id) // Get only top-level items
-                    .map((item) => {
-                        const subItems = menuItemsList.filter((sub) => sub.parent_id === item.id);
-                        const hasSubmenu = subItems.length > 0;
-
-                        return (
-                            <li key={item.id}>
-                                <div
-                                    className="flex items-center justify-between p-3 hover:bg-gray-500 rounded cursor-pointer"
-                                    onClick={() => hasSubmenu && toggleSubmenu(item.id)}
-                                >
-                                    <span > {item.name}</span>
-                                    {hasSubmenu && (
-                                        <span>
-                                            {openSubmenus[item.id] ? <FaAngleDown /> : <FaAngleRight />}
-                                        </span>
-                                    )}
-                                </div>
-
-                                {/* Submenu Items */}
-                                {hasSubmenu && openSubmenus[item.id] && (
-                                    <ul className="ml-4 border-l-2 border-gray-600 pl-2">
-                                        {subItems.map((sub) => (
-                                            <li key={sub.id} className="p-2 hover:bg-gray-500 rounded">
-                                                <a href={sub.path}>{sub.name}</a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                )}
-                            </li>
-                        );
-                    })}
-                  </ul>
-              </div>
-
-                    <div className='flex-1 p-4'>
-                        <button className='lg:hidden' onClick={toggleSidebar}>
-                            <i className="ri-menu-line text-2xl"></i>
-                        </button>                       
+                return (
+                  <li key={item.id}>
+                    <div
+                      className="flex items-center justify-between p-3 hover:bg-gray-500 rounded cursor-pointer"
+                      onClick={() => hasSubmenu && toggleSubmenu(item.id)}
+                    >
+                      <span> {item.name}</span>
+                      {hasSubmenu && (
+                        <span>
+                          {openSubmenus[item.id] ? (
+                            <FaAngleDown />
+                          ) : (
+                            <FaAngleRight />
+                          )}
+                        </span>
+                      )}
                     </div>
+
+                    {/* Submenu Items */}
+                    {hasSubmenu && openSubmenus[item.id] && (
+                      <ul className="ml-4 border-l-2 border-gray-600 pl-2">
+                        {subItems.map((sub) => (
+                          <li
+                            key={sub.id}
+                            className="p-2 hover:bg-gray-500 rounded"
+                          >
+                            <a href={sub.path}>{sub.name}</a>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
+          </ul>
         </div>
-   
-        
-    
 
-
+        <div className="flex-1 p-4">
+          <button className="lg:hidden" onClick={toggleSidebar}>
+            <i className="ri-menu-line text-2xl"></i>
+          </button>
+        </div>
+      </div>
 
       {isFirstPage && <AdminFirstPage />}
       {isSchedule && (
