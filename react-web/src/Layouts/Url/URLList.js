@@ -12,6 +12,7 @@ const URLList = {
   AdminStatus: "admin/status",
   AdminRole: "admin/role",
   AdminRoleLabel: "admin/role-label",
+  AdminMenuItems: "admin/menu-items",
   AdminOnLeavePersonal: "admin/onleave/personal",
   AdminOnLeave: "admin/onleave",
   AdminOnLeaveApprove: "admin/onleave/approve",

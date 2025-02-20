@@ -390,6 +390,11 @@ export const GetAllAdminRoleLabel = () => {
   return getApi(URLList.AdminRoleLabel);
 };
 
+//---------------------
+export const GetAllAdminMenuItems = () => {
+  return getApi(URLList.AdminMenuItems);
+}
+
 export const AdminGetLatestOnLeaveByType = (jsonData) => {
   return getApi(URLList.AdminLatestOnLeaveByTypePersonal, jsonData, true);
 };

@@ -41,6 +41,13 @@ app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
 const AdminRoleLabelRoute = require("./Routes/Admin/AdminRole/AdminRoleLabel");
 app.use("/admin/role-label", AdminRoleLabelRoute);
 
+//----------------------------------
+
+const AdminMenuItemsRoute = require("./Routes/Admin/AdminRole/AdminMenuItems");
+app.use("/admin/menu-items",AdminMenuItemsRoute);
+
+//-----------------------------------
+
 const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
 app.use("/admin/customer-car", AdminCustomerCarRoute);
 
