@@ -45,7 +45,7 @@ const AdminFirstPage = () => {
             channel.map(
               (item) =>
                 item.is_available == 1 && (
-                  <>
+                  <div key={item.id}>
                     <input
                       type="radio"
                       name="my_tabs_2"
@@ -143,7 +143,7 @@ const AdminFirstPage = () => {
                         </tbody>
                       </table>
                     </div>
-                  </>
+                  </div>
                 )
             )}
         </div>
