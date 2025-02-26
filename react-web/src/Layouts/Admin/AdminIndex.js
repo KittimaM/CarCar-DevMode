@@ -309,7 +309,7 @@ function AdminIndex() {
               className="lg:hidden rounded-full hover:bg-gray-700 w-10"
               onClick={toggleSidebar}
             >
-              <i class="ri-close-large-line text-xl"></i>
+              <i className="ri-close-large-line text-xl"></i>
             </button>
           </div>
 
