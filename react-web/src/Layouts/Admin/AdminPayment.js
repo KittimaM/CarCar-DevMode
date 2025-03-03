@@ -19,7 +19,7 @@ const AdminPayment = () => {
   }, []);
   return (
     <>
-      <div className="bg-[#e9e9e9] ml-[250px] h-screen overflow-y-auto">
+      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
           <div className="container mx-auto bg-white p-3 mt-36">
               <div>
                   <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">Payment History | ประวัติการชําระเงิน </h1>

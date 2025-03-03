@@ -93,12 +93,12 @@ function AdminIndex() {
   const ActiveComponent = COMPONENT_MAP[activeComponent] || AdminFirstPage;
 
   return (
-    <div className="lg:flex">
+    <div className="lg:flex ">
       {/* Sidebar */}
       <div
-        className={`fixed inset-y-0 left-0 overflow-y-auto z-50 transform ${
+        className={`fixed top-0 left-0 overflow-y-auto z-50 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:static lg:inset-auto`}
+        } transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:fixed lg:inset-auto `}
       >
         <div className="flex justify-between items-center p-5">
           <h1
@@ -180,11 +180,14 @@ function AdminIndex() {
 
       {/* Main Content */}
       <div className="flex-1 p-4">
-        <button className="lg:hidden" onClick={toggleSidebar}>
-          <i className="ri-menu-line text-2xl"></i>
+        
+          <button className="lg:hidden fixed bg-[#ffff] p-2 rounded-lg" onClick={toggleSidebar}>
+          <i className="ri-menu-line text-3xl"></i>
         </button>
-
+        
         <ActiveComponent data={data} permission={permission} />
+        
+        
       </div>
     </div>
   );

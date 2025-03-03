@@ -85,7 +85,7 @@ const AdminSearch = ({ data }) => {
 
   return (
     <div>
-      <div className="ml-80 mt-16">
+      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
         <div className="text-lg bg-yellow-100 mb-5">{labelValue}</div>
         <form onSubmit={handleSearch}>
           {filterList &&

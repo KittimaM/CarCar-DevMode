@@ -6,7 +6,7 @@ import AdminCustomerCar from "./AdminCustomerCar";
 const AdminUser = ({ staffPermission, customerPermission }) => {
   return (
     <>
-      <div className="ml-80 mt-16">
+      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
         <div className="text-lg bg-yellow-50 mb-5 ">Admin User page </div>
         <div role="tablist" className="tabs tabs-lifted">
           <input

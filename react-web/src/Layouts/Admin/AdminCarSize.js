@@ -162,10 +162,10 @@ const AdminCarSize = ({ data }) => {
 
   return (
     <>
-       <div className="bg-[#e9e9e9] ml-[250px] h-screen overflow-y-auto">
+       <div className=" lg:ml-64 lg:p-4 flex-1 h-screen overflow-y-auto ">
             
 
-          <div className="container bg-white mx-auto p-5 rounded-lg shadow-lg my-36">
+          <div className="flex flex-col bg-[#e9e9e9] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
 
             <div>
                 <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">Car size  page | ไซต์รถ </h1>
@@ -211,8 +211,8 @@ const AdminCarSize = ({ data }) => {
                 </div>
                 
 
-                <div className="overflow-y-auto">
-                    <table className="table text-[#1c1c1c] text-lg">
+                <div className="flex-1 overflow-y-auto">
+                    <table className="table text-[#1c1c1c] text-lg ">
                     <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
                       <tr>
                         <td>size</td>

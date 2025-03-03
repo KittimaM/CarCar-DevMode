@@ -143,7 +143,7 @@ const AdminPaymentType = ({ data }) => {
   };
 
   return (
-    <div>
+    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
       {showNotification && (
         <Notification message={notificationMessage} type={notificationStatus} />
       )}
