@@ -9,7 +9,8 @@ import {
   UpdateAdminUnlockStaff,
 } from "../../Api";
 
-const AdminStaff = ({ permission }) => {
+const AdminStaff = ({ data }) => {
+  const { labelValue, permission } = data;
   const [user, setUser] = useState(null);
   const [allRole, setAllRole] = useState();
   const [editItem, setEditItem] = useState(null);

@@ -8,7 +8,8 @@ import {
   UpdateAdminUnlockCustomer,
 } from "../../Api";
 
-const AdminCustomer = ({ permission }) => {
+const AdminCustomer = ({ data }) => {
+  const { labelValue, permission } = data;
   const [customer, setCustomer] = useState();
   const [editItem, setEditItem] = useState();
   const [openAddCustomerForm, setOpenAddCustomerForm] = useState(false);

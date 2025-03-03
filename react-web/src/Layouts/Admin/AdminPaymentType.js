@@ -7,7 +7,8 @@ import {
 } from "../Api";
 import Notification from "../Notification/Notification";
 
-const AdminPaymentType = ({ permission }) => {
+const AdminPaymentType = ({ data }) => {
+  const { labelValue, permission } = data;
   const [paymentTypeList, setPaymentTypeList] = useState([]);
   const [editItem, setEditItem] = useState();
   const [openAddForm, setOpenAddForm] = useState(false);

@@ -7,7 +7,8 @@ import {
   GetAllPaymentType,
 } from "../Api";
 
-const AdminBooking = () => {
+const AdminBooking = ({ data }) => {
+  const { labelValue, permission } = data;
   const defaultTime = new Date();
   const [service, setService] = useState();
   const [booking, setBooking] = useState([]);
@@ -214,7 +215,7 @@ const AdminBooking = () => {
   return (
     <>
       <div className="ml-80 mt-16">
-        <div className="text-lg bg-yellow-100 mb-5 "> Booking page</div>
+        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
         <form onSubmit={handleSubmitCar}>
           <label name="customer_name">Customer_name</label>

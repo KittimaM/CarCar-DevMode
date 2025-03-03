@@ -10,7 +10,8 @@ import {
 } from "../../Api";
 import URLList from "../../Url/URLList";
 
-const AdminCustomerCar = ({ permission }) => {
+const AdminCustomerCar = ({ data }) => {
+  const { labelValue, permission } = data;
   const [customerList, setCustomerList] = useState();
   const [customerCarList, setCustomerCarList] = useState();
   const [carSizeList, setCarSizeList] = useState();
