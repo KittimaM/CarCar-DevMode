@@ -7,7 +7,8 @@ import {
 } from "../Api";
 import Notification from "../Notification/Notification";
 
-const AdminOnLeaveType = ({ permission }) => {
+const AdminOnLeaveType = ({ data }) => {
+  const { labelValue, permission } = data;
   const [onLeaveTypeList, setOnLeaveTypeList] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [openAddForm, setOpenAddForm] = useState(false);
