@@ -57,20 +57,24 @@ function AdminIndex() {
   const [openSubmenus, setOpenSubmenus] = useState({});
 
   useEffect(() => {
-    async function fetchData() {
-      const [permRes, roleRes, menuRes] = await Promise.all([
-        GetPermission(),
-        GetAllAdminRoleLabel(),
-        GetAllAdminMenuItems(),
-      ]);
+    GetPermission().then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        console.log("permission : ", msg);
 
-      if (permRes.status === "SUCCESS") setPermission(permRes.msg);
-      if (roleRes.status !== "SUCCESS") console.log(roleRes);
-      if (menuRes.status === "SUCCESS") setMenuItemsList(menuRes.msg);
-      else console.log(menuRes);
-    }
-
-    fetchData();
+        setPermission(msg);
+      } else {
+        console.log(data);
+      }
+    });
+    GetAllAdminMenuItems().then((data) => {
+      const { status, msg } = data;
+      if (status == "SUCCESS") {
+        setMenuItemsList(msg);
+      } else {
+        console.log(data);
+      }
+    });
   }, []);
 
   const handleMenuClick = (item, hasSubmenu) => {
@@ -121,49 +125,56 @@ function AdminIndex() {
         </div>
 
         <ul className="space-y-2">
-          {menuItemsList
-            .filter((item) => !item.parent_id)
-            .map((item) => {
-              const subItems = menuItemsList.filter(
-                (sub) => sub.parent_id === item.id
-              );
-              const hasSubmenu = subItems.length > 0;
+          {permission &&
+            menuItemsList
+              .filter(
+                (item) => !item.parent_id && permission[item.role].includes("1")
+              )
+              .map((item) => {
+                const subItems = menuItemsList.filter(
+                  (sub) => sub.parent_id === item.id
+                );
+                const hasSubmenu = subItems.length > 0;
+                return (
+                  <li key={item.id}>
+                    <div
+                      className="flex items-center justify-between p-3 hover:bg-gray-500 rounded cursor-pointer"
+                      onClick={() => handleMenuClick(item, hasSubmenu)}
+                    >
+                      <span>{item.name}</span>
+                      {hasSubmenu && (
+                        <span>
+                          {openSubmenus[item.id] ? (
+                            <FaAngleDown />
+                          ) : (
+                            <FaAngleRight />
+                          )}
+                        </span>
+                      )}
+                    </div>
 
-              return (
-                <li key={item.id}>
-                  <div
-                    className="flex items-center justify-between p-3 hover:bg-gray-500 rounded cursor-pointer"
-                    onClick={() => handleMenuClick(item, hasSubmenu)}
-                  >
-                    <span>{item.name}</span>
-                    {hasSubmenu && (
-                      <span>
-                        {openSubmenus[item.id] ? (
-                          <FaAngleDown />
-                        ) : (
-                          <FaAngleRight />
+                    {hasSubmenu && openSubmenus[item.id] && (
+                      <ul className="ml-4 border-l-2 border-gray-600 pl-2">
+                        {subItems.map(
+                          (sub) =>
+                            permission[sub.role].includes("1") && (
+                              <li
+                                key={sub.id}
+                                className="p-2 hover:bg-gray-500 rounded"
+                              >
+                                <div
+                                  onClick={() => handleMenuClick(sub, false)}
+                                >
+                                  {sub.name}
+                                </div>
+                              </li>
+                            )
                         )}
-                      </span>
+                      </ul>
                     )}
-                  </div>
-
-                  {hasSubmenu && openSubmenus[item.id] && (
-                    <ul className="ml-4 border-l-2 border-gray-600 pl-2">
-                      {subItems.map((sub) => (
-                        <li
-                          key={sub.id}
-                          className="p-2 hover:bg-gray-500 rounded"
-                        >
-                          <div onClick={() => handleMenuClick(sub, false)}>
-                            {sub.name}
-                          </div>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </li>
-              );
-            })}
+                  </li>
+                );
+              })}
         </ul>
       </div>
 
