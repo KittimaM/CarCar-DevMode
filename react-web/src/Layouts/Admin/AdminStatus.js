@@ -94,14 +94,22 @@ const AdminStatus = ({ data }) => {
   };
 
   return (
-    <div >
+    <div>
       <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
-        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
-        {permission && permission.includes("2") && (
-          <button className="btn" onClick={() => setOpenAddForm(true)}>
-            Add Status
-          </button>
-        )}
+        <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
+          {labelValue}
+        </div>
+
+        <div className="flex justify-end items-center">
+          {permission && permission.includes("2") && (
+            <button
+              className="btn bg-[#181d2a] text-white max-w-sm "
+              onClick={() => setOpenAddForm(true)}
+            >
+              Add Status
+            </button>
+          )}
+        </div>
         {statusGroups &&
           statusGroups.map((statusGroup) => (
             <div>

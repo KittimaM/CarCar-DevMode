@@ -198,7 +198,7 @@ const AdminCarSize = ({ data }) => {
             {permission && permission.includes("2") && (
               <div className="flex justify-center items-center">
                 <button
-                  className="btn max-w-md  bg-[#74BDCB] rounded-md  text-white text-xl my-4 hover:text-black items-center "
+                  className="btn max-w-md  bg-[#748efe] rounded-md  text-white text-xl my-4 hover:text-black items-center "
                   onClick={() => {
                     setOpenAddCarSizeForm(true);
                   }}
@@ -209,9 +209,10 @@ const AdminCarSize = ({ data }) => {
             )}
           </div>
 
+            {/* table */}
           <div className="flex-1 overflow-y-auto">
             <table className="table  text-[#1c1c1c] text-lg ">
-              <thead className=" text-xl text-[#313E61]">
+              <thead className=" text-xl text-[#313E61] shadow-md">
                 <tr>
                   <td>size</td>
                   <td>description</td>
@@ -248,7 +249,7 @@ const AdminCarSize = ({ data }) => {
                       {permission && permission.includes("4") && (
                         <td>
                           <button
-                            className="btn bg-[#FFA384]"
+                            className="btn bg-[#ED4306] text-white p-2"
                             onClick={handleDeleteUser}
                             value={carSize.id}
                           >

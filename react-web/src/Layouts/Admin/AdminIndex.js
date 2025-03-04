@@ -179,9 +179,9 @@ function AdminIndex() {
       </div>
 
       {/* Main Content */}
-      <div className="flex-1 p-4 bg-[#E7F2F8] lg:ml-64  h-screen overflow-y-auto">
+      <div className="flex-1 p-4 bg-[#e8ebed] lg:ml-64  h-screen overflow-y-auto">
         <button
-          className="lg:hidden fixed bg-[#1f2937] p-2 rounded-lg top-1 left-1"
+          className="lg:hidden fixed bg-[#181d2a] p-2 rounded-lg top-1 left-1"
           onClick={toggleSidebar}
         >
           <i className="ri-menu-line text-3xl text-[#ececec]"></i>

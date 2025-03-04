@@ -83,78 +83,83 @@ const AdminRole = ({ data }) => {
   };
 
   return (
-    <div >
+    <div>
       <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
-      {showNotification && (
-        <Notification message={notificationMessage} type={notificationStatus} />
-      )}
-      <div >
-        <div className="text-lg bg-yellow-50 mb-5 ">{labelValue}</div>
-        <button
-          value="role-table"
-          className="btn"
-          disabled={isSelecteadRoleTable}
-          onClick={handleSelectedContent}
-        >
-          All Role
-        </button>
-        {permission.includes("2") && (
+        {showNotification && (
+          <Notification
+            message={notificationMessage}
+            type={notificationStatus}
+          />
+        )}
+        <div>
+          <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
+            {labelValue}
+          </div>
+          
           <button
-            value="add-role"
+            value="role-table"
             className="btn"
-            disabled={isSelectedAddRole}
+            disabled={isSelecteadRoleTable}
             onClick={handleSelectedContent}
           >
-            Add Role
+            All Role
           </button>
-        )}
-        {isSelectedAddRole && <AdminAddRole />}
-        {isSelectedEditItem && <AdminEditRole editItem={editItem} />}
-        {isSelecteadRoleTable && (
-          <table className="table table-lg">
-            <thead>
-              <tr>
-                <td>role</td>
-                {permission && permission.includes("3") && <td>Edit</td>}
-                {permission && permission.includes("4") && <td>Delete</td>}
-              </tr>
-            </thead>
-            <tbody>
-              {roleList &&
-                roleList.map((role) => (
-                  <tr key={role.id}>
-                    <td>{role.role}</td>
-                    {permission && permission.includes("3") && (
-                      <td>
-                        <button
-                          className="btn"
-                          onClick={() => handleSelectEditId(role)}
-                          value={role.id}
-                        >
-                          Edit
-                        </button>
-                      </td>
-                    )}
-                    {permission && permission.includes("4") && (
-                      <td>
-                        <button
-                          className="btn"
-                          onClick={handleDeleteRole}
-                          value={role.id}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-            </tbody>
-          </table>
-        )}
+          {permission.includes("2") && (
+            <button
+              value="add-role"
+              className="btn"
+              disabled={isSelectedAddRole}
+              onClick={handleSelectedContent}
+            >
+              Add Role
+            </button>
+          )}
+          {isSelectedAddRole && <AdminAddRole />}
+          {isSelectedEditItem && <AdminEditRole editItem={editItem} />}
+          {isSelecteadRoleTable && (
+            <table className="table table-lg">
+              <thead>
+                <tr>
+                  <td>role</td>
+                  {permission && permission.includes("3") && <td>Edit</td>}
+                  {permission && permission.includes("4") && <td>Delete</td>}
+                </tr>
+              </thead>
+              <tbody>
+                {roleList &&
+                  roleList.map((role) => (
+                    <tr key={role.id}>
+                      <td>{role.role}</td>
+                      {permission && permission.includes("3") && (
+                        <td>
+                          <button
+                            className="btn"
+                            onClick={() => handleSelectEditId(role)}
+                            value={role.id}
+                          >
+                            Edit
+                          </button>
+                        </td>
+                      )}
+                      {permission && permission.includes("4") && (
+                        <td>
+                          <button
+                            className="btn"
+                            onClick={handleDeleteRole}
+                            value={role.id}
+                          >
+                            Delete
+                          </button>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
-    </div>
-    
   );
 };
 

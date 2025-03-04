@@ -216,7 +216,7 @@ const AdminBooking = ({ data }) => {
     <>
       <div >
         <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
-          <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
+          <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">{labelValue}</div>
 
           <form onSubmit={handleSubmitCar}>
             <label name="customer_name">Customer_name</label>
