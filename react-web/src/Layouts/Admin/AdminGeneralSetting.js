@@ -44,7 +44,7 @@ const AdminGeneralSetting = ({ data }) => {
     });
   };
   return (
-    <div>
+    <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
       <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
       <button className="btn" onClick={handleEdit} disabled={!isEditSettings}>
         edit

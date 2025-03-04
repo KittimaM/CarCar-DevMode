@@ -15,8 +15,8 @@ const AdminFirstPage = () => {
   }, []);
 
   return (
-    <div>
-      <div className="container ">
+    <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
+      <div className="container mx-auto justify-center items-center">
         {/* --------stat-------- */}
         <div className="w-full mt-10 tabs tabs-lifted  stats stats-vertical lg:stats-horizontal shadow bg-yellow-100 shadow-mda">
           <div className="stat bg-red-200">
