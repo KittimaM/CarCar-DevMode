@@ -15,7 +15,7 @@ const AdminFirstPage = () => {
   }, []);
 
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div>
       <div className="container ">
         {/* --------stat-------- */}
         <div className="w-full mt-10 tabs tabs-lifted  stats stats-vertical lg:stats-horizontal shadow bg-yellow-100 shadow-mda">

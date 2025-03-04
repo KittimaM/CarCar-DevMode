@@ -243,7 +243,7 @@ const AdminAddRole = () => {
   };
 
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div >
       {showNotification && (
         <Notification message={notificationMessage} type={notificationStatus} />
       )}

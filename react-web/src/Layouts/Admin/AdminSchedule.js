@@ -81,7 +81,7 @@ const AdminSchedule = ({ data }) => {
 
   return (
     <>
-      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+      <div>
         
           <div className="container mx-auto bg-white p-3 mt-36 ">
             <div>

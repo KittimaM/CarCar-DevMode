@@ -83,7 +83,8 @@ const AdminRole = ({ data }) => {
   };
 
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div >
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
       {showNotification && (
         <Notification message={notificationMessage} type={notificationStatus} />
       )}
@@ -152,6 +153,8 @@ const AdminRole = ({ data }) => {
         )}
       </div>
     </div>
+    </div>
+    
   );
 };
 

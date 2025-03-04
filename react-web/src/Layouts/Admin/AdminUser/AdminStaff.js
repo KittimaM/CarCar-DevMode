@@ -129,7 +129,8 @@ const AdminStaff = ({ data }) => {
   };
 
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div>
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
       {permission && permission.includes("2") && (
         <button className="btn" onClick={() => setOpenAddUserForm(true)}>
           Add Staff
@@ -351,6 +352,7 @@ const AdminStaff = ({ data }) => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

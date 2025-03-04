@@ -137,8 +137,8 @@ const AdminAccount = ({ data }) => {
   };
 
   return (
-    <>
-      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div>
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
         <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
         {permission && permission.includes("2") && (
@@ -387,7 +387,7 @@ const AdminAccount = ({ data }) => {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -19,8 +19,8 @@ const AdminPayment = () => {
   }, []);
   return (
     <>
-      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
-          <div className="container mx-auto bg-white p-3 mt-36">
+      <div>
+          <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
               <div>
                   <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">Payment History | ประวัติการชําระเงิน </h1>
               </div>

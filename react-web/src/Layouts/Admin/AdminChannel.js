@@ -209,8 +209,8 @@ const AdminChannel = ({ data }) => {
   };
   return (
     <div>
-      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
-        <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+        <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5] ">{labelValue}</div>
         {showNotification && (
           <Notification
             message={notificationMessage}
@@ -218,12 +218,12 @@ const AdminChannel = ({ data }) => {
           />
         )}
         {permission && permission.includes("2") && (
-          <button class="btn" onClick={() => setOpenAddChannelForm(true)}>
+          <button class="btn max-w-md  bg-[#74BDCB] rounded-md  text-white text-xl my-4 hover:text-black items-center" onClick={() => setOpenAddChannelForm(true)}>
             Add Channel
           </button>
         )}
-        <table className="table table-lg">
-          <thead>
+        <table className="table text-[#1c1c1c] text-lg ">
+          <thead className="bg-[#EFE7BC] text-xl text-[#1c1c1c]">
             <tr>
               <td>name</td>
               <td>description</td>

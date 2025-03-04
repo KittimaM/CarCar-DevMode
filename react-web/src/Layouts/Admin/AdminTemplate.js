@@ -114,7 +114,8 @@ const AdminTemplate = ({ data }) => {
   };
 
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+    <div>
+      
       <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
       {permission && permission.includes("2") && (

@@ -5,7 +5,7 @@ import AdminPaymentType from "./AdminPaymentType";
 const AdminMasterTable = ({ onLeaveTypePermission, paymentTypePermission }) => {
   return (
     <div>
-      <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
+      <div >
         <div className="text-lg bg-yellow-100 mb-5 ">Master Table</div>
         <div role="tablist" className="tabs tabs-lifted">
           <input
