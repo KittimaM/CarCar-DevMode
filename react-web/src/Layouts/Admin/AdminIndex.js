@@ -60,8 +60,6 @@ function AdminIndex() {
     GetPermission().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
-        console.log("permission : ", msg);
-
         setPermission(msg);
       } else {
         console.log(data);
@@ -125,7 +123,7 @@ function AdminIndex() {
         </div>
 
         <ul className="space-y-2">
-          {permission &&
+          {Object.keys(permission).length != 0 &&
             menuItemsList
               .filter(
                 (item) => !item.parent_id && permission[item.role].includes("1")
