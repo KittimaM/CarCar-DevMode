@@ -232,7 +232,7 @@ const AdminOnLeave = ({ data }) => {
               <td>reason</td>
               <td>status</td>
               {permission["delete"] == 1 && <td>Delete</td>}
-              {permission.includes("5") && <td>Approve</td>}
+              {permission["approve"] == 1 && <td>Approve</td>}
             </tr>
           </thead>
           <tbody>
@@ -270,7 +270,7 @@ const AdminOnLeave = ({ data }) => {
                       </button>
                     </td>
                   )}
-                  {permission.includes("5") && (
+                  {permission["approve"] == 1 && (
                     <td>
                       <button
                         className="btn"
