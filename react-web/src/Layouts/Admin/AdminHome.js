@@ -14,6 +14,10 @@ const AdminHome = () => {
     });
   }, []);
 
+
+  const [activeTab, setActiveTab] = useState("1");
+
+
   return (
     <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
       <div className="container mx-auto justify-center items-center">
@@ -38,28 +42,45 @@ const AdminHome = () => {
           </div>
         </div>
 
-        {/* -------tab------- */}
+       
 
-        <div role="tablist" className="grid tabs tabs-lifted mt-10">
-          {channel &&
-            channel.map(
-              (item) =>
-                item.is_available == 1 && (
-                  <div key={item.id}>
-                    <input
-                      type="radio"
-                      name="my_tabs_2"
-                      role="tab"
-                      className="tab "
-                      aria-label={item.name}
-                    />
-                    <div
-                      role="tabpanel"
-                      className="tab-content  bg-base-200 border-base-300 rounded-box p-6"
+        {/* ------- tab------- */}
+        <div className="mt-10">
+          {/* Tabs Navigation */}
+          <div role="tablist" className="tabs tabs-boxed">
+            {channel &&
+              channel.map(
+                (item) =>
+                  item.is_available === 1 && (
+                    <button
+                      key={item.id}
+                      className={`tab transition-all duration-300 ${
+                        activeTab === item.id
+                          ? "tab-active bg-primary text-white"
+                          : ""
+                      } hover:bg-primary hover:text-white`}
+                      onClick={() => setActiveTab(item.id)}
                     >
-                      Waiting (Queue) {item.name}
-                      <table className="table">
-                        {/* head */}
+                      {item.name}
+                    </button>
+                  )
+              )}
+          </div>
+
+          {/* Fixed tab Content Area */}
+          <div className="bg-base-200 border-base-300 rounded-box p-6 overflow-x-auto">
+            {channel &&
+              channel.map(
+                (item) =>
+                  item.is_available === 1 &&
+                  activeTab === item.id && (
+                    <div key={item.id}>
+                      <h2 className="text-lg font-bold">
+                        Waiting (Queue) {item.name}
+                      </h2>
+
+                      {/* Table */}
+                      <table className="table mt-4 ">
                         <thead>
                           <tr>
                             <th>Queue Number</th>
@@ -75,14 +96,9 @@ const AdminHome = () => {
                           </tr>
                         </thead>
                         <tbody>
-                          {/* row 1 */}
                           <tr>
                             <td>
-                              <div className="flex items-center gap-3">
-                                <div>
-                                  <div className="font-bold">A016</div>
-                                </div>
-                              </div>
+                              <div className="font-bold">A016</div>
                             </td>
                             <td>Daniel</td>
                             <td>0898765432</td>
@@ -90,65 +106,35 @@ const AdminHome = () => {
                             <td>6กด5310</td>
                             <td>M</td>
                             <td>Waiting</td>
-
-                            <th>
-                              <button className="btn bg-green-300 btn-md">
-                                Start
-                              </button>
-                            </th>
-                            <th>
-                              <button className="btn bg-blue-300 btn-md">
-                                Edit
-                              </button>
-                            </th>
-                            <th>
-                              <button className="btn bg-red-300 btn-md">
-                                Delete
-                              </button>
-                            </th>
-                          </tr>
-
-                          {/* row 2 */}
-                          <tr>
                             <td>
-                              <div className="flex items-center gap-3">
-                                <div>
-                                  <div className="font-bold">A016</div>
-                                </div>
-                              </div>
-                            </td>
-                            <td>John</td>
-                            <td>0898765424</td>
-                            <td>13.00 pm</td>
-                            <td>1ก6365</td>
-                            <td>S</td>
-                            <td>Waiting</td>
-
-                            <th>
                               <button className="btn bg-green-300 btn-md">
                                 Start
                               </button>
-                            </th>
-                            <th>
+                            </td>
+                            <td>
                               <button className="btn bg-blue-300 btn-md">
                                 Edit
                               </button>
-                            </th>
-                            <th>
+                            </td>
+                            <td>
                               <button className="btn bg-red-300 btn-md">
                                 Delete
                               </button>
-                            </th>
+                            </td>
                           </tr>
                         </tbody>
                       </table>
                     </div>
-                  </div>
-                )
-            )}
+                  )
+              )}
+          </div>
         </div>
+
+
+
       </div>
     </div>
+
   );
 };
 
