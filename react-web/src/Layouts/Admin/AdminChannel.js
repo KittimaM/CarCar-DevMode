@@ -217,7 +217,7 @@ const AdminChannel = ({ data }) => {
             type={notificationStatus}
           />
         )}
-        {permission && permission.includes("2") && (
+        {permission && permission['add'] == 1 && (
           <button class="btn max-w-md  bg-[#74BDCB] rounded-md  text-white text-xl my-4 hover:text-black items-center" onClick={() => setOpenAddChannelForm(true)}>
             Add Channel
           </button>
@@ -228,8 +228,8 @@ const AdminChannel = ({ data }) => {
               <td>name</td>
               <td>description</td>
               <td>is available</td>
-              {permission && permission.includes("3") && <td>Edit</td>}
-              {permission && permission.includes("4") && <td>Delete</td>}
+              {permission && permission['edit'] == 1 && <td>Edit</td>}
+              {permission && permission['delete'] == 1 && <td>Delete</td>}
             </tr>
           </thead>
           <tbody>
@@ -241,7 +241,7 @@ const AdminChannel = ({ data }) => {
                   <td>
                     {item.is_available == 1 ? "available" : "not available"}
                   </td>
-                  {permission && permission.includes("3") && (
+                  {permission && permission['edit'] == 1 && (
                     <td>
                       <button
                         className="btn"
@@ -252,7 +252,7 @@ const AdminChannel = ({ data }) => {
                       </button>
                     </td>
                   )}
-                  {permission && permission.includes("4") && (
+                  {permission && permission['delete'] == 1 && (
                     <td>
                       <button
                         className="btn"

@@ -393,7 +393,7 @@ export const GetAllAdminRoleLabel = () => {
 //---------------------
 export const GetAllAdminMenuItems = () => {
   return getApi(URLList.AdminMenuItems);
-}
+};
 
 export const AdminGetLatestOnLeaveByType = (jsonData) => {
   return getApi(URLList.AdminLatestOnLeaveByTypePersonal, jsonData, true);
@@ -427,12 +427,12 @@ export const PostCustomerLogin = (jsonData) => {
   return postApi(URLList.CustomerLogin, jsonData);
 };
 
-export const GetAdminGeneralSetting = () => {
-  return getApi(URLList.AdminGeneralSetting);
+export const GetAdminAdvanceSetting = () => {
+  return getApi(URLList.AdminAdvanceSetting);
 };
 
-export const UpdateAdminGeneralSetting = (jsonData) => {
-  return putApi(URLList.AdminGeneralSetting, jsonData);
+export const UpdateAdminAdvanceSetting = (jsonData) => {
+  return putApi(URLList.AdminAdvanceSetting, jsonData);
 };
 
 export const UpdateAdminActiveCustomer = (jsonData) => {

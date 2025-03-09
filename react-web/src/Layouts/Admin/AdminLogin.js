@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetAdminGeneralSetting, PostAdminLogin } from "../Api";
+import { GetAdminAdvanceSetting, PostAdminLogin } from "../Api";
 import LoginImg from "../../assets/login-2.jpeg";
 
 const AdminLogin = () => {
@@ -8,7 +8,7 @@ const AdminLogin = () => {
   const [settings, setSettings] = useState();
   const navigate = useNavigate();
   useEffect(() => {
-    GetAdminGeneralSetting().then((data) => {
+    GetAdminAdvanceSetting().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setSettings(msg[0]);

@@ -134,7 +134,7 @@ const AdminStaff = ({ data }) => {
         <div>
           <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">{labelValue}</h1>
         </div>
-      {permission && permission.includes("2") && (
+      {permission && permission['add'] == 1 && (
         <button className="btn" onClick={() => setOpenAddUserForm(true)}>
           Add Staff
         </button>
@@ -149,8 +149,8 @@ const AdminStaff = ({ data }) => {
               <td>locked reason</td>
               <td>username</td>
               <td>name</td>
-              {permission && permission.includes("3") && <td>Edit</td>}
-              {permission && permission.includes("4") && <td>Delete</td>}
+              {permission && permission['edit'] == 1 && <td>Edit</td>}
+              {permission && permission['delete'] == 1 && <td>Delete</td>}
             </tr>
           </thead>
           <tbody>
@@ -185,7 +185,7 @@ const AdminStaff = ({ data }) => {
                 <td>{item.locked_reason ? item.locked_reason : "-"}</td>
                 <td>{item.username}</td>
                 <td>{item.name}</td>
-                {permission && permission.includes("3") && (
+                {permission && permission['edit'] == 1 && (
                   <td>
                     <button
                       className="btn"
@@ -196,7 +196,7 @@ const AdminStaff = ({ data }) => {
                     </button>
                   </td>
                 )}
-                {permission && permission.includes("4") && (
+                {permission && permission['delete'] == 1 && (
                   <td>
                     <button
                       className="btn"

@@ -1,0 +1,25 @@
+TRUNCATE TABLE `permission`;
+
+INSERT INTO `permission` (`role_name`, `page_alias`, `access`, `add`, `edit`, `delete`) VALUES
+('Super User', 'schedule', 1, 1, 1, 1),
+('Super User', 'booking', 1, 0, 0, 0),
+('Super User', 'payment', 1, 0, 0, 0),
+('Super User', 'user', 1, 0, 0, 0),
+('Super User', 'staff', 1, 1, 1, 1),
+('Super User', 'customer', 1, 1, 1, 1),
+('Super User', 'customerCar', 1, 1, 1, 1),
+('Super User', 'onLeavePersonal', 1, 1, 1, 1),
+('Super User', 'dayOffList', 1, 1, 1, 1),
+('Super User', 'setting', 1, 0, 0, 0),
+('Super User', 'carSize', 1, 1, 1, 1),
+('Super User', 'service', 1, 1, 1, 1),
+('Super User', 'channel', 1, 1, 1, 1),
+('Super User', 'template', 1, 1, 1, 1),
+('Super User', 'search', 1, 1, 1, 1),
+('Super User', 'role', 1, 1, 1, 1),
+('Super User', 'account', 1, 1, 1, 1),
+('Super User', 'onLeaveList', 1, 1, 1, 1),
+('Super User', 'status', 1, 1, 1, 1),
+('Super User', 'onLeaveType', 1, 1, 1, 1),
+('Super User', 'paymentType', 1, 1, 1, 1),
+('Super User', 'advSetting', 1, 1, 1, 1);

@@ -5,7 +5,8 @@ import { GetAllBooking } from "../Api";
 // icon remix
 import 'remixicon/fonts/remixicon.css';
 
-const AdminPayment = () => {
+const AdminPayment = ({data}) => {
+  const { labelValue, permission } = data;
   const [paidList, setPaidList] = useState([]);
   useEffect(() => {
     GetAllBooking('WHERE processing_status = "Paid"').then((data) => {
@@ -22,7 +23,7 @@ const AdminPayment = () => {
       <div>
           <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
               <div>
-                  <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">Payment History | ประวัติการชําระเงิน </h1>
+                  <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">{labelValue}</h1>
               </div>
 
               {/* header search */}

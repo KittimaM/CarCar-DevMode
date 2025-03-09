@@ -115,10 +115,9 @@ const AdminTemplate = ({ data }) => {
 
   return (
     <div>
-      
       <div className="text-lg bg-yellow-100 mb-5 ">{labelValue}</div>
 
-      {permission && permission.includes("2") && (
+      {permission && permission["add"] == 1 && (
         <button className="btn" onClick={() => setOpenAddForm(true)}>
           Add Template
         </button>
@@ -129,8 +128,8 @@ const AdminTemplate = ({ data }) => {
           <tr>
             <td>name</td>
             <td>is available</td>
-            {permission && permission.includes("3") && <td>Edit</td>}
-            {permission && permission.includes("4") && <td>Delete</td>}
+            {permission && permission["edit"] == 1 && <td>Edit</td>}
+            {permission && permission["delete"] == 1 && <td>Delete</td>}
           </tr>
         </thead>
         <tbody>
@@ -141,7 +140,7 @@ const AdminTemplate = ({ data }) => {
                 <td>
                   {template.is_available == 1 ? "available" : "not available"}
                 </td>
-                {permission && permission.includes("3") && (
+                {permission && permission["edit"] == 1 && (
                   <td>
                     <button
                       className="btn"
@@ -152,7 +151,7 @@ const AdminTemplate = ({ data }) => {
                     </button>
                   </td>
                 )}
-                {permission && permission.includes("4") && (
+                {permission && permission["delete"] == 1 && (
                   <td>
                     <button
                       className="btn"

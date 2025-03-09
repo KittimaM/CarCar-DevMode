@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { GetAdminGeneralSetting, UpdateAdminGeneralSetting } from "../Api";
+import { GetAdminAdvanceSetting, UpdateAdminAdvanceSetting } from "../Api";
 
-const AdminGeneralSetting = ({ data }) => {
+const AdminAdvanceSetting = ({ data }) => {
   const { labelValue, permission } = data;
   const [settings, setSettings] = useState();
   const [isEditSettings, setIsEditSettings] = useState(true);
 
   useEffect(() => {
-    GetAdminGeneralSetting().then((data) => {
+    GetAdminAdvanceSetting().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setSettings(msg[0]);
@@ -34,7 +34,7 @@ const AdminGeneralSetting = ({ data }) => {
       ),
       customer_inactive_limit: data.get("customer_inactive_limit"),
     };
-    UpdateAdminGeneralSetting(jsonData).then((data) => {
+    UpdateAdminAdvanceSetting(jsonData).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setIsEditSettings(true);
@@ -131,4 +131,4 @@ const AdminGeneralSetting = ({ data }) => {
   );
 };
 
-export default AdminGeneralSetting;
+export default AdminAdvanceSetting;

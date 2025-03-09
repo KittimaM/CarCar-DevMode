@@ -101,7 +101,7 @@ const AdminStatus = ({ data }) => {
         </div>
 
         <div className="flex justify-end items-center">
-          {permission && permission.includes("2") && (
+          {permission && permission["add"] == 1 && (
             <button
               className="btn bg-[#181d2a] text-white max-w-sm "
               onClick={() => setOpenAddForm(true)}
@@ -119,8 +119,8 @@ const AdminStatus = ({ data }) => {
                   <tr>
                     <td>code</td>
                     <td>description</td>
-                    {permission && permission.includes("3") && <td>Edit</td>}
-                    {permission && permission.includes("4") && <td>Delete</td>}
+                    {permission && permission["edit"] == 1 && <td>Edit</td>}
+                    {permission && permission["delete"] == 1 && <td>Delete</td>}
                   </tr>
                 </thead>
                 <tbody>
@@ -131,7 +131,7 @@ const AdminStatus = ({ data }) => {
                           <tr>
                             <td>{status.code}</td>
                             <td>{status.description}</td>
-                            {permission && permission.includes("3") && (
+                            {permission && permission["edit"] == 1 && (
                               <td>
                                 <button
                                   className="btn"
@@ -142,7 +142,7 @@ const AdminStatus = ({ data }) => {
                                 </button>
                               </td>
                             )}
-                            {permission && permission.includes("4") && (
+                            {permission && permission["delete"] == 1 && (
                               <td>
                                 <button
                                   className="btn"

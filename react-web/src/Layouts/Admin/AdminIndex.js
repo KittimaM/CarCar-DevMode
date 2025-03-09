@@ -1,13 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  GetPermission,
-  GetAllAdminRoleLabel,
-  GetAllAdminMenuItems,
-} from "../Api";
+import { GetPermission, GetAllAdminMenuItems } from "../Api";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 import "remixicon/fonts/remixicon.css";
-import AdminFirstPage from "./AdminFirstPage";
-import AdminMasterTable from "./AdminMasterTable";
+import AdminHome from "./AdminHome";
 import AdminStatus from "./AdminStatus";
 import AdminChannel from "./AdminChannel";
 import AdminDayOff from "./AdminDayOff";
@@ -18,40 +13,47 @@ import AdminAccount from "./AdminAccount";
 import AdminRole from "./AdminRole/AdminRole";
 import AdminService from "./AdminService";
 import AdminCarSize from "./AdminCarSize";
-import AdminUser from "./AdminUser/AdminUser";
 import AdminBooking from "./AdminBooking";
 import AdminSchedule from "./AdminSchedule";
 import AdminTemplate from "./AdminTemplate";
 import AdminSearch from "./AdminSearch";
-import AdminGeneralSetting from "./AdminGeneralSetting";
+import AdminAdvanceSetting from "./AdminAdvanceSetting";
 import AdminStaff from "./AdminUser/AdminStaff";
+import AdminCustomerCar from "./AdminUser/AdminCustomerCar";
+import AdminCustomer from "./AdminUser/AdminCustomer";
+import AdminOnLeaveType from "./AdminOnLeaveType";
+import AdminPaymentType from "./AdminPaymentType";
 
 const COMPONENT_MAP = {
-  firstPage: AdminFirstPage,
-  masterTable: AdminMasterTable,
-  status: AdminStatus,
-  channel: AdminChannel,
-  dayOffList: AdminDayOff,
-  onLeaveList: AdminOnLeaveList,
-  onLeavePersonal: AdminOnLeavePersonal,
-  payment: AdminPayment,
-  account: AdminAccount,
-  role: AdminRole,
-  service: AdminService,
-  carSize: AdminCarSize,
-  user: AdminUser,
-  booking: AdminBooking,
+  home: AdminHome,
   schedule: AdminSchedule,
+  booking: AdminBooking,
+  payment: AdminPayment,
+  // user: AdminUser,
+  staff: AdminStaff,
+  customer: AdminCustomer,
+  customerCar: AdminCustomerCar,
+  onLeavePersonal: AdminOnLeavePersonal,
+  dayOffList: AdminDayOff,
+  // setting: AdminAdvanceSetting,
+  carSize: AdminCarSize,
+  service: AdminService,
+  channel: AdminChannel,
   template: AdminTemplate,
   search: AdminSearch,
-  generalSetting: AdminGeneralSetting,
-  staff: AdminStaff,
+  role: AdminRole,
+  account: AdminAccount,
+  onLeaveList: AdminOnLeaveList,
+  status: AdminStatus,
+  onLeaveType: AdminOnLeaveType,
+  paymentType: AdminPaymentType,
+  advSetting: AdminAdvanceSetting,
 };
 
 function AdminIndex() {
   const [permission, setPermission] = useState({});
   const [menuItemsList, setMenuItemsList] = useState([]);
-  const [activeComponent, setActiveComponent] = useState("firstPage");
+  const [activeComponent, setActiveComponent] = useState("home");
   const [data, setData] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState({});
@@ -80,7 +82,10 @@ function AdminIndex() {
       setOpenSubmenus((prev) => ({ ...prev, [item.id]: !prev[item.id] }));
     } else {
       setActiveComponent(item.alias);
-      setData({ labelValue: item.name, permission: permission[item.role] });
+      const permissionResult = permission.find(
+        (pm) => pm.page_alias == item.alias
+      );
+      setData({ labelValue: item.name, permission: permissionResult });
     }
   };
 
@@ -88,7 +93,7 @@ function AdminIndex() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
-  const ActiveComponent = COMPONENT_MAP[activeComponent] || AdminFirstPage;
+  const ActiveComponent = COMPONENT_MAP[activeComponent] || AdminHome;
 
   return (
     <div className="lg:flex ">
@@ -99,21 +104,7 @@ function AdminIndex() {
         } transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:fixed lg:inset-auto `}
       >
         <div className="flex justify-between items-center p-5">
-          <h1
-            className="text-2xl font-bold cursor-pointer"
-            onClick={() =>
-              handleMenuClick(
-                {
-                  name: "firstPage",
-                  alias: "firstPage",
-                  role: "have_firstPage_access",
-                },
-                false
-              )
-            }
-          >
-            Carcare
-          </h1>
+          <h1 className="text-2xl font-bold cursor-pointer">Carcare</h1>
           <button
             className="lg:hidden rounded-full hover:bg-gray-700 w-10"
             onClick={toggleSidebar}
@@ -125,12 +116,23 @@ function AdminIndex() {
         <ul className="space-y-2">
           {Object.keys(permission).length != 0 &&
             menuItemsList
-              .filter(
-                (item) => !item.parent_id && permission[item.role].includes("1")
-              )
+              .filter((item) => {
+                const hasPermission =
+                  !item.parent_alias &&
+                  item.role &&
+                  permission.find(
+                    (pm) => pm.page_alias == item.alias && pm.access == "1"
+                  );
+
+                return hasPermission || item.alias === "home";
+              })
               .map((item) => {
                 const subItems = menuItemsList.filter(
-                  (sub) => sub.parent_id === item.id
+                  (sub) =>
+                    sub.parent_alias == item.alias &&
+                    permission.find(
+                      (pm) => pm.page_alias == sub.alias && pm.access == "1"
+                    )
                 );
                 const hasSubmenu = subItems.length > 0;
                 return (
@@ -153,21 +155,16 @@ function AdminIndex() {
 
                     {hasSubmenu && openSubmenus[item.id] && (
                       <ul className="ml-4 border-l-2 border-gray-600 pl-2">
-                        {subItems.map(
-                          (sub) =>
-                            permission[sub.role].includes("1") && (
-                              <li
-                                key={sub.id}
-                                className="p-2 hover:bg-gray-500 rounded"
-                              >
-                                <div
-                                  onClick={() => handleMenuClick(sub, false)}
-                                >
-                                  {sub.name}
-                                </div>
-                              </li>
-                            )
-                        )}
+                        {subItems.map((sub) => (
+                          <li
+                            key={sub.id}
+                            className="p-2 hover:bg-gray-500 rounded"
+                          >
+                            <div onClick={() => handleMenuClick(sub, false)}>
+                              {sub.name}
+                            </div>
+                          </li>
+                        ))}
                       </ul>
                     )}
                   </li>

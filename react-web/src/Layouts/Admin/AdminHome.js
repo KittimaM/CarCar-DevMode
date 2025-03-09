@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { GetChannel } from "../Api";
 
-const AdminFirstPage = () => {
+const AdminHome = () => {
   const [channel, setChannel] = useState();
   useEffect(() => {
     GetChannel().then((data) => {
@@ -152,4 +152,4 @@ const AdminFirstPage = () => {
   );
 };
 
-export default AdminFirstPage;
+export default AdminHome;
