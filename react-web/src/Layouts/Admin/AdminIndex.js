@@ -29,13 +29,11 @@ const COMPONENT_MAP = {
   schedule: AdminSchedule,
   booking: AdminBooking,
   payment: AdminPayment,
-  // user: AdminUser,
   staff: AdminStaff,
   customer: AdminCustomer,
   customerCar: AdminCustomerCar,
   onLeavePersonal: AdminOnLeavePersonal,
   dayOffList: AdminDayOff,
-  // setting: AdminAdvanceSetting,
   carSize: AdminCarSize,
   service: AdminService,
   channel: AdminChannel,
@@ -119,7 +117,6 @@ function AdminIndex() {
               .filter((item) => {
                 const hasPermission =
                   !item.parent_alias &&
-                  item.role &&
                   permission.find(
                     (pm) => pm.page_alias == item.alias && pm.access == "1"
                   );

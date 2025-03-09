@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS `menu_items` (
   `icon` VARCHAR(50) DEFAULT NULL,
   `parent_alias` VARCHAR(50) DEFAULT NULL, -- easy to make seed, no need to count for id number
   `alias` VARCHAR(30) NOT NULL,
-  `role` VARCHAR(50) DEFAULT NULL
+  INDEX `idx_parent_alias` (`parent_alias`) -- Add index for faster search
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- change back to use parent_id
