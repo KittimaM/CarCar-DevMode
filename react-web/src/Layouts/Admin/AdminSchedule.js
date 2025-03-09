@@ -82,7 +82,7 @@ const AdminSchedule = ({ data }) => {
   return (
     <>
       <div>
-        <div className="container mx-auto bg-white p-3 mt-36 ">
+        <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto ">
           <div>
             <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
               {labelValue}
