@@ -22,7 +22,7 @@ const URLList = {
   AdminTemplate: "admin/template",
   AdminSearch: "admin/search",
   AdminLogin: "admin/login",
-  AdminGeneralSetting: "admin/general_setting",
+  AdminAdvanceSetting: "admin/advance_setting",
 
   //customer
   CustomerLogin: "customer/login",

@@ -26,8 +26,8 @@ const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
 app.use("/customer/car", CustomerCarRoute);
 
 //admin
-const AdminGeneralSettingRoute = require("./Routes/Admin/AdminGeneralSetting");
-app.use("/admin/general_setting", AdminGeneralSettingRoute);
+const AdminAdvanceSettingRoute = require("./Routes/Admin/AdminAdvanceSetting");
+app.use("/admin/advance_setting", AdminAdvanceSettingRoute);
 
 const AdminSearchRoute = require("./Routes/Admin/AdminSearch");
 app.use("/admin/search", AdminSearchRoute);
@@ -41,12 +41,8 @@ app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
 const AdminRoleLabelRoute = require("./Routes/Admin/AdminRole/AdminRoleLabel");
 app.use("/admin/role-label", AdminRoleLabelRoute);
 
-//----------------------------------
-
 const AdminMenuItemsRoute = require("./Routes/Admin/AdminRole/AdminMenuItems");
-app.use("/admin/menu-items",AdminMenuItemsRoute);
-
-//-----------------------------------
+app.use("/admin/menu-items", AdminMenuItemsRoute);
 
 const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
 app.use("/admin/customer-car", AdminCustomerCarRoute);

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LoginImg from "../../assets/login-2.jpeg";
-import { GetAdminGeneralSetting, PostCustomerLogin } from "../Api";
+import { GetAdminAdvanceSetting, PostCustomerLogin } from "../Api";
 
 const CustomerLogin = () => {
   const [errors, setErrors] = useState();
@@ -9,7 +9,7 @@ const CustomerLogin = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    GetAdminGeneralSetting().then((data) => {
+    GetAdminAdvanceSetting().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setSettings(msg[0]);

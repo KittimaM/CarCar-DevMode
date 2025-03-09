@@ -195,7 +195,7 @@ const AdminCarSize = ({ data }) => {
               </div>
             </form>
 
-            {permission && permission.includes("2") && (
+            {permission && permission['add'] == 1 && (
               <div className="flex justify-center items-center">
                 <button
                   className="btn max-w-md  bg-[#748efe] rounded-md  text-white text-xl my-4 hover:text-black items-center "
@@ -217,8 +217,8 @@ const AdminCarSize = ({ data }) => {
                   <td>size</td>
                   <td>description</td>
                   <td>is_available</td>
-                  {permission && permission.includes("3") && <td>Edit</td>}
-                  {permission && permission.includes("4") && <td>Delete</td>}
+                  {permission && permission['edit'] == 1 && <td>Edit</td>}
+                  {permission && permission['delete'] == 1 && <td>Delete</td>}
                 </tr>
               </thead>
               <tbody>
@@ -235,7 +235,7 @@ const AdminCarSize = ({ data }) => {
                           ? "available"
                           : "not available"}
                       </td>
-                      {permission && permission.includes("3") && (
+                      {permission && permission['edit'] == 1 && (
                         <td>
                           <button
                             className="btn"
@@ -246,7 +246,7 @@ const AdminCarSize = ({ data }) => {
                           </button>
                         </td>
                       )}
-                      {permission && permission.includes("4") && (
+                      {permission && permission['delete'] == 1 && (
                         <td>
                           <button
                             className="btn bg-[#ED4306] text-white p-2"

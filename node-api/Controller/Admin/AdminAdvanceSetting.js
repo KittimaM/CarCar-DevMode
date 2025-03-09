@@ -3,7 +3,7 @@ var jwt = require("jsonwebtoken");
 const Conn = require("../../db");
 const secret = process.env.SECRET_WORD;
 
-const AdminGetGeneralSetting = (req, res, next) => {
+const AdminGetAdvanceSetting = (req, res, next) => {
   Conn.execute("SELECT * FROM general_setting", function (error, results) {
     if (error) {
       res.json({ status: "ERROR", msg: error });
@@ -16,7 +16,7 @@ const AdminGetGeneralSetting = (req, res, next) => {
   });
 };
 
-const AdminUpdateGeneralSetting = (req, res, next) => {
+const AdminUpdateAdvanceSetting = (req, res, next) => {
   const {
     staff_failed_login_limit,
     staff_user_login_mins_limit,
@@ -52,4 +52,4 @@ const AdminUpdateGeneralSetting = (req, res, next) => {
   );
 };
 
-module.exports = { AdminGetGeneralSetting, AdminUpdateGeneralSetting };
+module.exports = { AdminGetAdvanceSetting, AdminUpdateAdvanceSetting };

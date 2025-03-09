@@ -189,348 +189,364 @@ const AdminCustomerCar = ({ data }) => {
     );
   };
   return (
-    <div className="lg:ml-64 p-4 flex-1 h-screen overflow-y-auto">
-      {permission && permission.includes("2") && (
-        <button className="btn" onClick={() => setOpenAddCustomerCarForm(true)}>
-          Add Customer's Car
-        </button>
-      )}
-      <table className="table table-lg">
-        <thead>
-          <tr>
-            <td>plate_no</td>
-            <td>customer's name</td>
-            <td>province</td>
-            <td>brand</td>
-            <td>model</td>
-            <td>size</td>
-            <td>color</td>
-            {permission && permission.includes("3") && <td>Edit</td>}
-            {permission && permission.includes("4") && <td>Delete</td>}
-          </tr>
-        </thead>
-        <tbody>
-          {customerCarList &&
-            customerCarList.map((customerCar) => (
-              <tr key={customerCar.id}>
-                <td>{customerCar.plate_no}</td>
-                <td>
-                  {customerList &&
-                    customerList.map(
-                      (customer) =>
-                        customer.id == customerCar.customer_id && customer.name
-                    )}
-                </td>
-                <td>{customerCar.province}</td>
-                <td>{customerCar.brand}</td>
-                <td>{customerCar.model}</td>
-                <td>
-                  {carSizeList &&
-                    carSizeList.map(
-                      (carSize) =>
-                        carSize.id == customerCar.size_id && carSize.size
-                    )}
-                </td>
-                <td>{customerCar.color}</td>
-                {permission && permission.includes("3") && (
-                  <td>
-                    <button
-                      className="btn"
-                      value={customerCar.id}
-                      onClick={() => handleSelectEditId(customerCar)}
-                    >
-                      Edit
-                    </button>
-                  </td>
-                )}
-                {permission && permission.includes("4") && (
-                  <td>
-                    <button
-                      className="btn"
-                      value={customerCar.id}
-                      onClick={handleDeleteCustomerCar}
-                    >
-                      Delete
-                    </button>
-                  </td>
-                )}
-              </tr>
-            ))}
-        </tbody>
-      </table>
-      {openAddCustomerCarForm && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-2xl mb-4">Add Customer's Car</h2>
-            <form onSubmit={handleAddCustomerCar}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  plate_no
-                </label>
-                <input
-                  type="text"
-                  name="plate_no"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.plate_no && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.plate_no}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  province
-                </label>
-                {provinceList && (
-                  <select
-                    name="province"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    {provinceList.map((province) => (
-                      <option value={province.province} key={province.id}>
-                        {province.province}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  brand
-                </label>
-                <input
-                  type="text"
-                  name="brand"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.brand && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.brand}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  model
-                </label>
-                <input
-                  type="text"
-                  name="model"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.model && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.model}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  color
-                </label>
-                <input
-                  type="text"
-                  name="color"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.color && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.color}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  car size
-                </label>
-                {carSizeList && (
-                  <select
-                    name="size_id"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    {carSizeList.map(
-                      (carSize) =>
-                        carSize.is_available == 1 && (
-                          <option value={carSize.id} key={carSize.id}>
-                            {carSize.size}
-                          </option>
-                        )
-                    )}
-                  </select>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  customer'name
-                </label>
-                {customerList && (
-                  <select
-                    name="customer_id"
-                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    {customerList.map((customer) => (
-                      <option value={customer.id} key={customer.id}>
-                        {customer.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => {
-                    setErrors([]);
-                    setOpenAddCustomerCarForm(false);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </form>
-          </div>
+    <div>
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+        <div>
+          <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
+            {labelValue}
+          </h1>
         </div>
-      )}
-      {editItem && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
-            <h2 className="text-2xl mb-4">Edit Customer's Car</h2>
-            <form onSubmit={handleEditCustomerCar}>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  plate_no
-                </label>
-                <input
-                  defaultValue={editItem.plate_no}
-                  type="text"
-                  name="plate_no"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.plate_no && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.plate_no}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  province
-                </label>
-                {provinceList && (
-                  <select
-                    defaultValue={editItem.province}
-                    name="province"
+
+        {permission && permission['add'] == 1 && (
+          <button
+            className="btn"
+            onClick={() => setOpenAddCustomerCarForm(true)}
+          >
+            Add Customer's Car
+          </button>
+        )}
+        <table className="table table-lg">
+          <thead>
+            <tr>
+              <td>plate_no</td>
+              <td>customer's name</td>
+              <td>province</td>
+              <td>brand</td>
+              <td>model</td>
+              <td>size</td>
+              <td>color</td>
+              {permission && permission['edit'] == 1 && <td>Edit</td>}
+              {permission && permission['delete'] == 1 && <td>Delete</td>}
+            </tr>
+          </thead>
+          <tbody>
+            {customerCarList &&
+              customerCarList.map((customerCar) => (
+                <tr key={customerCar.id}>
+                  <td>{customerCar.plate_no}</td>
+                  <td>
+                    {customerList &&
+                      customerList.map(
+                        (customer) =>
+                          customer.id == customerCar.customer_id &&
+                          customer.name
+                      )}
+                  </td>
+                  <td>{customerCar.province}</td>
+                  <td>{customerCar.brand}</td>
+                  <td>{customerCar.model}</td>
+                  <td>
+                    {carSizeList &&
+                      carSizeList.map(
+                        (carSize) =>
+                          carSize.id == customerCar.size_id && carSize.size
+                      )}
+                  </td>
+                  <td>{customerCar.color}</td>
+                  {permission && permission['edit'] == 1 && (
+                    <td>
+                      <button
+                        className="btn"
+                        value={customerCar.id}
+                        onClick={() => handleSelectEditId(customerCar)}
+                      >
+                        Edit
+                      </button>
+                    </td>
+                  )}
+                  {permission && permission['delete'] == 1 && (
+                    <td>
+                      <button
+                        className="btn"
+                        value={customerCar.id}
+                        onClick={handleDeleteCustomerCar}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))}
+          </tbody>
+        </table>
+        {openAddCustomerCarForm && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-2xl mb-4">Add Customer's Car</h2>
+              <form onSubmit={handleAddCustomerCar}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    plate_no
+                  </label>
+                  <input
+                    type="text"
+                    name="plate_no"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    {provinceList.map((province) => (
-                      <option value={province.province} key={province.id}>
-                        {province.province}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  brand
-                </label>
-                <input
-                  defaultValue={editItem.brand}
-                  type="text"
-                  name="brand"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.brand && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.brand}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  model
-                </label>
-                <input
-                  defaultValue={editItem.model}
-                  type="text"
-                  name="model"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.model && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.model}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  color
-                </label>
-                <input
-                  defaultValue={editItem.color}
-                  type="text"
-                  name="color"
-                  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                />
-                {errors.color && (
-                  <p className="mt-1 text-red-500 text-sm">{errors.color}</p>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  car size
-                </label>
-                {carSizeList && (
-                  <select
-                    defaultValue={editItem.size_id}
-                    name="size_id"
+                  />
+                  {errors.plate_no && (
+                    <p className="mt-1 text-red-500 text-sm">
+                      {errors.plate_no}
+                    </p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    province
+                  </label>
+                  {provinceList && (
+                    <select
+                      name="province"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {provinceList.map((province) => (
+                        <option value={province.province} key={province.id}>
+                          {province.province}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    brand
+                  </label>
+                  <input
+                    type="text"
+                    name="brand"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                  >
-                    {carSizeList.map(
-                      (carSize) =>
-                        carSize.is_available == 1 && (
-                          <option value={carSize.id} key={carSize.id}>
-                            {carSize.size}
-                          </option>
-                        )
-                    )}
-                  </select>
-                )}
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700 text-sm font-bold mb-2">
-                  customer'name
-                </label>
-                {customerList && (
-                  <select
-                    defaultValue={editItem.customer_id}
-                    name="customer_id"
+                  />
+                  {errors.brand && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.brand}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    model
+                  </label>
+                  <input
+                    type="text"
+                    name="model"
                     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.model && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.model}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    color
+                  </label>
+                  <input
+                    type="text"
+                    name="color"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.color && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.color}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    car size
+                  </label>
+                  {carSizeList && (
+                    <select
+                      name="size_id"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {carSizeList.map(
+                        (carSize) =>
+                          carSize.is_available == 1 && (
+                            <option value={carSize.id} key={carSize.id}>
+                              {carSize.size}
+                            </option>
+                          )
+                      )}
+                    </select>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    customer'name
+                  </label>
+                  {customerList && (
+                    <select
+                      name="customer_id"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {customerList.map((customer) => (
+                        <option value={customer.id} key={customer.id}>
+                          {customer.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                   >
-                    {customerList.map((customer) => (
-                      <option value={customer.id} key={customer.id}>
-                        {customer.name}
-                      </option>
-                    ))}
-                  </select>
-                )}
-              </div>
-              <div className="flex items-center justify-between">
-                <button
-                  type="submit"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                >
-                  Submit
-                </button>
-                <button
-                  type="button"
-                  className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  onClick={() => {
-                    setErrors([]);
-                    setEditItem(null);
-                  }}
-                >
-                  Close
-                </button>
-              </div>
-            </form>
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      setErrors([]);
+                      setOpenAddCustomerCarForm(false);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
-        </div>
-      )}
+        )}
+        {editItem && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white p-6 rounded-lg shadow-lg w-1/3">
+              <h2 className="text-2xl mb-4">Edit Customer's Car</h2>
+              <form onSubmit={handleEditCustomerCar}>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    plate_no
+                  </label>
+                  <input
+                    defaultValue={editItem.plate_no}
+                    type="text"
+                    name="plate_no"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.plate_no && (
+                    <p className="mt-1 text-red-500 text-sm">
+                      {errors.plate_no}
+                    </p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    province
+                  </label>
+                  {provinceList && (
+                    <select
+                      defaultValue={editItem.province}
+                      name="province"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {provinceList.map((province) => (
+                        <option value={province.province} key={province.id}>
+                          {province.province}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    brand
+                  </label>
+                  <input
+                    defaultValue={editItem.brand}
+                    type="text"
+                    name="brand"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.brand && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.brand}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    model
+                  </label>
+                  <input
+                    defaultValue={editItem.model}
+                    type="text"
+                    name="model"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.model && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.model}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    color
+                  </label>
+                  <input
+                    defaultValue={editItem.color}
+                    type="text"
+                    name="color"
+                    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {errors.color && (
+                    <p className="mt-1 text-red-500 text-sm">{errors.color}</p>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    car size
+                  </label>
+                  {carSizeList && (
+                    <select
+                      defaultValue={editItem.size_id}
+                      name="size_id"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {carSizeList.map(
+                        (carSize) =>
+                          carSize.is_available == 1 && (
+                            <option value={carSize.id} key={carSize.id}>
+                              {carSize.size}
+                            </option>
+                          )
+                      )}
+                    </select>
+                  )}
+                </div>
+                <div className="mb-4">
+                  <label className="block text-gray-700 text-sm font-bold mb-2">
+                    customer'name
+                  </label>
+                  {customerList && (
+                    <select
+                      defaultValue={editItem.customer_id}
+                      name="customer_id"
+                      className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                    >
+                      {customerList.map((customer) => (
+                        <option value={customer.id} key={customer.id}>
+                          {customer.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+                <div className="flex items-center justify-between">
+                  <button
+                    type="submit"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                  >
+                    Submit
+                  </button>
+                  <button
+                    type="button"
+                    className="ml-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    onClick={() => {
+                      setErrors([]);
+                      setEditItem(null);
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

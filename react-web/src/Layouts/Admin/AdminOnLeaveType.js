@@ -160,7 +160,7 @@ const AdminOnLeaveType = ({ data }) => {
       {showNotification && (
         <Notification message={notificationMessage} type={notificationStatus} />
       )}
-      {permission && permission.includes("2") && (
+      {permission && permission["add"] == 1 && (
         <button className="btn" onClick={() => setOpenAddForm(true)}>
           Add OnLeave Type
         </button>
@@ -171,8 +171,8 @@ const AdminOnLeaveType = ({ data }) => {
             <td>type</td>
             <td>day limit</td>
             <td>is_available</td>
-            {permission && permission.includes("3") && <td>Edit</td>}
-            {permission && permission.includes("4") && <td>Delete</td>}
+            {permission && permission["edit"] == 1 && <td>Edit</td>}
+            {permission && permission["delete"] == 1 && <td>Delete</td>}
           </tr>
         </thead>
         <tbody>
@@ -186,7 +186,7 @@ const AdminOnLeaveType = ({ data }) => {
                     ? "available"
                     : "not available"}
                 </td>
-                {permission && permission.includes("3") && (
+                {permission && permission["edit"] == 1 && (
                   <td>
                     <button
                       className="btn"
@@ -197,7 +197,7 @@ const AdminOnLeaveType = ({ data }) => {
                     </button>
                   </td>
                 )}
-                {permission && permission.includes("4") && (
+                {permission && permission["delete"] == 1 && (
                   <td>
                     <button
                       className="btn"

@@ -164,8 +164,10 @@ const AdminOnLeavePersonal = ({ data }) => {
   return (
     <>
       <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
-        <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">{labelValue}</div>
-        {permission.includes("2") && (
+        <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
+          {labelValue}
+        </div>
+        {permission["add"] == 1 && (
           <button
             className="btn"
             onClick={() => {
@@ -184,7 +186,7 @@ const AdminOnLeavePersonal = ({ data }) => {
               <td>number of days</td>
               <td>reason</td>
               <td>status</td>
-              {permission.includes("4") && <td>Delete</td>}
+              {permission["delete"] == 1 && <td>Delete</td>}
             </tr>
           </thead>
           <tbody>
@@ -204,7 +206,7 @@ const AdminOnLeavePersonal = ({ data }) => {
                   <td>{onLeave.number_of_days}</td>
                   <td>{onLeave.reason}</td>
                   <td>{onLeave.is_approved == 1 ? "Approved" : "Pending"}</td>
-                  {permission.includes("4") && (
+                  {permission["delete"] == 1 && (
                     <td>
                       <button
                         className="btn"

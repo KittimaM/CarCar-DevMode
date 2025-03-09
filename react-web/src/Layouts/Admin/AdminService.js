@@ -202,7 +202,7 @@ const AdminService = ({ data }) => {
             type={notificationStatus}
           />
         )}
-        {permission && permission.includes("2") && (
+        {permission && permission['add'] == 1 && (
           <button class="btn" onClick={() => setOpenAddForm(true)}>
             Add Service
           </button>
@@ -222,10 +222,10 @@ const AdminService = ({ data }) => {
                         <td>price(baht)</td>
                         <td>used people(people)</td>
                         <td>is available</td>
-                        {permission && permission.includes("3") && (
+                        {permission && permission['edit'] == 1 && (
                           <td>Edit</td>
                         )}
-                        {permission && permission.includes("4") && (
+                        {permission && permission['delete'] == 1 && (
                           <td>Delete</td>
                         )}
                       </tr>
@@ -246,7 +246,7 @@ const AdminService = ({ data }) => {
                                     ? "available"
                                     : "not available"}
                                 </td>
-                                {permission && permission.includes("3") && (
+                                {permission && permission['edit'] == 1 && (
                                   <td>
                                     <button
                                       className="btn"
@@ -259,7 +259,7 @@ const AdminService = ({ data }) => {
                                     </button>
                                   </td>
                                 )}
-                                {permission && permission.includes("4") && (
+                                {permission && permission['delete'] == 1 && (
                                   <td>
                                     <button
                                       className="btn"
