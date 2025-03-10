@@ -218,29 +218,29 @@ const AdminBooking = ({ data }) => {
         <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
           {labelValue}
         </div>
-        <div className="flex flex-col justify-start items-center p-5">
-          <form onSubmit={handleSubmitCar} className="grid grid-cols-3 gap-4">
-            <div>
+        <div className="flex flex-col justify-center items-center p-5">
+          <form onSubmit={handleSubmitCar} className="grid grid-cols-6 gap-4">
+            <div className="col-span-3 w-full">
                 <label name="customer_name" className="fieldset-legend text-lg">Customer Name</label>
-                <input type="text" name="customer_name" className="rounded-md border-1 border-[#b1b1b1]" placeholder="name" />
+                <input type="text" name="customer_name" className="rounded-md border-1 border-[#b1b1b1] w-full" placeholder="name" />
             </div>
-            <div>
+            <div className="col-span-3 w-full">
               <label name="customer_phone" className="fieldset-legend text-lg">Phone</label>
-              <input type="text" name="customer_phone" className="rounded-md border-1 border-[#b1b1b1]" placeholder="phone" />
+              <input type="text" name="customer_phone" className="rounded-md border-1 border-[#b1b1b1] w-full" placeholder="phone" />
             </div>
-            <div>
+            <div className="col-span-2 w-full">
               <label name="car_no" className="fieldset-legend text-lg">Car no</label>
-              <input type="text" name="car_no" className="rounded-md border-1 border-[#b1b1b1]" placeholder="car number"/>
+              <input type="text" name="car_no" className="rounded-md border-1 border-[#b1b1b1] w-full" placeholder="car number"/>
             </div>
             
-            <div>
+            <div className="col-span-2 w-full">
               <label name="car_color" className="fieldset-legend text-lg">Car color</label>
-              <input type="text" name="car_color" className="rounded-md border-1 border-[#b1b1b1]" placeholder="car color"/>
+              <input type="text" name="car_color" className="rounded-md border-1 border-[#b1b1b1] w-full" placeholder="car color"/>
             </div>
-            
-            {carSize && (
+            <div className="col-span-2 w-full">
+              {carSize && (
               <div className="flex flex-col">
-                <label name="car_size" className="fieldset-legend text-lg">car size</label>
+                <label name="car_size" className="fieldset-legend text-lg">Car size</label>
                 <select name="car_size" className="rounded-md border-1 border-[#b1b1b1]">
                   {carSize.map(
                     (item) =>
@@ -253,7 +253,9 @@ const AdminBooking = ({ data }) => {
                 </select>
               </div>
             )}
-            <button type="submit" className="btn my-3">
+            </div>
+            
+            <button type="submit" className="btn my-3 col-span-6">
               Selected Car
             </button>
           </form>
