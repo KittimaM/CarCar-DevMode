@@ -56,7 +56,7 @@ function AdminIndex() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState({});
   
-  const [activeMenu, setActiveMenu] = useState(null);
+  const [activeMenu, setActiveMenu] = useState("home"); 
   const sidebarRef = useRef(null);
 
   useEffect(() => {
@@ -97,6 +97,7 @@ function AdminIndex() {
 
   }, [isSidebarOpen]);
 
+
    // Function to handle clicks outside sidebar
    const handleClickOutside = (event) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -113,6 +114,10 @@ function AdminIndex() {
       setActiveMenu(item.id);
       localStorage.setItem("activeMenu", item.alias);
 
+       // Close sidebar only if screen width is less than 1024px (responsive mode)
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
       // Set permission for the selected component
       const permissionResult = permission.find((pm) => pm.page_alias === item.alias);
       setData({ labelValue: item.name, permission: permissionResult });
@@ -122,6 +127,9 @@ function AdminIndex() {
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
+
+ 
+  
 
   const ActiveComponent = COMPONENT_MAP[activeComponent] || AdminHome;
 
@@ -218,6 +226,7 @@ function AdminIndex() {
         </button>
 
         <ActiveComponent data={data} permission={permission} />
+        
       </div>
     </div>
   );
