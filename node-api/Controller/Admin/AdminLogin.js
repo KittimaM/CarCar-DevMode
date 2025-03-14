@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active, role_name FROM staff_user WHERE username = ? LIMIT 1`,
+     `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -27,7 +27,6 @@ const AdminLogin = (req, res, next) => {
           failed_login_count,
           is_locked,
           is_active,
-          role_name,
         } = result[0];
         if (is_locked == 1) {
           res.json({
@@ -53,7 +52,7 @@ const AdminLogin = (req, res, next) => {
                       res.json({ status: "ERROR", msg: successLoginError });
                     } else {
                       const token = jwt.sign(
-                        { id: id, username: username, role_id: role_id, role_name: role_name },
+                        { id: id, username: username, role_id: role_id },
                         secret,
                         { expiresIn: `${staff_user_login_mins_limit}m` }
                       );
