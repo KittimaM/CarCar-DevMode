@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { GetAllBooking, PostAddAccount, PostUpDateBookingStatus } from "../Api";
+import { DataGrid } from "@mui/x-data-grid";
 
 const AdminSchedule = ({ data }) => {
   const { labelValue, permission } = data;
@@ -79,6 +80,37 @@ const AdminSchedule = ({ data }) => {
     }
   };
 
+  const columns = [
+    { field: "id", headerName: "ID", width: 70 },
+    { field: "name", headerName: "Name", width: 150, sortable: true },
+    {
+      field: "age",
+      headerName: "Age",
+      type: "number",
+      width: 100,
+      sortable: true,
+    },
+    { field: "country", headerName: "Country", width: 150, filterable: true },
+  ];
+
+  const rows = [
+    { name: "Alice", age: 25, country: "USA" },
+    { name: "Bob", age: 30, country: "Canada" },
+    { name: "Charlie", age: 28, country: "UK" },
+  ];
+
+  // Modify rows to add a running ID
+  const modifiedRows = rows.map((row, index) => ({
+    ...row,
+    id: index + 1, // Assign running ID starting from 1
+  }));
+
+  const [selectionModel, setSelectionModel] = useState([]);
+
+  const handleRowSelection = (newSelectionModel) => {
+    setSelectionModel(newSelectionModel);
+  };
+
   return (
     <>
       <div>
@@ -88,11 +120,21 @@ const AdminSchedule = ({ data }) => {
               {labelValue}
             </h1>
           </div>
-
-          {/* header search */}
-          <div className="py-6">
+          <div style={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={modifiedRows}
+              columns={columns}
+              pageSizeOptions={[5, 10]}
+              disableColumnFilter={false} // Ensures filtering works
+              disableColumnSorting={false} // Ensures sorting works
+              checkboxSelection // Enables row selection with checkboxes
+              onSelectionModelChange={handleRowSelection} // Handles the selection change
+              selectionModel={selectionModel} // Sets the selected rows
+            />
+          </div>
+          {/* <div className="py-6">
             <form className="flex justify-start items-center space-x-5 px-5 ">
-              {/* date */}
+        
 
               <div className="flex flex-col w-full max-w-[320px] ">
                 <label className="">
@@ -105,7 +147,7 @@ const AdminSchedule = ({ data }) => {
                 />
               </div>
 
-              {/* type */}
+          
 
               <div className="flex flex-col w-full max-w-[320px] ">
                 <label className="">
@@ -122,7 +164,7 @@ const AdminSchedule = ({ data }) => {
                 </select>
               </div>
 
-              {/*ปุ่ม search ค้นหา */}
+           
               <div className="flex w-full max-w-[150px] mt-5 ">
                 <button
                   type="submit"
@@ -133,7 +175,7 @@ const AdminSchedule = ({ data }) => {
               </div>
             </form>
 
-            {/* auto search ค้นหา */}
+         
             <form className="">
               <div className="flex justify-start items-center space-x-2 py-5 px-5">
                 <div className="">
@@ -150,7 +192,7 @@ const AdminSchedule = ({ data }) => {
             </form>
           </div>
 
-          {/* table */}
+   
           <div className="overflow-x-auto">
             <table className="table text-[#1c1c1c] text-lg">
               <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
@@ -223,13 +265,7 @@ const AdminSchedule = ({ data }) => {
                             Done
                           </p>
                         )}
-                        {/* {permission &&
-                          permission["delete"] == 1 &&
-                          item.processing_status == "Cancel" && (
-                            <p className="bg-[#d44646] text-[#1c1c1c] text-xl p-2 rounded-md w-16">
-                              Cancel
-                            </p>
-                          )} */}
+
                       </td>
                       {item.processing_status == "Waiting" && (
                         <td>
@@ -246,7 +282,7 @@ const AdminSchedule = ({ data }) => {
                   ))}
               </tbody>
             </table>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

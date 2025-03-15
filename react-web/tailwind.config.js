@@ -12,4 +12,7 @@ module.exports = {
   daisyui: {
     themes: ["light"], // Set light theme globally
   },
+  corePlugins: {
+    preflight: true, // Prevents Tailwind from overriding MUI styles
+  },
 };
