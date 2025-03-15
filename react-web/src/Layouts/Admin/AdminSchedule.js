@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { GetAllBooking, PostAddAccount, PostUpDateBookingStatus } from "../Api";
-import { DataGrid } from "@mui/x-data-grid";
+import { GetAllBooking } from "../Api";
+import { DataGrid  } from "@mui/x-data-grid";
+import { TextField } from "@mui/material";
 
 const AdminSchedule = ({ data }) => {
   const { labelValue, permission } = data;
   const [todaySchedule, setTodaySchedule] = useState([]);
+  const [selectionModel, setSelectionModel] = useState([]);
+  const [searchText, setSearchText] = useState("");
 
   useEffect(() => {
     GetAllBooking().then((data) => {
@@ -17,99 +20,27 @@ const AdminSchedule = ({ data }) => {
     });
   }, []);
 
-  const handleUpdateStatus = (event) => {
-    event.preventDefault();
-    const { value } = event.target;
-    const [booking_id, car_no, service_price, processing_status] =
-      value.split(",");
-    let status = "";
-    switch (processing_status) {
-      case "Waiting":
-        status = "Service in process";
-        break;
-
-      case "Service in process":
-        status = "Finish Service";
-        break;
-
-      case "Finish Service":
-        status = "Paid";
-        break;
-
-      case "Paid":
-        status = "Done";
-        break;
-      case "Cancel":
-        status = "Cancel";
-        break;
-    }
-
-    const jsonData = {
-      processing_status: status,
-      booking_id: booking_id,
-    };
-    PostUpDateBookingStatus(jsonData).then((updatedResponse) => {
-      if (updatedResponse.status == "SUCCESS") {
-        GetAllBooking().then((data) => {
-          const { status, msg } = data;
-          if (status == "SUCCESS") {
-            setTodaySchedule(msg);
-          } else {
-            console.log(data);
-          }
-        });
-      } else {
-        console.log(updatedResponse);
-      }
-    });
-
-    if (status == "Paid") {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = (today.getMonth() + 1).toString().padStart(2, "0");
-      const day = today.getDate().toString().padStart(2, "0");
-      const jsonData = {
-        label: car_no,
-        is_income: 1,
-        income: service_price,
-        is_expense: 0,
-        expense: 0,
-        date: `${year}-${month}-${day}`,
-      };
-      PostAddAccount(jsonData).then((data) => console.log(data));
-    }
-  };
-
   const columns = [
-    { field: "id", headerName: "ID", width: 70 },
-    { field: "name", headerName: "Name", width: 150, sortable: true },
-    {
-      field: "age",
-      headerName: "Age",
-      type: "number",
-      width: 100,
-      sortable: true,
-    },
-    { field: "country", headerName: "Country", width: 150, filterable: true },
+    { field: "no", headerName: "No."},
+    { field: "car_no", headerName: "Car No" },
+    { field: "start_service_datetime", headerName: "Date"},
+    { field: "processing_status", headerName: "Status"}
   ];
 
-  const rows = [
-    { name: "Alice", age: 25, country: "USA" },
-    { name: "Bob", age: 30, country: "Canada" },
-    { name: "Charlie", age: 28, country: "UK" },
-  ];
-
-  // Modify rows to add a running ID
-  const modifiedRows = rows.map((row, index) => ({
+  const rows = todaySchedule.map((row, index) => ({
     ...row,
-    id: index + 1, // Assign running ID starting from 1
+    no: index + 1,
   }));
-
-  const [selectionModel, setSelectionModel] = useState([]);
 
   const handleRowSelection = (newSelectionModel) => {
     setSelectionModel(newSelectionModel);
   };
+
+  const filteredRows = rows.filter((row) =>
+    Object.values(row).some((value) =>
+      value ? value.toString().toLowerCase().includes(searchText.toLowerCase()) : false
+    )
+  );  
 
   return (
     <>
@@ -121,168 +52,23 @@ const AdminSchedule = ({ data }) => {
             </h1>
           </div>
           <div style={{ height: 400, width: "100%" }}>
+            <TextField
+              label="Search"
+              variant="outlined"
+              fullWidth
+              margin="normal"
+              onChange={(e) => setSearchText(e.target.value)}
+            />
             <DataGrid
-              rows={modifiedRows}
+              rows={filteredRows}
               columns={columns}
-              pageSizeOptions={[5, 10]}
-              disableColumnFilter={false} // Ensures filtering works
-              disableColumnSorting={false} // Ensures sorting works
-              checkboxSelection // Enables row selection with checkboxes
-              onSelectionModelChange={handleRowSelection} // Handles the selection change
-              selectionModel={selectionModel} // Sets the selected rows
+              disableColumnFilter={false}
+              disableColumnSorting={false}
+              checkboxSelection
+              onSelectionModelChange={handleRowSelection}
+              selectionModel={selectionModel}
             />
           </div>
-          {/* <div className="py-6">
-            <form className="flex justify-start items-center space-x-5 px-5 ">
-        
-
-              <div className="flex flex-col w-full max-w-[320px] ">
-                <label className="">
-                  <span className="label-text">วันที่</span>
-                </label>
-                <input
-                  type="date"
-                  name="start_date"
-                  className="border-2 border-[#e9e9e9] rounded-md p-3"
-                />
-              </div>
-
-          
-
-              <div className="flex flex-col w-full max-w-[320px] ">
-                <label className="">
-                  <span className="label-text ">ประเภท</span>
-                </label>
-                <select className="border-2 border-[#e9e9e9] rounded-md p-3">
-                  <option value="" selected>
-                    ทั้งหมด
-                  </option>
-                  <option>รอชำระ</option>
-                  <option>รอเริ่มงาน</option>
-                  <option>กำลังทำงาน</option>
-                  <option>เสร็จสิ้น</option>
-                </select>
-              </div>
-
-           
-              <div className="flex w-full max-w-[150px] mt-5 ">
-                <button
-                  type="submit"
-                  className="btn bg-[#4672DD] rounded-md text-white text-xl hover:text-black w-full max-w-[120px]"
-                >
-                  ค้นหา
-                </button>
-              </div>
-            </form>
-
-         
-            <form className="">
-              <div className="flex justify-start items-center space-x-2 py-5 px-5">
-                <div className="">
-                  <label className="w-full justify-center items-center p-3">
-                    <span className="label-text text-xl">Search:</span>
-                  </label>
-                </div>
-                <input
-                  type="text"
-                  name="search"
-                  className="border-2 border-[#d3d3d3] rounded-md p-3 w-[275px]"
-                />
-              </div>
-            </form>
-          </div>
-
-   
-          <div className="overflow-x-auto">
-            <table className="table text-[#1c1c1c] text-lg">
-              <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
-                <tr>
-                  <td>id</td>
-                  <td>car_no</td>
-                  <td>date</td>
-                  <td>time</td>
-                  <td>status</td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>
-                {todaySchedule &&
-                  todaySchedule.map((item) => (
-                    <tr
-                      className="hover:bg-[#f1f1f1] text-[#1c1c1c]"
-                      key={item.id}
-                    >
-                      <td>{item.id}</td>
-                      <td>{item.car_no}</td>
-                      <td>{item.start_service_datetime.split("T")[0]}</td>
-                      <td>{item.start_service_datetime.split("T")[1]}</td>
-                      <td>{item.processing_status}</td>
-                      <td>
-                        {item.processing_status == "Waiting" && (
-                          <button
-                            className="btn bg-[#f4ff8c] text-[#1c1c1c] text-xl p-2 rounded-md"
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Start Service
-                          </button>
-                        )}
-                        {item.processing_status == "Service in process" && (
-                          <button
-                            className="btn bg-[#7287fc] text-[#1c1c1c] text-xl p-2 rounded-md "
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Finish Service
-                          </button>
-                        )}
-                        {item.processing_status == "Finish Service" && (
-                          <button
-                            className="btn bg-[#59e454] text-xl p-2 rounded-md"
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Pay
-                          </button>
-                        )}
-                        {item.processing_status == "Paid" && (
-                          <p className="bg-[#7287fc] text-[#1c1c1c] text-xl p-2 rounded-md w-16">
-                            Done
-                          </p>
-                        )}
-
-                      </td>
-                      {item.processing_status == "Waiting" && (
-                        <td>
-                          <button
-                            className="btn bg-[#d44646] text-[#1c1c1c] text-xl p-2 rounded-md "
-                            onClick={handleUpdateStatus}
-                            value={[item.id, "Cancel"]}
-                          >
-                            Cancel
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div> */}
         </div>
       </div>
     </>
