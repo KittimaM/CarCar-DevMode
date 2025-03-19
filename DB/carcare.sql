@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2025 at 04:12 PM
+-- Generation Time: Mar 19, 2025 at 04:40 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -640,7 +640,7 @@ CREATE TABLE `staff_user` (
 --
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`) VALUES
-(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 1, 0, 0, NULL, '2025-03-10 16:12:52', 'Super User'),
+(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 1, 0, 0, NULL, '2025-03-19 15:33:31', 'Super User'),
 (16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
 (17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 3, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
