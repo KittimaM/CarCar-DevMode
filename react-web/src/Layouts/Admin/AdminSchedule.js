@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { GetAllBooking, PostAddAccount, PostUpDateBookingStatus } from "../Api";
+import { GetAllBooking } from "../Api";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 const AdminSchedule = ({ data }) => {
   const { labelValue, permission } = data;
   const [todaySchedule, setTodaySchedule] = useState([]);
+  const [selectedRows, setSelectedRows] = useState([]);
+  const [sortOrder, setSortOrder] = useState({ key: null, direction: "asc" });
+  const [filter, setFilter] = useState("");
+
+  const columns = [
+    { field: "car_no", headerName: "Car No" },
+    { field: "car_color", headerName: "Car's Color" },
+    { field: "start_service_datetime", headerName: "Start Time" },
+  ];
 
   useEffect(() => {
     GetAllBooking().then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setTodaySchedule(msg);
       } else {
         console.log(data);
@@ -16,234 +28,167 @@ const AdminSchedule = ({ data }) => {
     });
   }, []);
 
-  const handleUpdateStatus = (event) => {
-    event.preventDefault();
-    const { value } = event.target;
-    const [booking_id, car_no, service_price, processing_status] =
-      value.split(",");
-    let status = "";
-    switch (processing_status) {
-      case "Waiting":
-        status = "Service in process";
-        break;
+  const handleRowSelection = (id) => {
+    setSelectedRows((prevSelected) =>
+      prevSelected.includes(id)
+        ? prevSelected.filter((rowId) => rowId !== id)
+        : [...prevSelected, id]
+    );
+  };
 
-      case "Service in process":
-        status = "Finish Service";
-        break;
+  const exportToExcel = () => {
+    const selectedData = todaySchedule.filter((row) =>
+      selectedRows.includes(row.id)
+    );
 
-      case "Finish Service":
-        status = "Paid";
-        break;
-
-      case "Paid":
-        status = "Done";
-        break;
-      case "Cancel":
-        status = "Cancel";
-        break;
+    if (selectedData.length === 0) {
+      alert("No rows selected!");
+      return;
     }
 
-    const jsonData = {
-      processing_status: status,
-      booking_id: booking_id,
-    };
-    PostUpDateBookingStatus(jsonData).then((updatedResponse) => {
-      if (updatedResponse.status == "SUCCESS") {
-        GetAllBooking().then((data) => {
-          const { status, msg } = data;
-          if (status == "SUCCESS") {
-            setTodaySchedule(msg);
-          } else {
-            console.log(data);
-          }
-        });
-      } else {
-        console.log(updatedResponse);
-      }
+    const formattedData = selectedData.map((row, index) => {
+      let newRow = { No: index + 1 };
+      columns.forEach((col) => {
+        newRow[col.headerName] = row[col.field];
+      });
+      return newRow;
     });
 
-    if (status == "Paid") {
-      const today = new Date();
-      const year = today.getFullYear();
-      const month = (today.getMonth() + 1).toString().padStart(2, "0");
-      const day = today.getDate().toString().padStart(2, "0");
-      const jsonData = {
-        label: car_no,
-        is_income: 1,
-        income: service_price,
-        is_expense: 0,
-        expense: 0,
-        date: `${year}-${month}-${day}`,
-      };
-      PostAddAccount(jsonData).then((data) => console.log(data));
-    }
+    const worksheet = XLSX.utils.json_to_sheet(formattedData);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Schedule");
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const dataBlob = new Blob([excelBuffer], {
+      type: "application/octet-stream",
+    });
+    saveAs(dataBlob, "Schedule.xlsx");
   };
+
+  const handleSort = (column) => {
+    // Determine the new sorting order
+    const newOrder =
+      sortOrder.key === column && sortOrder.direction === "asc" ? "desc" : "asc";
+  
+    // Update state with the new sorting order
+    setSortOrder({ key: column, direction: newOrder });
+  
+    // Sort the data
+    setTodaySchedule(sortData(todaySchedule, column, newOrder));
+  };
+
+  const sortData = (array, column, order) => {
+    const sortedData = [...array].sort((a, b) => {
+      if (a[column] < b[column]) {
+        return order === "asc" ? -1 : 1;
+      }
+      if (a[column] > b[column]) {
+        return order === "asc" ? 1 : -1;
+      }
+      return 0;
+    });
+    return sortedData;
+  };
+
+  const filteredData = todaySchedule.filter((row) =>
+    columns.some((col) =>
+      row[col.field]?.toString().toLowerCase().includes(filter.toLowerCase())
+    )
+  );
+
+  const getSortIcon = (key) => {
+      if (sortOrder.key === key) {
+        return sortOrder.direction === "asc" ? (
+          <FaSortUp className="mt-1" />
+        ) : (
+          <FaSortDown className="mt-1" />
+        );
+      }
+      return <FaSort className="mt-1" />;
+    };
 
   return (
     <>
       <div>
-        <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto ">
+        <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
           <div>
             <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
               {labelValue}
             </h1>
           </div>
 
-          {/* header search */}
-          <div className="py-6">
-            <form className="flex justify-start items-center space-x-5 px-5 ">
-              {/* date */}
-
-              <div className="flex flex-col w-full max-w-[320px] ">
-                <label className="">
-                  <span className="label-text">วันที่</span>
+          <div className="flex justify-between items-center py-6 ">
+            <div className="flex justify-start items-center space-x-2 ">
+              <div className="">
+                <label className="w-full justify-center items-center p-3">
+                  <span className="label-text text-xl">Search:</span>
                 </label>
-                <input
-                  type="date"
-                  name="start_date"
-                  className="border-2 border-[#e9e9e9] rounded-md p-3"
-                />
               </div>
+              <input
+                type="text"
+                placeholder="Search..."
+                className="p-2 border rounded"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
 
-              {/* type */}
-
-              <div className="flex flex-col w-full max-w-[320px] ">
-                <label className="">
-                  <span className="label-text ">ประเภท</span>
-                </label>
-                <select className="border-2 border-[#e9e9e9] rounded-md p-3">
-                  <option value="" selected>
-                    ทั้งหมด
-                  </option>
-                  <option>รอชำระ</option>
-                  <option>รอเริ่มงาน</option>
-                  <option>กำลังทำงาน</option>
-                  <option>เสร็จสิ้น</option>
-                </select>
-              </div>
-
-              {/*ปุ่ม search ค้นหา */}
-              <div className="flex w-full max-w-[150px] mt-5 ">
-                <button
-                  type="submit"
-                  className="btn bg-[#4672DD] rounded-md text-white text-xl hover:text-black w-full max-w-[120px]"
-                >
-                  ค้นหา
-                </button>
-              </div>
-            </form>
-
-            {/* auto search ค้นหา */}
-            <form className="">
-              <div className="flex justify-start items-center space-x-2 py-5 px-5">
-                <div className="">
-                  <label className="w-full justify-center items-center p-3">
-                    <span className="label-text text-xl">Search:</span>
-                  </label>
-                </div>
-                <input
-                  type="text"
-                  name="search"
-                  className="border-2 border-[#d3d3d3] rounded-md p-3 w-[275px]"
-                />
-              </div>
-            </form>
+            <button
+              className="btn tooltip bg-[#4692DD] rounded-md text-white hover:text-black"
+              data-tip="Export"
+              onClick={exportToExcel}
+            >
+              <i class="ri-export-line text-2xl font-thin "></i>
+            </button>
           </div>
-
+          
           {/* table */}
           <div className="overflow-x-auto">
             <table className="table text-[#1c1c1c] text-lg">
               <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
                 <tr>
-                  <td>id</td>
-                  <td>car_no</td>
-                  <td>date</td>
-                  <td>time</td>
-                  <td>status</td>
-                  <td></td>
+                  <th>
+                    <input
+                      type="checkbox"
+                      onChange={(e) =>
+                        setSelectedRows(
+                          e.target.checked
+                            ? filteredData.map((row) => row.id)
+                            : []
+                        )
+                      }
+                      checked={
+                        selectedRows.length === filteredData.length &&
+                        filteredData.length > 0
+                      }
+                    />
+                  </th>
+
+                  {columns.map((col) => (
+                    <th key={col.field} onClick={() => handleSort(col.field)} className="cursor-pointer">
+                      <span class="flex gap-2">{col.headerName}{getSortIcon(col.field)}</span>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {todaySchedule &&
-                  todaySchedule.map((item) => (
-                    <tr
-                      className="hover:bg-[#f1f1f1] text-[#1c1c1c]"
-                      key={item.id}
-                    >
-                      <td>{item.id}</td>
-                      <td>{item.car_no}</td>
-                      <td>{item.start_service_datetime.split("T")[0]}</td>
-                      <td>{item.start_service_datetime.split("T")[1]}</td>
-                      <td>{item.processing_status}</td>
-                      <td>
-                        {item.processing_status == "Waiting" && (
-                          <button
-                            className="btn bg-[#f4ff8c] text-[#1c1c1c] text-xl p-2 rounded-md"
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Start Service
-                          </button>
-                        )}
-                        {item.processing_status == "Service in process" && (
-                          <button
-                            className="btn bg-[#7287fc] text-[#1c1c1c] text-xl p-2 rounded-md "
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Finish Service
-                          </button>
-                        )}
-                        {item.processing_status == "Finish Service" && (
-                          <button
-                            className="btn bg-[#59e454] text-xl p-2 rounded-md"
-                            onClick={handleUpdateStatus}
-                            value={[
-                              item.id,
-                              item.car_no,
-                              item.service_price,
-                              item.processing_status,
-                            ]}
-                          >
-                            Pay
-                          </button>
-                        )}
-                        {item.processing_status == "Paid" && (
-                          <p className="bg-[#7287fc] text-[#1c1c1c] text-xl p-2 rounded-md w-16">
-                            Done
-                          </p>
-                        )}
-                        {/* {permission &&
-                          permission["delete"] == 1 &&
-                          item.processing_status == "Cancel" && (
-                            <p className="bg-[#d44646] text-[#1c1c1c] text-xl p-2 rounded-md w-16">
-                              Cancel
-                            </p>
-                          )} */}
-                      </td>
-                      {item.processing_status == "Waiting" && (
-                        <td>
-                          <button
-                            className="btn bg-[#d44646] text-[#1c1c1c] text-xl p-2 rounded-md "
-                            onClick={handleUpdateStatus}
-                            value={[item.id, "Cancel"]}
-                          >
-                            Cancel
-                          </button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
+                {filteredData.map((row) => (
+                  <tr key={row.id}>
+                    <td>
+                      <input
+                        type="checkbox"
+                        onChange={() => handleRowSelection(row.id)}
+                        checked={selectedRows.includes(row.id)}
+                      />
+                    </td>
+
+                    {columns.map((col) => (
+                      <td key={col.field}>{row[col.field]}</td>
+                    ))}
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
