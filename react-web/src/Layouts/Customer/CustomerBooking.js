@@ -294,18 +294,21 @@ const CustomerBooking = () => {
   const timeContent = () => {
     return (
       timeOptions &&
-      timeOptions.map((item) => (
-        <button
-          onClick={handleSubmitSelectedTime}
-          key={item}
-          value={item}
-          className="btn"
-        >
-          {item}
-        </button>
-      ))
+      <div className="flex flex-wrap gap-2"> {/* Flex container */}
+          {timeOptions.map((item) => (
+            <button
+              onClick={handleSubmitSelectedTime}
+              key={item}
+              value={item}
+              className="btn m-2"
+            >
+              {item}
+            </button>
+          ))}
+        </div>
     );
   };
+
 
   const paymentContent = () => {
     return (

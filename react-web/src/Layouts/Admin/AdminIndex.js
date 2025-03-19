@@ -56,7 +56,7 @@ function AdminIndex() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState({});
   
-  const [activeMenu, setActiveMenu] = useState("home"); 
+  const [activeMenu, setActiveMenu] = useState("null"); 
   const sidebarRef = useRef(null);
 
   useEffect(() => {

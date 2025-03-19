@@ -7,6 +7,8 @@ import {
 } from "../Api";
 import Notification from "../Notification/Notification";
 
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
+
 const AdminCarSize = ({ data }) => {
   const { labelValue, permission } = data;
   const [carSizeList, setCarSizeList] = useState(null);
@@ -16,6 +18,9 @@ const AdminCarSize = ({ data }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState();
   const [notificationStatus, setNotificationStatus] = useState();
+
+  const [sortConfig, setSortConfig] = useState({ key: null, direction: "asc" });
+  const [selected, setSelected] = useState([]);
 
   const handleShowNotification = () => {
     setShowNotification(true);
@@ -160,6 +165,62 @@ const AdminCarSize = ({ data }) => {
     }
   };
 
+  // Sort function
+  const handleSort = (key) => {
+    let direction = "asc";
+    if (sortConfig.key === key && sortConfig.direction === "asc") {
+      direction = "desc";
+    }
+    setSortConfig({ key, direction });
+  };
+
+  // Sorting logic
+  // const sortedData = [...data].sort((a, b) => {
+  //   if (sortConfig.key) {
+  //     if (a[sortConfig.key] < b[sortConfig.key]) {
+  //       return sortConfig.direction === "asc" ? -1 : 1;
+  //     }
+  //     if (a[sortConfig.key] > b[sortConfig.key]) {
+  //       return sortConfig.direction === "asc" ? 1 : -1;
+  //     }
+  //   }
+  //   return 0;
+  // });
+
+  const handleSelect = (id) => {
+    setSelected((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key === key) {
+      return sortConfig.direction === "asc" ? (
+        <FaSortUp className="mt-1" />
+      ) : (
+        <FaSortDown className="mt-1" />
+      );
+    }
+    return <FaSort className="mt-1" />;
+  };
+
+  // Select/unselect all rows
+  const handleSelectAll = () => {
+    if (selected.length === data.length) {
+      setSelected([]); // Unselect all
+    } else {
+      setSelected(data.map((item) => item.id)); // Select all
+    }
+  };
+
+  // Check if all rows are selected
+  const isAllSelected = selected.length === data.length;
+
+  // Handle row click
+  // const handleRowClick = (id) => {
+  //   handleSelect(id);
+  // };
+
   return (
     <>
       <div className="">
@@ -195,7 +256,7 @@ const AdminCarSize = ({ data }) => {
               </div>
             </form>
 
-            {permission && permission['add'] == 1 && (
+            {permission && permission["add"] == 1 && (
               <div className="flex justify-center items-center">
                 <button
                   className="btn max-w-md  bg-[#748efe] rounded-md  text-white text-xl my-4 hover:text-black items-center "
@@ -209,25 +270,62 @@ const AdminCarSize = ({ data }) => {
             )}
           </div>
 
-            {/* table */}
-          <div className="flex-1 overflow-y-auto">
-            <table className="table  text-[#1c1c1c] text-lg ">
-              <thead className=" text-xl text-[#313E61] shadow-md">
-                <tr>
-                  <td>size</td>
-                  <td>description</td>
-                  <td>is_available</td>
-                  {permission && permission['edit'] == 1 && <td>Edit</td>}
-                  {permission && permission['delete'] == 1 && <td>Delete</td>}
+          {/* table */}
+          <div className="flex overflow-auto w-full">
+            <table className="table w-full text-[#1c1c1c] text-lg ">
+              <thead className=" text-xl text-[#313E61] shadow-md bg-[#f1f1f1] overflow-x-auto">
+                <tr className="items-center">
+                  <td>
+                    <input
+                      type="checkbox"
+                      className="checkbox"
+                      checked={isAllSelected}
+                      onChange={handleSelectAll}
+                    />
+                  </td>
+                  <td
+                    className="cursor-pointer "
+                    onClick={() => handleSort("size")}
+                  >
+                    <span class="flex gap-2">Size {getSortIcon("size")}</span>
+                  </td>
+                  <td
+                    className="cursor-pointer"
+                    onClick={() => handleSort("description")}
+                  >
+                    <span class="flex gap-2">
+                      Description {getSortIcon("description")}{" "}
+                    </span>
+                  </td>
+                  <td
+                    className="cursor-pointer "
+                    onClick={() => handleSort("is_available")}
+                  >
+                    <span class="flex gap-2">
+                      Is Available {getSortIcon("is_available")}{" "}
+                    </span>
+                  </td>
+                  {permission && permission["edit"] == 1 && <td>Edit</td>}
+                  {permission && permission["delete"] == 1 && <td>Delete</td>}
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="">
                 {carSizeList &&
                   carSizeList.map((carSize) => (
                     <tr
                       key={carSize.id}
-                      className="hover:bg-[#f1f1f1] text-[#1c1c1c]"
+                      className={`hover:bg-gray-200 cursor-pointer ${
+                        selected.includes(carSize.id) ? "bg-gray-300" : ""
+                      }`}
                     >
+                      <td>
+                        <input
+                          type="checkbox"
+                          className="checkbox"
+                          checked={selected.includes(carSize.id)}
+                          onChange={() => handleSelect(carSize.id)}
+                        />
+                      </td>
                       <td>{carSize.size}</td>
                       <td>{carSize.description}</td>
                       <td>
@@ -235,7 +333,7 @@ const AdminCarSize = ({ data }) => {
                           ? "available"
                           : "not available"}
                       </td>
-                      {permission && permission['edit'] == 1 && (
+                      {permission && permission["edit"] == 1 && (
                         <td>
                           <button
                             className="btn"
@@ -246,7 +344,7 @@ const AdminCarSize = ({ data }) => {
                           </button>
                         </td>
                       )}
-                      {permission && permission['delete'] == 1 && (
+                      {permission && permission["delete"] == 1 && (
                         <td>
                           <button
                             className="btn bg-[#ED4306] text-white p-2"
