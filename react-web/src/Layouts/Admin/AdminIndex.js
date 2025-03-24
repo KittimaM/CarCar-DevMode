@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState ,useRef} from "react";
 import { GetPermission, GetAllAdminMenuItems } from "../Api";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 import "remixicon/fonts/remixicon.css";
@@ -55,6 +55,9 @@ function AdminIndex() {
   const [data, setData] = useState({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [openSubmenus, setOpenSubmenus] = useState({});
+  
+  const [activeMenu, setActiveMenu] = useState("null"); 
+  const sidebarRef = useRef(null);
 
   useEffect(() => {
     GetPermission().then((data) => {
@@ -73,16 +76,50 @@ function AdminIndex() {
         console.log(data);
       }
     });
-  }, []);
+
+    // Retrieve active menu from localStorage
+    const storedActiveMenu = localStorage.getItem("activeMenu");
+    if (storedActiveMenu) {
+      setActiveMenu(storedActiveMenu);
+      setActiveComponent(storedActiveMenu);
+    }
+
+    // Attach event listener when sidebar is open
+    if (isSidebarOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+
+
+  }, [isSidebarOpen]);
+
+
+   // Function to handle clicks outside sidebar
+   const handleClickOutside = (event) => {
+    if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
+      setIsSidebarOpen(false);
+    }
+  };
+
 
   const handleMenuClick = (item, hasSubmenu) => {
-    if (hasSubmenu) {
+      if (hasSubmenu) {
       setOpenSubmenus((prev) => ({ ...prev, [item.id]: !prev[item.id] }));
     } else {
       setActiveComponent(item.alias);
-      const permissionResult = permission.find(
-        (pm) => pm.page_alias == item.alias
-      );
+      setActiveMenu(item.id);
+      localStorage.setItem("activeMenu", item.alias);
+
+       // Close sidebar only if screen width is less than 1024px (responsive mode)
+    if (window.innerWidth < 1024) {
+      setIsSidebarOpen(false);
+    }
+      // Set permission for the selected component
+      const permissionResult = permission.find((pm) => pm.page_alias === item.alias);
       setData({ labelValue: item.name, permission: permissionResult });
     }
   };
@@ -91,12 +128,18 @@ function AdminIndex() {
     setIsSidebarOpen(!isSidebarOpen);
   };
 
+ 
+  
+
   const ActiveComponent = COMPONENT_MAP[activeComponent] || AdminHome;
+
+
 
   return (
     <div className="lg:flex ">
       {/* Sidebar */}
       <div
+        ref={sidebarRef} // Attach ref to sidebar
         className={`fixed top-0 left-0 overflow-y-auto z-50 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out w-64 bg-gray-800 text-white h-screen lg:translate-x-0 lg:fixed lg:inset-auto `}
@@ -135,7 +178,8 @@ function AdminIndex() {
                 return (
                   <li key={item.id}>
                     <div
-                      className="flex items-center justify-between p-3 hover:bg-gray-500 rounded cursor-pointer"
+                      className={`flex items-center justify-between p-3 rounded cursor-pointer 
+                      ${activeMenu === item.id ? "bg-blue-500 text-white" : "hover:bg-gray-500"}`}
                       onClick={() => handleMenuClick(item, hasSubmenu)}
                     >
                       <span>{item.name}</span>
@@ -155,7 +199,9 @@ function AdminIndex() {
                         {subItems.map((sub) => (
                           <li
                             key={sub.id}
-                            className="p-2 hover:bg-gray-500 rounded"
+                            className={`p-2 rounded cursor-pointer 
+                            ${activeMenu === sub.id ? "bg-blue-500 text-white" : "hover:bg-gray-500"}`}
+                            onClick={() => handleMenuClick(sub, false)}
                           >
                             <div onClick={() => handleMenuClick(sub, false)}>
                               {sub.name}
@@ -180,6 +226,7 @@ function AdminIndex() {
         </button>
 
         <ActiveComponent data={data} permission={permission} />
+        
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ import {
   GetAllPaymentType,
 } from "../Api";
 
+
 const AdminBooking = ({ data }) => {
   const { labelValue, permission } = data;
   const defaultTime = new Date();
@@ -18,6 +19,7 @@ const AdminBooking = ({ data }) => {
   const [bookedDateTimeOptions, setBookedDateTimeOptions] = useState(null);
   const [timeOptions, setTimeOptions] = useState([]);
   const [paymentType, setPaymentType] = useState();
+  
 
   useEffect(() => {
     GetAllPaymentType().then((data) => {
@@ -214,73 +216,129 @@ const AdminBooking = ({ data }) => {
 
   return (
     <>
-      <div>
-        <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
-          <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
-            {labelValue}
-          </div>
+      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+        <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
+          {labelValue}
+        </div>
+        <div className="flex flex-col justify-center items-center p-5">
+          <form onSubmit={handleSubmitCar} className="grid grid-cols-6 gap-4 ">
+            <div className="col-span-3 w-full">
+              <label name="customer_name" className="fieldset-legend text-lg">
+                Customer Name
+              </label>
+              <input
+                type="text"
+                name="customer_name"
+                className="rounded-md border-1 border-[#b1b1b1] w-full"
+                placeholder="name"
+              />
+            </div>
+            <div className="col-span-3 w-full">
+              <label name="customer_phone" className="fieldset-legend text-lg">
+                Phone
+              </label>
+              <input
+                type="text"
+                name="customer_phone"
+                className="rounded-md border-1 border-[#b1b1b1] w-full"
+                placeholder="phone"
+              />
+            </div>
+            <div className="col-span-2 w-full">
+              <label name="car_no" className="fieldset-legend text-lg">
+                Car no
+              </label>
+              <input
+                type="text"
+                name="car_no"
+                className="rounded-md border-1 border-[#b1b1b1] w-full"
+                placeholder="car number"
+              />
+            </div>
 
-          <form onSubmit={handleSubmitCar}>
-            <label name="customer_name">Customer_name</label>
-            <input type="text" name="customer_name" />
-            <label name="customer_phone">Customer_phone</label>
-            <input type="text" name="customer_phone" />
-            <label name="car_no">car_no</label>
-            <input type="text" name="car_no" />
-            <label name="car_color">car_color</label>
-            <input type="text" name="car_color" />
-            {carSize && (
-              <div>
-                <label name="car_size">car_size</label>
-                <select name="car_size">
-                  {carSize.map(
-                    (item) =>
-                      item.is_available == 1 && (
-                        <option key={item.id} value={[item.id, item.size]}>
-                          {item.size}
-                        </option>
-                      )
-                  )}
-                </select>
-              </div>
-            )}
-            <button type="submit" className="btn">
+            <div className="col-span-2 w-full">
+              <label name="car_color" className="fieldset-legend text-lg">
+                Car color
+              </label>
+              <input
+                type="text"
+                name="car_color"
+                className="rounded-md border-1 border-[#b1b1b1] w-full"
+                placeholder="car color"
+              />
+            </div>
+            <div className="col-span-2 w-full">
+              {carSize && (
+                <div className="flex flex-col">
+                  <label name="car_size" className="fieldset-legend text-lg">
+                    Car size
+                  </label>
+                  <select
+                    name="car_size"
+                    className="rounded-md border-1 border-[#b1b1b1]"
+                  >
+                    {carSize.map(
+                      (item) =>
+                        item.is_available == 1 && (
+                          <option key={item.id} value={[item.id, item.size]}>
+                            {item.size}
+                          </option>
+                        )
+                    )}
+                  </select>
+                </div>
+              )}
+            </div>
+
+            <button type="submit" className="btn my-3 col-span-6">
               Selected Car
             </button>
           </form>
 
           {service && (
-            <form onSubmit={handleSubmitSelectedService}>
-              <label>Service</label>
-              {service.map((item) => (
-                <div>
-                  <input
-                    type="checkbox"
-                    name={item.id}
-                    value={item.id}
-                    onChange={handleSelectedService}
-                  />
-                  <label>{item.service}</label>
-                </div>
-              ))}
-              <button className="btn" type="submit">
+            <form
+              onSubmit={handleSubmitSelectedService}
+              className="flex flex-col justify-center items-start p-5 w-full"
+            >
+              <label className="text-xl uppercase font-semibold">Service</label>
+              <div className="grid grid-cols-2 w-full  max-w-md items-center justify-center p-5">
+                {service.map((item) => (
+                  <div className="">
+                    <button
+                      type="submit"
+                      name={item.id}
+                      value={item.id}
+                      onChange={handleSelectedService}
+                      className="btn "
+                    >
+                      {item.service}
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <button className="btn " type="submit">
                 Submit Service
               </button>
             </form>
           )}
-          {timeOptions &&
-            timeOptions.map((item) => (
-              <button
-                onClick={handleSubmitSelectedTime}
-                key={item}
-                value={item}
-                className="btn"
-              >
-                {item}
-              </button>
-            ))}
+          {timeOptions && (
+            <div className="flex flex-wrap gap-2">
+              {" "}
+              {/* Flex container */}
+              {timeOptions.map((item) => (
+                <button
+                  onClick={handleSubmitSelectedTime}
+                  key={item}
+                  value={item}
+                  className="btn m-2"
+                >
+                  {item}
+                </button>
+              ))}
+            </div>
+          )}
           {paymentType && (
-            <form onSubmit={handleSubmitPaymentType}>
+            <form onSubmit={handleSubmitPaymentType} className="flex flex-col p-4"> 
               <label name="payment_type">Payment Type</label>
               <select name="payment_type">
                 {paymentType.map(
@@ -292,16 +350,30 @@ const AdminBooking = ({ data }) => {
                     )
                 )}
               </select>
-              <button type="submit" className="btn">
+              <button type="submit" className="btn mt-2">
                 Select Payment Type
               </button>
             </form>
           )}
-          <button onClick={handleSubmitBooking} className="btn">
+          <div className="flex justify-end items-end  w-full">
+            <button onClick={handleSubmitBooking} className="btn ">
             Submit Booking
           </button>
+          </div>
+
+          <div>
+
+          </div>
+          
         </div>
+
+        
       </div>
+
+
+
+
+
     </>
   );
 };

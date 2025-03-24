@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import { GetAllBooking } from "../Api";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
+import { FaSort, FaSortUp, FaSortDown } from "react-icons/fa";
 
 const AdminSchedule = ({ data }) => {
   const { labelValue, permission } = data;
   const [todaySchedule, setTodaySchedule] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-  const [sortOrder, setSortOrder] = useState("asc");
+  const [sortOrder, setSortOrder] = useState({ key: null, direction: "asc" });
   const [filter, setFilter] = useState("");
 
   const columns = [
@@ -67,8 +68,14 @@ const AdminSchedule = ({ data }) => {
   };
 
   const handleSort = (column) => {
-    const newOrder = sortOrder === "asc" ? "desc" : "asc";
-    setSortOrder(newOrder);
+    // Determine the new sorting order
+    const newOrder =
+      sortOrder.key === column && sortOrder.direction === "asc" ? "desc" : "asc";
+  
+    // Update state with the new sorting order
+    setSortOrder({ key: column, direction: newOrder });
+  
+    // Sort the data
     setTodaySchedule(sortData(todaySchedule, column, newOrder));
   };
 
@@ -91,17 +98,28 @@ const AdminSchedule = ({ data }) => {
     )
   );
 
+  const getSortIcon = (key) => {
+      if (sortOrder.key === key) {
+        return sortOrder.direction === "asc" ? (
+          <FaSortUp className="mt-1" />
+        ) : (
+          <FaSortDown className="mt-1" />
+        );
+      }
+      return <FaSort className="mt-1" />;
+    };
+
   return (
     <>
       <div>
-        <div className="container mx-auto bg-white p-3 mt-36 ">
+        <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
           <div>
             <h1 className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
               {labelValue}
             </h1>
           </div>
 
-          <div className="py-6">
+          <div className="flex justify-between items-center py-6 ">
             <div className="flex justify-start items-center space-x-2 ">
               <div className="">
                 <label className="w-full justify-center items-center p-3">
@@ -125,7 +143,8 @@ const AdminSchedule = ({ data }) => {
               <i class="ri-export-line text-2xl font-thin "></i>
             </button>
           </div>
-
+          
+          {/* table */}
           <div className="overflow-x-auto">
             <table className="table text-[#1c1c1c] text-lg">
               <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
@@ -148,8 +167,8 @@ const AdminSchedule = ({ data }) => {
                   </th>
 
                   {columns.map((col) => (
-                    <th key={col.field} onClick={() => handleSort(col.field)}>
-                      {col.headerName}
+                    <th key={col.field} onClick={() => handleSort(col.field)} className="cursor-pointer">
+                      <span class="flex gap-2">{col.headerName}{getSortIcon(col.field)}</span>
                     </th>
                   ))}
                 </tr>
