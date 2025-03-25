@@ -147,7 +147,7 @@ const AdminSchedule = ({ data }) => {
           {/* table */}
           <div className="overflow-x-auto">
             <table className="table text-[#1c1c1c] text-lg">
-              <thead className="bg-[#b8b6b6] text-xl text-[#1c1c1c]">
+              <thead className="text-xl text-[#313E61] shadow-md bg-[#f1f1f1] overflow-x-auto">
                 <tr>
                   <th>
                     <input
