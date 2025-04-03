@@ -29,8 +29,10 @@ const AdminLogin = () => {
 
     PostAdminLogin(jsonData).then((data) => {
       const { status, msg } = data;
-      if (status == "SUCCESS") {
-        localStorage.setItem("token", msg);
+      if (status == "SUCCESS") {       
+        localStorage.setItem("token", msg.token);
+        localStorage.setItem("username", msg.username);
+        localStorage.setItem("role_name", msg.role_name);
         navigate("/admin/main");
       } else {
         setErrors(msg);

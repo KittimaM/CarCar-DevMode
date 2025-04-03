@@ -98,6 +98,9 @@ app.use("/admin/permission", AdminPermissionRoute);
 const AdminRoleRoute = require("./Routes/Admin/AdminRole/AdminRole");
 app.use("/admin/role", AdminRoleRoute);
 
+const testPathRoute = require("./Routes/testPath");
+app.use("/api/test", testPathRoute);
+
 // Start the server
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);

@@ -227,20 +227,32 @@ function AdminIndex() {
         {/* User Icon */}
         <div className="flex items-center">
           <div className="flex flex-col items-end">
-            <span className="text-sm font-semibold text-[#57bb4a]">Super Admin</span>
-            <span className="text-sm font-semibold">Name capibarabahh</span>
+            <span className="text-sm font-semibold text-[#57bb4a]">
+              {localStorage.getItem("role_name")}
+            </span>
+            <span className="text-sm font-semibold">
+              {localStorage.getItem("username")}
+            </span>
           </div>
 
           <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn m-1 p-0 rounded-full bg-[#ffffff] border-none font-thin"><i className="ri-user-line text-2xl cursor-pointer p-2 "></i></div>
-            <ul tabIndex={0} className="dropdown-content menu bg-gray-800 text-white  rounded-box z-1 w-52 p-2 shadow-sm">
-              
-              <li><a className="hover:bg-gray-700 py-2 m-1"> Log out</a></li>
+            <div
+              tabIndex={0}
+              role="button"
+              className="btn m-1 p-0 rounded-full bg-[#ffffff] border-none font-thin"
+            >
+              <i className="ri-user-line text-2xl cursor-pointer p-2 "></i>
+            </div>
+            <ul
+              tabIndex={0}
+              className="dropdown-content menu bg-gray-800 text-white  rounded-box z-1 w-52 p-2 shadow-sm"
+            >
+              <li>
+                <a className="hover:bg-gray-700 py-2 m-1"> Log out</a>
+              </li>
             </ul>
           </div>
         </div>
-
-       
       </div>
 
       {/* Main Content */}

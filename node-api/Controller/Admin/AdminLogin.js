@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-     `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active FROM staff_user WHERE username = ? LIMIT 1`,
+    `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active, role_name FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -27,6 +27,7 @@ const AdminLogin = (req, res, next) => {
           failed_login_count,
           is_locked,
           is_active,
+          role_name,
         } = result[0];
         if (is_locked == 1) {
           res.json({
@@ -56,7 +57,14 @@ const AdminLogin = (req, res, next) => {
                         secret,
                         { expiresIn: `${staff_user_login_mins_limit}m` }
                       );
-                      res.json({ status: "SUCCESS", msg: token });
+                      res.json({
+                        status: "SUCCESS",
+                        msg: {
+                          token: token,
+                          username: username,
+                          role_name: role_name,
+                        },
+                      });
                     }
                   }
                 );
