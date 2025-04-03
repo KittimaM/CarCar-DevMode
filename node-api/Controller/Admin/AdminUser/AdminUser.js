@@ -53,14 +53,14 @@ const AdminDeleteStaffUser = (req, res, next) => {
 };
 
 const AdminUpdateStaffUser = (req, res, next) => {
-  const { id, username, name, password, role_id } = req.body;
+  const { id, username, name, password, role_id, role_name } = req.body;
   bcrypt.hash(password, saltRounds, function (error, hash) {
     if (error) {
       res.json({ status: "ERROR", msg: error });
     } else {
       Conn.execute(
-        `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ? WHERE id = ?`,
-        [username, name, hash, role_id, id],
+        `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ?, role_name = ? WHERE id = ?`,
+        [username, name, hash, role_id, role_name, id],
         function (error, result) {
           if (error) {
             res.json({ status: "ERROR", msg: error });
