@@ -108,7 +108,7 @@ function AdminIndex() {
     } else {
       setActiveComponent(item.alias);
       setActiveMenu(item.id);
-      localStorage.setItem("activeMenu", item.alias);
+      sessionStorage.setItem("activeMenu", item.alias);
 
       // Close sidebar only if screen width is less than 1024px (responsive mode)
       if (window.innerWidth < 1024) {
@@ -228,10 +228,10 @@ function AdminIndex() {
         <div className="flex items-center">
           <div className="flex flex-col items-end">
             <span className="text-sm font-semibold text-[#57bb4a]">
-              {localStorage.getItem("role_name")}
+              {sessionStorage.getItem("role_name")}
             </span>
             <span className="text-sm font-semibold">
-              {localStorage.getItem("username")}
+              {sessionStorage.getItem("username")}
             </span>
           </div>
 

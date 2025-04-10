@@ -28,7 +28,7 @@ const CustomerRegister = () => {
         PostCustomerLogin(loginData).then((data) => {
           const { status, msg } = data;
           if (status == "SUCCESS") {
-            localStorage.setItem("token", msg);
+            sessionStorage.setItem("token", msg);
             navigate("/customer/main");
           } else {
             console.log(data);
