@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
+import { Link } from "react-router-dom";
 import { GetPermission, GetAllAdminMenuItems } from "../Api";
 import { FaAngleDown, FaAngleRight } from "react-icons/fa";
 import "remixicon/fonts/remixicon.css";
@@ -248,7 +249,9 @@ function AdminIndex() {
               className="dropdown-content menu bg-gray-800 text-white  rounded-box z-1 w-52 p-2 shadow-sm"
             >
               <li>
-                <a className="hover:bg-gray-700 py-2 m-1"> Log out</a>
+                <Link to="/admin">
+                  <a className="hover:bg-gray-700 py-2 m-1">Log out</a>
+                </Link>
               </li>
             </ul>
           </div>
