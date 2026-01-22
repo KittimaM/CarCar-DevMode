@@ -451,3 +451,15 @@ export const UpdateAdminActiveStaff = (jsonData) => {
 export const UpdateAdminUnlockStaff = (jsonData) => {
   return putApi(URLList.AdminStaff + "/unlock-user", jsonData);
 };
+
+export const GetAllModules = () => {
+  return getApi(URLList.Modules);
+}
+
+export const GetRolePermissionById = () => {
+  return getApi(URLList.RolePermission+'/id', null, true);
+}
+
+export const GetModuleByPermission = () => {
+  return getApi(URLList.Modules+ "/by-permission", null, true);
+}

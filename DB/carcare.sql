@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 19, 2025 at 04:40 PM
+-- Generation Time: Jan 22, 2026 at 09:25 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -92,7 +92,8 @@ INSERT INTO `admin_role_label` (`id`, `role`, `label`, `module_level`, `header_m
 (19, 'have_user_access', 'user', 1, 0, 1, 0, 'user'),
 (20, 'have_template_access', 'template', 1, 0, 0, 0, 'template'),
 (21, 'have_search_access', 'Search', 1, 0, 0, 0, 'search'),
-(22, 'have_general_setting_access', 'General Setting', 1, 0, 0, 0, 'generalSetting');
+(22, 'have_general_setting_access', 'General Setting', 1, 0, 0, 0, 'generalSetting'),
+(23, 'have_holiday_access', 'Holiday', 1, 0, 0, 0, 'holiday');
 
 -- --------------------------------------------------------
 
@@ -296,6 +297,25 @@ INSERT INTO `general_setting` (`id`, `staff_failed_login_limit`, `customer_faile
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `holiday`
+--
+
+CREATE TABLE `holiday` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `date` date DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `holiday`
+--
+
+INSERT INTO `holiday` (`id`, `name`, `date`) VALUES
+(1, 'songkran', '2026-04-13');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `menu_items`
 --
 
@@ -334,7 +354,51 @@ INSERT INTO `menu_items` (`id`, `name`, `icon`, `parent_alias`, `alias`) VALUES
 (20, 'Status', 'ri-user-line', 'setting', 'status'),
 (21, 'Onleave Type', NULL, 'setting', 'onLeaveType'),
 (22, 'Payment Type', NULL, 'setting', 'paymentType'),
-(23, 'Advance Setting', NULL, 'setting', 'advSetting');
+(23, 'Advance Setting', NULL, 'setting', 'advSetting'),
+(24, 'Holiday', NULL, 'setting', 'holiday');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `module`
+--
+
+CREATE TABLE `module` (
+  `id` int(11) NOT NULL,
+  `code` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL,
+  `parent_id` int(11) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `module`
+--
+
+INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
+(1, 'home', 'HOME', 0),
+(2, 'setting', 'SETTING', 0),
+(3, 'role', 'ACCESS CONFIG', 2);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `module_permission`
+--
+
+CREATE TABLE `module_permission` (
+  `id` int(11) NOT NULL,
+  `module_id` int(11) DEFAULT NULL,
+  `permission_id` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `module_permission`
+--
+
+INSERT INTO `module_permission` (`id`, `module_id`, `permission_id`) VALUES
+(1, 1, 1),
+(2, 2, 1),
+(3, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -415,42 +479,17 @@ INSERT INTO `payment_type` (`id`, `type`, `is_available`) VALUES
 
 CREATE TABLE `permission` (
   `id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL,
-  `page_alias` varchar(50) NOT NULL,
-  `access` tinyint(1) NOT NULL DEFAULT 0,
-  `add` tinyint(1) NOT NULL DEFAULT 0,
-  `edit` tinyint(1) NOT NULL DEFAULT 0,
-  `delete` tinyint(1) NOT NULL DEFAULT 0,
-  `approve` tinyint(1) NOT NULL DEFAULT 0
+  `code` varchar(50) NOT NULL,
+  `name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `permission`
 --
 
-INSERT INTO `permission` (`id`, `role_id`, `page_alias`, `access`, `add`, `edit`, `delete`, `approve`) VALUES
-(1, 1, 'schedule', 1, 1, 1, 1, 0),
-(2, 1, 'booking', 1, 0, 0, 0, 0),
-(3, 1, 'payment', 1, 0, 0, 0, 0),
-(4, 1, 'user', 1, 0, 0, 0, 0),
-(5, 1, 'staff', 1, 1, 1, 1, 0),
-(6, 1, 'customer', 1, 1, 1, 1, 0),
-(7, 1, 'customerCar', 1, 1, 1, 1, 0),
-(8, 1, 'onLeavePersonal', 1, 1, 1, 1, 0),
-(9, 1, 'dayOffList', 1, 1, 1, 1, 0),
-(10, 1, 'setting', 1, 0, 0, 0, 0),
-(11, 1, 'carSize', 1, 1, 1, 1, 0),
-(12, 1, 'service', 1, 1, 1, 1, 0),
-(13, 1, 'channel', 1, 1, 1, 1, 0),
-(14, 1, 'template', 1, 1, 1, 1, 0),
-(15, 1, 'search', 1, 1, 1, 1, 0),
-(16, 1, 'role', 1, 1, 1, 1, 0),
-(17, 1, 'account', 1, 1, 1, 1, 0),
-(18, 1, 'onLeaveList', 1, 1, 1, 1, 1),
-(19, 1, 'status', 1, 1, 1, 1, 0),
-(20, 1, 'onLeaveType', 1, 1, 1, 1, 0),
-(21, 1, 'paymentType', 1, 0, 1, 1, 0),
-(22, 1, 'advSetting', 1, 1, 1, 1, 0);
+INSERT INTO `permission` (`id`, `code`, `name`) VALUES
+(1, 'view', 'VIEW'),
+(2, 'add', 'ADD');
 
 -- --------------------------------------------------------
 
@@ -555,19 +594,42 @@ INSERT INTO `province` (`id`, `province`, `region`) VALUES
 
 CREATE TABLE `role` (
   `id` int(11) NOT NULL,
-  `role` varchar(10) NOT NULL
+  `name` varchar(50) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role`
 --
 
-INSERT INTO `role` (`id`, `role`) VALUES
-(1, 'Super User'),
-(2, 'user'),
-(3, 'new'),
-(4, 'test'),
-(5, 'test gener');
+INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
+(1, 'Super User', '2026-01-09 08:43:19', NULL),
+(2, 'admin', '2026-01-09 08:44:07', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `role_permission`
+--
+
+CREATE TABLE `role_permission` (
+  `id` int(11) NOT NULL,
+  `role_id` int(11) NOT NULL,
+  `module_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL,
+  `is_allowed` tinyint(1) DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `role_permission`
+--
+
+INSERT INTO `role_permission` (`id`, `role_id`, `module_id`, `permission_id`, `is_allowed`) VALUES
+(1, 1, 1, 1, 1),
+(2, 1, 2, 1, 1),
+(3, 1, 3, 1, 1),
+(4, 1, 3, 2, 1);
 
 -- --------------------------------------------------------
 
@@ -626,28 +688,28 @@ CREATE TABLE `staff_user` (
   `username` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role_id` int(11) NOT NULL,
   `is_active` tinyint(4) NOT NULL DEFAULT 1,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
   `is_locked` tinyint(4) NOT NULL DEFAULT 0,
   `locked_reason` varchar(150) DEFAULT NULL,
   `latest_logged_in` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `role_name` varchar(50) NOT NULL
+  `role_name` varchar(50) NOT NULL,
+  `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `staff_user`
 --
 
-INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `role_id`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`) VALUES
-(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 1, 0, 0, NULL, '2025-03-19 15:33:31', 'Super User'),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 3, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 2, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User'),
-(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 2, 1, 0, 0, NULL, '2025-03-08 16:57:18', 'Super User');
+INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`, `role_id`) VALUES
+(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-22 08:24:40', 'Super User', 1),
+(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, NULL, '2026-01-09 08:05:14', 'Super User', 1),
+(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, NULL, '2026-01-09 08:05:16', 'Super User', 1),
+(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 1, 0, 0, NULL, '2026-01-09 08:05:19', 'Super User', 1),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 1, 0, 0, NULL, '2026-01-09 08:05:21', 'Super User', 1),
+(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 0, 0, NULL, '2026-01-09 08:05:22', 'Super User', 1),
+(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 0, 0, NULL, '2026-01-09 08:05:24', 'Super User', 1),
+(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 1, 0, 0, NULL, '2026-01-09 08:05:26', 'Super User', 1);
 
 -- --------------------------------------------------------
 
@@ -670,7 +732,8 @@ INSERT INTO `status` (`id`, `code`, `description`, `status_group_id`) VALUES
 (1, 'wait to be called', 'test desc', 1),
 (2, 'washing', NULL, 1),
 (4, 'paid', '', 2),
-(5, 'indept', 'not ready to pay', 2);
+(5, 'indept', 'not ready to pay', 2),
+(6, 'code', 'description', 1);
 
 -- --------------------------------------------------------
 
@@ -808,11 +871,29 @@ ALTER TABLE `general_setting`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `holiday`
+--
+ALTER TABLE `holiday`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `menu_items`
 --
 ALTER TABLE `menu_items`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_parent_alias` (`parent_alias`);
+
+--
+-- Indexes for table `module`
+--
+ALTER TABLE `module`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `module_permission`
+--
+ALTER TABLE `module_permission`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `on_leave`
@@ -841,8 +922,7 @@ ALTER TABLE `payment_type`
 -- Indexes for table `permission`
 --
 ALTER TABLE `permission`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `role_id` (`role_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `province`
@@ -854,6 +934,12 @@ ALTER TABLE `province`
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `role_permission`
+--
+ALTER TABLE `role_permission`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -875,8 +961,7 @@ ALTER TABLE `service`
 --
 ALTER TABLE `staff_user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_staff_user_username` (`username`),
-  ADD KEY `fk_staff_user_role` (`role_id`);
+  ADD UNIQUE KEY `unique_staff_user_username` (`username`);
 
 --
 -- Indexes for table `status`
@@ -917,7 +1002,7 @@ ALTER TABLE `account`
 -- AUTO_INCREMENT for table `admin_role_label`
 --
 ALTER TABLE `admin_role_label`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT for table `booking`
@@ -956,10 +1041,28 @@ ALTER TABLE `general_setting`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `holiday`
+--
+ALTER TABLE `holiday`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `menu_items`
 --
 ALTER TABLE `menu_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+
+--
+-- AUTO_INCREMENT for table `module`
+--
+ALTER TABLE `module`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `module_permission`
+--
+ALTER TABLE `module_permission`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -983,7 +1086,7 @@ ALTER TABLE `payment_type`
 -- AUTO_INCREMENT for table `permission`
 --
 ALTER TABLE `permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `province`
@@ -995,7 +1098,13 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `role_permission`
+--
+ALTER TABLE `role_permission`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
@@ -1019,7 +1128,7 @@ ALTER TABLE `staff_user`
 -- AUTO_INCREMENT for table `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `status_group`
@@ -1065,22 +1174,10 @@ ALTER TABLE `on_leave`
   ADD CONSTRAINT `fk_on_leave_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
 
 --
--- Constraints for table `permission`
---
-ALTER TABLE `permission`
-  ADD CONSTRAINT `permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `service`
 --
 ALTER TABLE `service`
   ADD CONSTRAINT `fk_service_car_size_id` FOREIGN KEY (`car_size_id`) REFERENCES `car_size` (`id`);
-
---
--- Constraints for table `staff_user`
---
-ALTER TABLE `staff_user`
-  ADD CONSTRAINT `fk_staff_user_role` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 
 --
 -- Constraints for table `status`

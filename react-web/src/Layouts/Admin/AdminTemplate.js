@@ -16,7 +16,7 @@ const AdminTemplate = ({ data }) => {
   const [openAddForm, setOpenAddForm] = useState(false);
   const [template, setTemplate] = useState();
 
-  const modules = {
+  const module = {
     toolbar: [
       [{ header: [1, 2, 3, 4, 5, 6, false] }],
       [{ font: [] }],
@@ -115,7 +115,9 @@ const AdminTemplate = ({ data }) => {
 
   return (
     <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-lg h-full overflow-y-auto">
-      <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5] ">{labelValue}</div>
+      <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5] ">
+        {labelValue}
+      </div>
 
       {permission && permission["add"] == 1 && (
         <button className="btn" onClick={() => setOpenAddForm(true)}>
@@ -225,7 +227,7 @@ const AdminTemplate = ({ data }) => {
                 <ReactQuill
                   value={template}
                   onChange={setTemplate}
-                  modules={modules}
+                  module={module}
                   style={{ height: "200px", overflowY: "auto" }}
                 />
               </div>
@@ -283,7 +285,7 @@ const AdminTemplate = ({ data }) => {
                 <ReactQuill
                   defaultValue={template}
                   onChange={setTemplate}
-                  modules={modules}
+                  module={module}
                   style={{ height: "200px", overflowY: "auto" }}
                 />
               </div>
