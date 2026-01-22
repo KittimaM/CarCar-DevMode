@@ -23,6 +23,8 @@ const URLList = {
   AdminSearch: "admin/search",
   AdminLogin: "admin/login",
   AdminAdvanceSetting: "admin/advance_setting",
+  Modules: "admin/module",
+  RolePermission: "admin/role-permission",
 
   //customer
   CustomerLogin: "customer/login",

@@ -98,6 +98,12 @@ app.use("/admin/permission", AdminPermissionRoute);
 const AdminRoleRoute = require("./Routes/Admin/AdminRole/AdminRole");
 app.use("/admin/role", AdminRoleRoute);
 
+const ModulesRoutes = require("./Routes/Admin/AdminRole/Modules");
+app.use("/admin/module", ModulesRoutes);
+
+const RolePermissionRoue = require("./Routes/Admin/AdminRole/RolePermission");
+app.use("/admin/role-permission", RolePermissionRoue);
+
 const testPathRoute = require("./Routes/testPath");
 app.use("/api/test", testPathRoute);
 

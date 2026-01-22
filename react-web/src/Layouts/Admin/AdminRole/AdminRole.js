@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import AdminAddRole from "./AdminAddRole";
 import AdminEditRole from "./AdminEditRole";
 import { DeleteRole, GetAllAdminRole } from "../../Api";
@@ -6,6 +6,9 @@ import Notification from "../../Notification/Notification";
 
 const AdminRole = ({ data }) => {
   const { labelValue, permission } = data;
+  const actions = permission.find(
+    (item) => item.code === "role"
+  )?.permission_actions;
   const [roleList, setRoleList] = useState();
   const [isSelectedAddRole, setIsSelectedAddRole] = useState(false);
   const [isSelecteadRoleTable, setIsSelectedRoleTable] = useState(true);
@@ -104,7 +107,7 @@ const AdminRole = ({ data }) => {
           >
             All Role
           </button>
-          {permission["add"] == 1 && (
+          {actions.includes("add") && (
             <button
               value="add-role"
               className="btn"
@@ -121,16 +124,20 @@ const AdminRole = ({ data }) => {
               <thead>
                 <tr>
                   <td>role</td>
-                  {permission && permission["edit"] == 1 && <td>Edit</td>}
-                  {permission && permission["delete"] == 1 && <td>Delete</td>}
+                  {actions && actions.includes("edit") == 1 && (
+                    <td>Edit</td>
+                  )}
+                  {actions && actions.includes("delete") == 1 && (
+                    <td>Delete</td>
+                  )}
                 </tr>
               </thead>
               <tbody>
                 {roleList &&
                   roleList.map((role) => (
                     <tr key={role.id}>
-                      <td>{role.role}</td>
-                      {permission && permission["edit"] == 1 && (
+                      <td>{role.name}</td>
+                      {actions && actions.includes("edit") == 1 && (
                         <td>
                           <button
                             className="btn"
@@ -141,7 +148,7 @@ const AdminRole = ({ data }) => {
                           </button>
                         </td>
                       )}
-                      {permission && permission["delete"] == 1 && (
+                      {actions && actions.includes("delete") == 1 && (
                         <td>
                           <button
                             className="btn"

@@ -8,6 +8,8 @@ const AdminLogin = () => {
   const [settings, setSettings] = useState();
   const navigate = useNavigate();
   useEffect(() => {
+    localStorage.clear();
+    sessionStorage.clear();
     GetAdminAdvanceSetting().then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
