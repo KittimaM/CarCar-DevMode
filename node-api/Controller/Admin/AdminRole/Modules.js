@@ -21,7 +21,7 @@ const getMoldulesByPermission = (req, res, next) => {
     const decoded = jwt.verify(token, secret);
     const { role_id } = decoded;
     Conn.execute(
-      "SELECT module.id AS module_id, module.code, module.name, module.parent_id, permission.code AS permission_action FROM module JOIN role_permission ON role_permission.module_id = module.id JOIN permission ON permission.id = role_permission.permission_id WHERE role_permission.role_id = ? AND role_permission.is_allowed = 1",
+      "SELECT module.id AS module_id, module.code, module.name, module.parent_id, permission.code AS permission_action FROM module JOIN role_permission ON role_permission.module_id = module.id JOIN permission ON permission.id = role_permission.permission_id WHERE role_permission.role_id = ?",
       [role_id],
       function (error, result) {
         if (error) {

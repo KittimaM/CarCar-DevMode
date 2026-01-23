@@ -73,10 +73,11 @@ function AdminIndex() {
     }
   };
 
-  const ActiveComponent = componentMap[activeCode] || componentMap["home"];
+  const ActiveComponent =
+    componentMap[activeCode] || componentMap["home"];
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className="min-h-screen bg-gray-100">
       {isSidebarOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 lg:hidden"
@@ -89,7 +90,7 @@ function AdminIndex() {
           fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white z-50
           transform transition-transform duration-300
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
-          lg:translate-x-0 lg:static
+          lg:translate-x-0
         `}
       >
         <div className="p-5 font-bold text-xl border-b border-gray-700">
@@ -138,8 +139,8 @@ function AdminIndex() {
         })}
       </aside>
 
-      <div className="flex-1">
-        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30">
+      <div className="lg:ml-64">
+        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30 lg:ml-64">
           <button
             className="lg:hidden"
             onClick={toggleSidebar}
@@ -166,7 +167,7 @@ function AdminIndex() {
           </div>
         </header>
 
-        <main className="pt-20 lg:pl-64 p-4">
+        <main className="pt-20 p-4">
           <Suspense fallback={<div>Loading...</div>}>
             <ActiveComponent data={data} />
           </Suspense>

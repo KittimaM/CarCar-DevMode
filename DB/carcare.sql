@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 22, 2026 at 09:25 AM
+-- Generation Time: Jan 23, 2026 at 05:24 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -316,50 +316,6 @@ INSERT INTO `holiday` (`id`, `name`, `date`) VALUES
 -- --------------------------------------------------------
 
 --
--- Table structure for table `menu_items`
---
-
-CREATE TABLE `menu_items` (
-  `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `icon` varchar(50) DEFAULT NULL,
-  `parent_alias` varchar(50) DEFAULT NULL,
-  `alias` varchar(30) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `menu_items`
---
-
-INSERT INTO `menu_items` (`id`, `name`, `icon`, `parent_alias`, `alias`) VALUES
-(1, 'Home', 'ri-home-line', NULL, 'home'),
-(2, 'Schedule page | ตารางงาน', 'ri-calendar-line', NULL, 'schedule'),
-(3, 'Booking', 'ri-user-line', NULL, 'booking'),
-(4, 'Payment History | ประวัติการชําระเงิน', NULL, NULL, 'payment'),
-(5, 'User', 'ri-calendar-line', NULL, 'user'),
-(6, 'Staff', NULL, 'user', 'staff'),
-(7, 'Customer', NULL, 'user', 'customer'),
-(8, 'Customer car', NULL, 'user', 'customerCar'),
-(9, 'Onleave Personal', NULL, NULL, 'onLeavePersonal'),
-(10, 'DayOff List', NULL, NULL, 'dayOffList'),
-(11, 'Setting', NULL, NULL, 'setting'),
-(12, 'Car size', 'ri-user-line', 'setting', 'carSize'),
-(13, 'Service', 'ri-settings-2-line', 'setting', 'service'),
-(14, 'Channel', 'ri-user-line', 'setting', 'channel'),
-(15, 'Template', NULL, 'setting', 'template'),
-(16, 'Search', NULL, 'setting', 'search'),
-(17, 'Role', 'ri-logout-box-line', 'setting', 'role'),
-(18, 'Account', NULL, 'setting', 'account'),
-(19, 'Onleave List', 'ri-logout-box-line', 'setting', 'onLeaveList'),
-(20, 'Status', 'ri-user-line', 'setting', 'status'),
-(21, 'Onleave Type', NULL, 'setting', 'onLeaveType'),
-(22, 'Payment Type', NULL, 'setting', 'paymentType'),
-(23, 'Advance Setting', NULL, 'setting', 'advSetting'),
-(24, 'Holiday', NULL, 'setting', 'holiday');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `module`
 --
 
@@ -377,7 +333,10 @@ CREATE TABLE `module` (
 INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 (1, 'home', 'HOME', 0),
 (2, 'setting', 'SETTING', 0),
-(3, 'role', 'ACCESS CONFIG', 2);
+(3, 'role', 'ACCESS CONFIG', 2),
+(4, 'user', 'USER', 0),
+(5, 'customer', 'CUSTOMER', 4),
+(6, 'staff', 'STAFF', 4);
 
 -- --------------------------------------------------------
 
@@ -398,7 +357,20 @@ CREATE TABLE `module_permission` (
 INSERT INTO `module_permission` (`id`, `module_id`, `permission_id`) VALUES
 (1, 1, 1),
 (2, 2, 1),
-(3, 3, 1);
+(3, 3, 1),
+(4, 3, 2),
+(5, 1, 2),
+(6, 1, 3),
+(7, 1, 4),
+(8, 4, 1),
+(9, 5, 1),
+(10, 5, 2),
+(11, 5, 3),
+(12, 5, 4),
+(13, 6, 1),
+(14, 6, 2),
+(15, 6, 3),
+(16, 6, 4);
 
 -- --------------------------------------------------------
 
@@ -489,7 +461,9 @@ CREATE TABLE `permission` (
 
 INSERT INTO `permission` (`id`, `code`, `name`) VALUES
 (1, 'view', 'VIEW'),
-(2, 'add', 'ADD');
+(2, 'add', 'ADD'),
+(3, 'edit', 'EDIT'),
+(4, 'delete', 'DELETE');
 
 -- --------------------------------------------------------
 
@@ -605,7 +579,8 @@ CREATE TABLE `role` (
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
 (1, 'Super User', '2026-01-09 08:43:19', NULL),
-(2, 'admin', '2026-01-09 08:44:07', NULL);
+(2, 'admin', '2026-01-09 08:44:07', NULL),
+(12, 'final test', '2026-01-23 16:19:41', NULL);
 
 -- --------------------------------------------------------
 
@@ -617,19 +592,25 @@ CREATE TABLE `role_permission` (
   `id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   `module_id` int(11) NOT NULL,
-  `permission_id` int(11) NOT NULL,
-  `is_allowed` tinyint(1) DEFAULT 0
+  `permission_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `role_permission`
 --
 
-INSERT INTO `role_permission` (`id`, `role_id`, `module_id`, `permission_id`, `is_allowed`) VALUES
-(1, 1, 1, 1, 1),
-(2, 1, 2, 1, 1),
-(3, 1, 3, 1, 1),
-(4, 1, 3, 2, 1);
+INSERT INTO `role_permission` (`id`, `role_id`, `module_id`, `permission_id`) VALUES
+(4, 1, 2, 1),
+(5, 1, 3, 1),
+(6, 1, 3, 2),
+(7, 12, 1, 1),
+(8, 12, 1, 2),
+(9, 12, 1, 3),
+(10, 12, 4, 1),
+(11, 12, 5, 1),
+(12, 12, 5, 3),
+(13, 12, 6, 1),
+(14, 12, 6, 4);
 
 -- --------------------------------------------------------
 
@@ -702,7 +683,7 @@ CREATE TABLE `staff_user` (
 --
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`, `role_id`) VALUES
-(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-22 08:24:40', 'Super User', 1),
+(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-23 16:23:28', 'Super User', 1),
 (16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, NULL, '2026-01-09 08:05:14', 'Super User', 1),
 (17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, NULL, '2026-01-09 08:05:16', 'Super User', 1),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 1, 0, 0, NULL, '2026-01-09 08:05:19', 'Super User', 1),
@@ -877,13 +858,6 @@ ALTER TABLE `holiday`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `menu_items`
---
-ALTER TABLE `menu_items`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `idx_parent_alias` (`parent_alias`);
-
---
 -- Indexes for table `module`
 --
 ALTER TABLE `module`
@@ -934,13 +908,17 @@ ALTER TABLE `province`
 -- Indexes for table `role`
 --
 ALTER TABLE `role`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `role_permission`
 --
 ALTER TABLE `role_permission`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `role_id` (`role_id`),
+  ADD KEY `module_id` (`module_id`),
+  ADD KEY `permission_id` (`permission_id`);
 
 --
 -- Indexes for table `search_filter`
@@ -1047,22 +1025,16 @@ ALTER TABLE `holiday`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `menu_items`
---
-ALTER TABLE `menu_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `module_permission`
 --
 ALTER TABLE `module_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -1086,7 +1058,7 @@ ALTER TABLE `payment_type`
 -- AUTO_INCREMENT for table `permission`
 --
 ALTER TABLE `permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `province`
@@ -1098,13 +1070,13 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `role_permission`
 --
 ALTER TABLE `role_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
@@ -1172,6 +1144,14 @@ ALTER TABLE `on_leave`
   ADD CONSTRAINT `fk_on_leave_approved_by_id` FOREIGN KEY (`approved_by_id`) REFERENCES `staff_user` (`id`),
   ADD CONSTRAINT `fk_on_leave_on_leave_type_id` FOREIGN KEY (`on_leave_type_id`) REFERENCES `on_leave_type` (`id`),
   ADD CONSTRAINT `fk_on_leave_staff_id` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
+
+--
+-- Constraints for table `role_permission`
+--
+ALTER TABLE `role_permission`
+  ADD CONSTRAINT `role_permission_ibfk_1` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`),
+  ADD CONSTRAINT `role_permission_ibfk_2` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`),
+  ADD CONSTRAINT `role_permission_ibfk_3` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`);
 
 --
 -- Constraints for table `service`

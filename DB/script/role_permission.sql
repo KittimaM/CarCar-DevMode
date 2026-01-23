@@ -5,5 +5,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   `role_id` INT NOT NULL,
   `module_id` INT NOT NULL,
   `permission_id` INT NOT NULL,
-  `is_allowed` TINYINT(1) DEFAULT 0
+  FOREIGN KEY (role_id) REFERENCES role(id),
+  FOREIGN KEY (module_id) REFERENCES module(id),
+  FOREIGN KEY (permission_id) REFERENCES permission(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

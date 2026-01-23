@@ -100,8 +100,8 @@ export const GetAllAdminRole = () => {
   return getApi(URLList.AdminRole);
 };
 
-export const PostAdminAddRole = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAdminAddRole = (jsonData) => {
+  return postApi(URLList.AdminRole, jsonData);
 };
 
 export const DeleteRole = (jsonData) => {
@@ -391,11 +391,6 @@ export const GetAllAdminRoleLabel = () => {
   return getApi(URLList.AdminRoleLabel);
 };
 
-//---------------------
-export const GetAllAdminMenuItems = () => {
-  return getApi(URLList.AdminMenuItems);
-};
-
 export const AdminGetLatestOnLeaveByType = (jsonData) => {
   return getApi(URLList.AdminLatestOnLeaveByTypePersonal, jsonData, true);
 };
@@ -454,12 +449,16 @@ export const UpdateAdminUnlockStaff = (jsonData) => {
 
 export const GetAllModules = () => {
   return getApi(URLList.Modules);
-}
+};
 
 export const GetRolePermissionById = () => {
-  return getApi(URLList.RolePermission+'/id', null, true);
-}
+  return getApi(URLList.RolePermission + "/id", null, true);
+};
 
 export const GetModuleByPermission = () => {
-  return getApi(URLList.Modules+ "/by-permission", null, true);
-}
+  return getApi(URLList.Modules + "/by-permission", null, true);
+};
+
+export const GetAllPermissionActions = () => {
+  return getApi(URLList.permissionActions);
+};
