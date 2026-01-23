@@ -13,9 +13,6 @@ function AdminIndex() {
   const [openSubmenus, setOpenSubmenus] = useState({});
 
   useEffect(() => {
-    const saved = sessionStorage.getItem("activeMenu");
-    if (saved) setActiveCode(saved);
-
     GetModuleByPermission().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         const result = Object.values(
@@ -65,7 +62,6 @@ function AdminIndex() {
     }
 
     setActiveCode(item.code);
-    sessionStorage.setItem("activeMenu", item.code);
     setData({ labelValue: item.name, permission });
 
     if (window.innerWidth < 1024) {
