@@ -13,20 +13,41 @@ const AdminGetAllRole = (req, res, next) => {
   });
 };
 
-const AdminAddRole = (req, res, next) => {
-  const columns = Object.keys(req.body);
-  const values = Object.values(req.body);
+const AdminAddRole = (req, res) => {
+  const { role_name, allowedAccess } = req.body;
+
   Conn.execute(
-    `INSERT INTO role(${columns.map((item) => `${item}`).join(",")})
-    VALUES (${values.map((item) => `'${item}'`).join(",")})`,
-    function (error, result) {
+    `INSERT INTO role (name) VALUES (?)`,
+    [role_name],
+    (error, result) => {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
-      } else {
-        const insertId = result.insertId;
-        res.json({ status: "SUCCESS", msg: insertId });
+        return res.json({ status: "ERROR", msg: error });
       }
-    }
+
+      const role_id = result.insertId;
+
+      const values = allowedAccess.map((item) => [
+        role_id,
+        item.module_id,
+        item.permission_id,
+      ]);
+
+      Conn.query(
+        `INSERT INTO role_permission (role_id, module_id, permission_id)
+         VALUES ?`,
+        [values],
+        (error) => {
+          if (error) {
+            return res.json({ status: "ERROR", msg: error });
+          }
+
+          res.json({
+            status: "SUCCESS",
+            msg: "SUCCESS",
+          });
+        },
+      );
+    },
   );
 };
 
@@ -57,7 +78,7 @@ const AdminUpdateRole = (req, res, next) => {
       } else {
         res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 
