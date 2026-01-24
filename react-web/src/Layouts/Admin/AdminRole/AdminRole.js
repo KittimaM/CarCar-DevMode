@@ -6,33 +6,23 @@ import Notification from "../../Notification/Notification";
 
 const AdminRole = ({ data }) => {
   const { labelValue, permission } = data;
-  const actions = permission.find(
-    (item) => item.code === "role"
-  )?.permission_actions;
-  const [roleList, setRoleList] = useState();
-  const [isSelectedAddRole, setIsSelectedAddRole] = useState(false);
-  const [isSelecteadRoleTable, setIsSelectedRoleTable] = useState(true);
-  const [isSelectedEditItem, setIsSelectedEditItem] = useState(false);
-  const [editItem, setEditItem] = useState();
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationStatus, setNotificationStatus] = useState();
+  const actions =
+    permission.find((item) => item.code === "role")?.permission_actions || [];
 
-  const handleShowNotification = () => {
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-      setNotificationMessage(null);
-    }, 3000);
-  };
+  const [roleList, setRoleList] = useState([]);
+  const [viewMode, setViewMode] = useState("list");
+  const [editItem, setEditItem] = useState(null);
+  const [notificationKey, setNotificationKey] = useState(0);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    status: "",
+  });
 
   const fetchAllRole = () => {
-    GetAllAdminRole().then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
+    GetAllAdminRole().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
         setRoleList(msg);
-      } else {
-        console.log(data);
       }
     });
   };
@@ -41,131 +31,129 @@ const AdminRole = ({ data }) => {
     fetchAllRole();
   }, []);
 
-  const handleSelectEditId = (selectedItem) => {
-    setIsSelectedEditItem(true);
-    setIsSelectedAddRole(false);
-    setIsSelectedRoleTable(false);
-    setEditItem(selectedItem);
-  };
-
-  const handleSelectedContent = (event) => {
-    event.preventDefault();
-    const { value } = event.target;
-    setIsSelectedAddRole(value == "add-role" ? true : false);
-    setIsSelectedRoleTable(value == "role-table" ? true : false);
-    setIsSelectedEditItem(false);
-    if (value == "role-table") {
-      fetchAllRole();
-    }
-  };
-
-  const handleDeleteRole = (event) => {
-    event.preventDefault();
-    const jsonData = {
-      id: event.target.value,
-    };
-    DeleteRole(jsonData).then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
-        setNotificationMessage("success deleted");
-        setNotificationStatus(status);
-        handleShowNotification();
+  const handleDeleteRole = (id, name) => {
+    DeleteRole({ id }).then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setNotification({
+          show: true,
+          message: `${name} is successfully deleted`,
+          status: status,
+        });
+        setNotificationKey((prev) => prev + 1);
         fetchAllRole();
-      } else if (status == "ERROR") {
-        if (msg.code == "ER_ROW_IS_REFERENCED_2") {
-          setNotificationMessage("in use");
-          setNotificationStatus(status);
-          handleShowNotification();
-        } else {
-          console.log(data);
+      } else if (status === "ERROR") {
+        if (msg == "IN USE") {
+          setNotification({
+            show: true,
+            message: `${name} is currently in use`,
+            status: status,
+          });
+          setNotificationKey((prev) => prev + 1);
         }
-      } else {
-        console.log(data);
       }
     });
   };
 
-  return (
-    <div>
-      <div className="flex flex-col bg-[#ffffff] mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
-        {showNotification && (
-          <Notification
-            message={notificationMessage}
-            type={notificationStatus}
-          />
-        )}
-        <div>
-          <div className="flex justify-start items-center text-4xl font-bold py-10 pl-10 border-b-2 border-[#e5e5e5]">
-            {labelValue}
-          </div>
+  const handleEditRole = (role) => {
+    setEditItem(role);
+    setViewMode("edit");
+  };
 
+  return (
+    <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+      {notification.show && (
+        <Notification
+          key={notificationKey}
+          message={notification.message}
+          type={notification.status}
+        />
+      )}
+
+      <div className="text-4xl font-bold py-8 pl-6 border-b-2 border-gray-200">
+        <div className="breadcrumbs">
+          <ul>
+            <li>{labelValue}</li>
+            {viewMode === "list" && <li className="text-xl">ROLE LIST</li>}
+            {viewMode === "add" && <li className="text-xl">CREATE NEW ROLE</li>}
+            {viewMode === "edit" && <li className="text-xl">EDIT ROLE</li>}
+          </ul>
+        </div>
+      </div>
+
+      <div className="flex gap-4 my-6">
+        <button
+          className={`btn btn-wide font-bold ${
+            viewMode === "list" ? "btn-primary" : "btn-outline"
+          }`}
+          onClick={() => {
+            setViewMode("list");
+            fetchAllRole();
+          }}
+        >
+          Role List
+        </button>
+
+        {actions.includes("add") && (
           <button
-            value="role-table"
-            className="btn"
-            disabled={isSelecteadRoleTable}
-            onClick={handleSelectedContent}
+            className={`btn btn-wide font-bold ${
+              viewMode === "add" ? "btn-primary" : "btn-outline"
+            }`}
+            onClick={() => setViewMode("add")}
           >
-            All Role
+            + Create New Role
           </button>
-          {actions.includes("add") && (
-            <button
-              value="add-role"
-              className="btn"
-              disabled={isSelectedAddRole}
-              onClick={handleSelectedContent}
-            >
-              Add Role
-            </button>
-          )}
-          {isSelectedAddRole && <AdminAddRole />}
-          {isSelectedEditItem && <AdminEditRole editItem={editItem} />}
-          {isSelecteadRoleTable && (
-            <table className="table table-lg">
-              <thead>
-                <tr>
-                  <td>role</td>
-                  {actions && actions.includes("edit") == 1 && (
-                    <td>Edit</td>
-                  )}
-                  {actions && actions.includes("delete") == 1 && (
-                    <td>Delete</td>
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {roleList &&
-                  roleList.map((role) => (
-                    <tr key={role.id}>
-                      <td>{role.name}</td>
-                      {actions && actions.includes("edit") == 1 && (
-                        <td>
+        )}
+      </div>
+
+      {viewMode === "add" && <AdminAddRole />}
+      {viewMode === "edit" && editItem && <AdminEditRole editItem={editItem} />}
+
+      {viewMode === "list" && (
+        <div className="h-screen overflow-y-auto">
+          <table className="table table-lg table-pin-rows">
+            <thead>
+              <tr>
+                <th>Role</th>
+                {(actions.includes("edit") || actions.includes("delete")) && (
+                  <th className="text-right">Actions</th>
+                )}
+              </tr>
+            </thead>
+
+            <tbody>
+              {roleList.map((role) => (
+                <tr key={role.id}>
+                  <td>{role.name}</td>
+
+                  {(actions.includes("edit") || actions.includes("delete")) && (
+                    <td className="text-right">
+                      <div className="flex justify-end gap-2">
+                        {actions.includes("edit") && (
                           <button
-                            className="btn"
-                            onClick={() => handleSelectEditId(role)}
-                            value={role.id}
+                            className="btn btn-sm"
+                            onClick={() => handleEditRole(role.id)}
                           >
                             Edit
                           </button>
-                        </td>
-                      )}
-                      {actions && actions.includes("delete") == 1 && (
-                        <td>
+                        )}
+
+                        {actions.includes("delete") && (
                           <button
-                            className="btn"
-                            onClick={handleDeleteRole}
-                            value={role.id}
+                            className="btn btn-sm btn-error text-white"
+                            onClick={() => handleDeleteRole(role.id, role.name)}
                           >
                             Delete
                           </button>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          )}
+                        )}
+                      </div>
+                    </td>
+                  )}
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </div>
+      )}
     </div>
   );
 };

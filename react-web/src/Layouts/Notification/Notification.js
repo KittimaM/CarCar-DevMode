@@ -1,41 +1,39 @@
 import React, { useEffect, useState } from "react";
 
-const Notification = ({ message, type }) => {
+const Notification = ({ message, type = "SUCCESS", duration = 3000 }) => {
   const [show, setShow] = useState(true);
-  const [colorNotificationPanel, setColorNotificationPanel] = useState();
 
   useEffect(() => {
-    if (type == "SUCCESS") {
-      setColorNotificationPanel("bg-lime-100");
-    } else if (type == "ERROR") {
-      setColorNotificationPanel("bg-rose-300");
-    }
-  }, []);
+    const timer = setTimeout(() => setShow(false), duration);
+    return () => clearTimeout(timer);
+  }, [type, duration]);
 
-  const handleClose = () => {
-    setShow(false);
+  if (!show) return null;
+
+  const getAlertClass = () => {
+    switch (type) {
+      case "ERROR":
+        return "bg-red-100 text-red-800";
+      case "WARNING":
+        return "bg-yellow-100 text-yellow-800";
+      case "SUCCESS":
+        return "bg-green-100 text-green-800";
+      default:
+        return;
+    }
   };
 
   return (
-    <div>
-      {colorNotificationPanel && (
-        <div
-          className={`${
-            show ? "block" : "hidden"
-          } fixed top-5 right-5 ${colorNotificationPanel} p-4 border border-gray-200 shadow-md rounded-md transition-all duration-300 z-50`}
-          role="alert"
+    <div className="fixed top-5 right-5 z-50 w-full max-w-sm">
+      <div role="alert" className={`alert shadow-lg ${getAlertClass()}`}>
+        <span>{message}</span>
+        <button
+          onClick={() => setShow(false)}
+          className="btn btn-sm btn-ghost ml-auto"
         >
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-800">{message}</p>
-            <button
-              onClick={handleClose}
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
-            >
-              &#10006;
-            </button>
-          </div>
-        </div>
-      )}
+          ✕
+        </button>
+      </div>
     </div>
   );
 };

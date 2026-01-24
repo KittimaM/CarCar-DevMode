@@ -53,13 +53,39 @@ const AdminAddRole = (req, res) => {
 
 const AdminDeleteRole = (req, res, next) => {
   const { id } = req.body;
-  Conn.execute("DELETE FROM role WHERE id = ?", [id], function (error, result) {
-    if (error) {
-      res.json({ status: "ERROR", msg: error });
-    } else {
-      res.json({ status: "SUCCESS", msg: "SUCCESS" });
-    }
-  });
+  Conn.execute(
+    "SELECT role_id FROM staff_user WHERE role_id = ? ",
+    [id],
+    function (error, users) {
+      if (error) {
+        res.json({ status: "ERROR", msg: error });
+      }
+      if (users.length !== 0) {
+        res.json({ status: "ERROR", msg: "IN USE" });
+      } else {
+        Conn.execute(
+          "DELETE FROM role_permission WHERE role_id = ?",
+          [id],
+          function (error) {
+            if (error) {
+              res.json({ status: "ERROR", msg: error });
+            } else {
+              Conn.execute(
+                "DELETE FROM role WHERE id = ? ",
+                [id],
+                function (error) {
+                  if (error) {
+                    res.json({ status: "ERROR", msg: error });
+                  }
+                  res.json({ status: "SUCCESS", msg: "SUCCESS" });
+                },
+              );
+            }
+          },
+        );
+      }
+    },
+  );
 };
 
 const AdminUpdateRole = (req, res, next) => {
