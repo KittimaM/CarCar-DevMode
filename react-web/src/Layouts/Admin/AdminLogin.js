@@ -45,7 +45,7 @@ const AdminLogin = () => {
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 h-screen w-full">
         <div className="hidden sm:block">
-          <img className="w-full h-full object " src={LoginImg} alt="" />
+          <img className="w-full h-full object" src={LoginImg} alt="" />
         </div>
 
         <div className="bg-gray-100 flex flex-col justify-center">

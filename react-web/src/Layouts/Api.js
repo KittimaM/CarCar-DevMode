@@ -465,4 +465,8 @@ export const GetAllPermissionActions = () => {
 
 export const GetRolePermissionById = (jsonData) => {
   return postApi(URLList.RolePermission + "/id", jsonData);
-}
+};
+
+export const GetStaffUserById = (jsonData) => {
+  return postApi(URLList.AdminStaff + "/id", jsonData);
+};

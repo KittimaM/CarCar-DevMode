@@ -6,6 +6,7 @@ const {
   AdminUpdateStaffUser,
   AdminActiveStaff,
   AdminUnlockStaff,
+  GetStaffUserById,
 } = require("../../../Controller/Admin/AdminUser/AdminUser");
 var router = express.Router();
 
@@ -15,5 +16,6 @@ router.delete("/", AdminDeleteStaffUser);
 router.put("/", AdminUpdateStaffUser);
 router.put("/active-user", AdminActiveStaff);
 router.put("/unlock-user", AdminUnlockStaff);
+router.post("/id", GetStaffUserById);
 
 module.exports = router;

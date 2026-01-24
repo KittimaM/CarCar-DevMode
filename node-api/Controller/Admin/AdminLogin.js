@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    `SELECT id, username, password, role_id, failed_login_count, is_locked, is_active, role_name FROM staff_user WHERE username = ? LIMIT 1`,
+    `SELECT id, username, password, role_id, failed_login_count, is_locked, role_name FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -26,18 +26,12 @@ const AdminLogin = (req, res, next) => {
           role_id,
           failed_login_count,
           is_locked,
-          is_active,
           role_name,
         } = result[0];
         if (is_locked == 1) {
           return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${staff_failed_login_limit} times`,
-          });
-        } else if (is_active != 1) {
-          return res.json({
-            status: "INACTIVE",
-            msg: `this user is inactive`,
           });
         } else {
           bcrypt.compare(passWord, password, function (error, result) {

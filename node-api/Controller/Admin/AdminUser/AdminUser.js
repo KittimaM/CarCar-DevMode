@@ -53,15 +53,15 @@ const AdminDeleteStaffUser = (req, res, next) => {
 };
 
 const AdminUpdateStaffUser = (req, res, next) => {
-  const { id, username, name, password, role_id, role_name } = req.body;
+  const { id, username, name, password, role_id } = req.body;
   bcrypt.hash(password, saltRounds, function (error, hash) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     } else {
       Conn.execute(
-        `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ?, role_name = ? WHERE id = ?`,
-        [username, name, hash, role_id, role_name, id],
-        function (error, result) {
+        `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ? WHERE id = ?`,
+        [username, name, hash, role_id, id],
+        function (error) {
           if (error) {
             return res.json({ status: "ERROR", msg: error });
           } else {
@@ -93,11 +93,28 @@ const AdminUnlockStaff = (req, res, next) => {
   Conn.execute(
     `UPDATE staff_user SET is_locked = 0, failed_login_count = 0, locked_reason = NULL WHERE id = ?`,
     [id],
-    function (error, result) {
+    function (error) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    },
+  );
+};
+
+const GetStaffUserById = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "SELECT * FROM staff_user WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else if (result.length == 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: result[0] });
       }
     },
   );
@@ -110,4 +127,5 @@ module.exports = {
   AdminUpdateStaffUser,
   AdminActiveStaff,
   AdminUnlockStaff,
+  GetStaffUserById,
 };

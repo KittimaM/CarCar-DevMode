@@ -6,9 +6,7 @@ import Notification from "../../Notification/Notification";
 
 const AdminRole = ({ data }) => {
   const { labelValue, permission } = data;
-  const actions =
-    permission.find((item) => item.code === "role")?.permission_actions || [];
-
+  const actions = permission.find((p) => p.code === "role").permission_actions;
   const [roleList, setRoleList] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
@@ -39,7 +37,6 @@ const AdminRole = ({ data }) => {
           message: `${name} is successfully deleted`,
           status: status,
         });
-        setNotificationKey((prev) => prev + 1);
         fetchAllRole();
       } else if (status === "ERROR") {
         if (msg == "IN USE") {
@@ -48,9 +45,9 @@ const AdminRole = ({ data }) => {
             message: `${name} is currently in use`,
             status: status,
           });
-          setNotificationKey((prev) => prev + 1);
         }
       }
+      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -65,7 +62,7 @@ const AdminRole = ({ data }) => {
         <Notification
           key={notificationKey}
           message={notification.message}
-          type={notification.status}
+          status={notification.status}
         />
       )}
 

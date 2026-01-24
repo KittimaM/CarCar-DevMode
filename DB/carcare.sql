@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 24, 2026 at 05:04 PM
+-- Generation Time: Jan 24, 2026 at 08:50 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -345,32 +345,30 @@ INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 --
 
 CREATE TABLE `module_permission` (
-  `id` int(11) NOT NULL,
-  `module_id` int(11) DEFAULT NULL,
-  `permission_id` int(11) DEFAULT NULL
+  `module_id` int(11) NOT NULL,
+  `permission_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `module_permission`
 --
 
-INSERT INTO `module_permission` (`id`, `module_id`, `permission_id`) VALUES
-(1, 1, 1),
-(2, 2, 1),
-(3, 3, 1),
-(4, 3, 2),
-(5, 1, 2),
-(6, 1, 3),
-(7, 1, 4),
-(8, 4, 1),
-(9, 5, 1),
-(10, 5, 2),
-(11, 5, 3),
-(12, 5, 4),
-(13, 6, 1),
-(14, 6, 2),
-(15, 6, 3),
-(16, 6, 4);
+INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
+(1, 1),
+(2, 1),
+(3, 1),
+(3, 2),
+(3, 3),
+(3, 4),
+(4, 1),
+(5, 1),
+(5, 2),
+(5, 3),
+(5, 4),
+(6, 1),
+(6, 2),
+(6, 3),
+(6, 4);
 
 -- --------------------------------------------------------
 
@@ -578,7 +576,9 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', '2026-01-24 16:03:37');
+(1, 'Super User', '2026-01-09 08:43:19', '2026-01-24 16:15:51'),
+(95, 'Super User2', '2026-01-24 16:06:34', '2026-01-24 18:45:36'),
+(107, 'be', '2026-01-24 19:35:06', NULL);
 
 -- --------------------------------------------------------
 
@@ -598,12 +598,11 @@ CREATE TABLE `role_permission` (
 
 INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 1, 1),
-(1, 1, 2),
-(1, 1, 3),
-(1, 1, 4),
 (1, 2, 1),
 (1, 3, 1),
 (1, 3, 2),
+(1, 3, 3),
+(1, 3, 4),
 (1, 4, 1),
 (1, 5, 1),
 (1, 5, 2),
@@ -612,7 +611,11 @@ INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 6, 1),
 (1, 6, 2),
 (1, 6, 3),
-(1, 6, 4);
+(1, 6, 4),
+(95, 1, 1),
+(95, 2, 1),
+(95, 3, 1),
+(107, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -671,12 +674,9 @@ CREATE TABLE `staff_user` (
   `username` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `is_active` tinyint(4) NOT NULL DEFAULT 1,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
   `is_locked` tinyint(4) NOT NULL DEFAULT 0,
   `locked_reason` varchar(150) DEFAULT NULL,
-  `latest_logged_in` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `role_name` varchar(50) NOT NULL,
   `role_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -684,15 +684,15 @@ CREATE TABLE `staff_user` (
 -- Dumping data for table `staff_user`
 --
 
-INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`, `role_id`) VALUES
-(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-24 15:57:33', 'Super User', 1),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, NULL, '2026-01-09 08:05:14', 'Super User', 1),
-(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, NULL, '2026-01-09 08:05:16', 'Super User', 1),
-(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 1, 0, 0, NULL, '2026-01-09 08:05:19', 'Super User', 1),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 1, 0, 0, NULL, '2026-01-09 08:05:21', 'Super User', 1),
-(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 1, 0, 0, NULL, '2026-01-09 08:05:22', 'Super User', 1),
-(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 1, 0, 0, NULL, '2026-01-09 08:05:24', 'Super User', 1),
-(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 1, 0, 0, NULL, '2026-01-09 08:05:26', 'Super User', 1);
+INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_count`, `is_locked`, `locked_reason`, `role_id`) VALUES
+(6, 'admin', 'admin', '$2b$10$OPHGn5plf0P8ISXLHiSo5uxpZeUvYdd13995gMIHcRBkPkG3Yny3.', 0, 0, NULL, 1),
+(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 0, 0, NULL, 95),
+(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 0, 0, NULL, 1),
+(18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 0, 0, NULL, 1),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 0, NULL, 1),
+(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 0, 0, NULL, 1),
+(21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 0, 1, NULL, 1),
+(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 0, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -869,7 +869,8 @@ ALTER TABLE `module`
 -- Indexes for table `module_permission`
 --
 ALTER TABLE `module_permission`
-  ADD PRIMARY KEY (`id`);
+  ADD KEY `module_id` (`module_id`),
+  ADD KEY `permission_id` (`permission_id`);
 
 --
 -- Indexes for table `on_leave`
@@ -1032,12 +1033,6 @@ ALTER TABLE `module`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `module_permission`
---
-ALTER TABLE `module_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
-
---
 -- AUTO_INCREMENT for table `on_leave`
 --
 ALTER TABLE `on_leave`
@@ -1071,7 +1066,7 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
@@ -1089,7 +1084,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT for table `staff_user`
 --
 ALTER TABLE `staff_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `status`
@@ -1131,6 +1126,13 @@ ALTER TABLE `customer_car`
 --
 ALTER TABLE `day_off`
   ADD CONSTRAINT `day_off_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
+
+--
+-- Constraints for table `module_permission`
+--
+ALTER TABLE `module_permission`
+  ADD CONSTRAINT `module_permission_ibfk_1` FOREIGN KEY (`module_id`) REFERENCES `module` (`id`),
+  ADD CONSTRAINT `module_permission_ibfk_2` FOREIGN KEY (`permission_id`) REFERENCES `permission` (`id`);
 
 --
 -- Constraints for table `on_leave`
