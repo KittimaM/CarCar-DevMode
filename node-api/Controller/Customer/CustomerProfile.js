@@ -14,17 +14,17 @@ const CustomerGetProfile = (req, res, next) => {
       [id],
       function (error, results) {
         if (error) {
-          res.json({ status: "ERROR", msg: error });
+          return res.json({ status: "ERROR", msg: error });
         }
         if (results.length == 0) {
-          res.json({ status: "NO DATA", msg: "NO DATA" });
+          return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
-          res.json({ status: "SUCCESS", msg: results });
+          return res.json({ status: "SUCCESS", msg: results });
         }
-      }
+      },
     );
   } catch (err) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 
@@ -40,14 +40,14 @@ const CustomerUpdateProfile = (req, res, next) => {
       [phone, name, id],
       function (error, result) {
         if (error) {
-          res.json({ status: error.code, msg: error.sqlMessage });
+          return res.json({ status: error.code, msg: error.sqlMessage });
         } else {
-          res.json({ status: "SUCCESS", msg: "SUCCESS" });
+          return res.json({ status: "SUCCESS", msg: "SUCCESS" });
         }
-      }
+      },
     );
   } catch (err) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 

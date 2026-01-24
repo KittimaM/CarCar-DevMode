@@ -3,12 +3,12 @@ const Conn = require("../../../db");
 const AdminGetAllRole = (req, res, next) => {
   Conn.execute("SELECT * FROM role", function (error, results) {
     if (error) {
-      res.json({ status: "ERROR", msg: error });
+      return res.json({ status: "ERROR", msg: error });
     }
     if (results.length == 0) {
-      res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
-      res.json({ status: "SUCCESS", msg: results });
+      return res.json({ status: "SUCCESS", msg: results });
     }
   });
 };
@@ -41,7 +41,7 @@ const AdminAddRole = (req, res) => {
             return res.json({ status: "ERROR", msg: error });
           }
 
-          res.json({
+          return res.json({
             status: "SUCCESS",
             msg: "SUCCESS",
           });
@@ -58,26 +58,27 @@ const AdminDeleteRole = (req, res, next) => {
     [id],
     function (error, users) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       }
       if (users.length !== 0) {
-        res.json({ status: "ERROR", msg: "IN USE" });
+        return res.json({ status: "ERROR", msg: "IN USE" });
       } else {
         Conn.execute(
           "DELETE FROM role_permission WHERE role_id = ?",
           [id],
           function (error) {
             if (error) {
-              res.json({ status: "ERROR", msg: error });
+              return res.json({ status: "ERROR", msg: error });
             } else {
               Conn.execute(
                 "DELETE FROM role WHERE id = ? ",
                 [id],
                 function (error) {
                   if (error) {
-                    res.json({ status: "ERROR", msg: error });
+                    return res.json({ status: "ERROR", msg: error });
+                  } else {
+                    return res.json({ status: "SUCCESS", msg: "SUCCESS" });
                   }
-                  res.json({ status: "SUCCESS", msg: "SUCCESS" });
                 },
               );
             }
@@ -89,21 +90,45 @@ const AdminDeleteRole = (req, res, next) => {
 };
 
 const AdminUpdateRole = (req, res, next) => {
-  const { id } = req.body;
-  const columns = Object.keys(req.body);
-  const values = Object.values(req.body);
+  const { role_id, role_name, allowedAccess } = req.body;
 
   Conn.execute(
-    `UPDATE role SET ${columns
-      .map((item) => `${item} = ?`)
-      .join(", ")}  WHERE id = ?`,
-    [...values, id],
-    function (error, result) {
+    "UPDATE role SET name = ?, updated_at = CURRENT_TIMESTAMP() WHERE id = ?",
+    [role_name, role_id],
+    function (error) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
-      } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "ERROR", msg: error });
       }
+      Conn.execute(
+        "DELETE FROM role_permission WHERE role_id = ?",
+        [role_id],
+        function (error) {
+          if (error) {
+            return res.json({ status: "ERROR", msg: error });
+          }
+          const values = allowedAccess.map((item) => [
+            role_id,
+            item.module_id,
+            item.permission_id,
+          ]);
+
+          Conn.query(
+            `INSERT INTO role_permission (role_id, module_id, permission_id)
+         VALUES ?`,
+            [values],
+            (error) => {
+              if (error) {
+                return res.json({ status: "ERROR", msg: error });
+              } else {
+                return res.json({
+                  status: "SUCCESS",
+                  msg: "SUCCESS",
+                });
+              }
+            },
+          );
+        },
+      );
     },
   );
 };

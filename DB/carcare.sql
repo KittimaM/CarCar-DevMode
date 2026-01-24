@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 23, 2026 at 05:24 PM
+-- Generation Time: Jan 24, 2026 at 05:04 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -578,9 +578,7 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', NULL),
-(2, 'admin', '2026-01-09 08:44:07', NULL),
-(12, 'final test', '2026-01-23 16:19:41', NULL);
+(1, 'Super User', '2026-01-09 08:43:19', '2026-01-24 16:03:37');
 
 -- --------------------------------------------------------
 
@@ -589,7 +587,6 @@ INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
 --
 
 CREATE TABLE `role_permission` (
-  `id` int(11) NOT NULL,
   `role_id` int(11) NOT NULL,
   `module_id` int(11) NOT NULL,
   `permission_id` int(11) NOT NULL
@@ -599,18 +596,23 @@ CREATE TABLE `role_permission` (
 -- Dumping data for table `role_permission`
 --
 
-INSERT INTO `role_permission` (`id`, `role_id`, `module_id`, `permission_id`) VALUES
-(4, 1, 2, 1),
-(5, 1, 3, 1),
-(6, 1, 3, 2),
-(7, 12, 1, 1),
-(8, 12, 1, 2),
-(9, 12, 1, 3),
-(10, 12, 4, 1),
-(11, 12, 5, 1),
-(12, 12, 5, 3),
-(13, 12, 6, 1),
-(14, 12, 6, 4);
+INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
+(1, 1, 1),
+(1, 1, 2),
+(1, 1, 3),
+(1, 1, 4),
+(1, 2, 1),
+(1, 3, 1),
+(1, 3, 2),
+(1, 4, 1),
+(1, 5, 1),
+(1, 5, 2),
+(1, 5, 3),
+(1, 5, 4),
+(1, 6, 1),
+(1, 6, 2),
+(1, 6, 3),
+(1, 6, 4);
 
 -- --------------------------------------------------------
 
@@ -683,7 +685,7 @@ CREATE TABLE `staff_user` (
 --
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`, `role_name`, `role_id`) VALUES
-(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-23 16:23:28', 'Super User', 1),
+(6, 'admin', 'admin', '$2b$10$8hbTleBaOOY7vfmMqQ5xcuo0uLLlwCO68/5pAInNVP8IkvUqb6DDq', 1, 0, 0, NULL, '2026-01-24 15:57:33', 'Super User', 1),
 (16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 1, 0, 0, NULL, '2026-01-09 08:05:14', 'Super User', 1),
 (17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 1, 0, 0, NULL, '2026-01-09 08:05:16', 'Super User', 1),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 1, 0, 0, NULL, '2026-01-09 08:05:19', 'Super User', 1),
@@ -915,7 +917,6 @@ ALTER TABLE `role`
 -- Indexes for table `role_permission`
 --
 ALTER TABLE `role_permission`
-  ADD PRIMARY KEY (`id`),
   ADD KEY `role_id` (`role_id`),
   ADD KEY `module_id` (`module_id`),
   ADD KEY `permission_id` (`permission_id`);
@@ -1070,13 +1071,7 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
-
---
--- AUTO_INCREMENT for table `role_permission`
---
-ALTER TABLE `role_permission`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=95;
 
 --
 -- AUTO_INCREMENT for table `search_filter`

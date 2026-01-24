@@ -6,12 +6,12 @@ const secret = process.env.SECRET_WORD;
 const AdminGetChannel = (req, res, next) => {
   Conn.execute(`SELECT * FROM channel`, function (error, results) {
     if (error) {
-      res.json({ status: "ERROR", msg: error });
+      return res.json({ status: "ERROR", msg: error });
     }
     if (results.length == 0) {
-      res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
-      res.json({ status: "SUCCESS", msg: results });
+      return res.json({ status: "SUCCESS", msg: results });
     }
   });
 };
@@ -23,12 +23,12 @@ const AdminAddChannel = (req, res, next) => {
     [name, description, is_available, service],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
         const insertId = result.insertId;
-        res.json({ status: "SUCCESS", msg: insertId });
+        return res.json({ status: "SUCCESS", msg: insertId });
       }
-    }
+    },
   );
 };
 
@@ -39,11 +39,11 @@ const AdminDeleteChannel = (req, res, next) => {
     [id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 
@@ -54,11 +54,11 @@ const AdminUpdateChannel = (req, res, next) => {
     [name, description, is_available, service, id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 

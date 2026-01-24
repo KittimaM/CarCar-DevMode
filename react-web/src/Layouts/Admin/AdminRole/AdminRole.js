@@ -54,8 +54,8 @@ const AdminRole = ({ data }) => {
     });
   };
 
-  const handleEditRole = (role) => {
-    setEditItem(role);
+  const handleEditRole = (id) => {
+    setEditItem(id);
     setViewMode("edit");
   };
 
@@ -130,8 +130,8 @@ const AdminRole = ({ data }) => {
                       <div className="flex justify-end gap-2">
                         {actions.includes("edit") && (
                           <button
-                            className="btn btn-sm"
-                            onClick={() => handleEditRole(role.id)}
+                            className="btn btn-warning"
+                            onClick={() => handleEditRole(role)}
                           >
                             Edit
                           </button>
@@ -139,7 +139,7 @@ const AdminRole = ({ data }) => {
 
                         {actions.includes("delete") && (
                           <button
-                            className="btn btn-sm btn-error text-white"
+                            className="btn btn-error text-white"
                             onClick={() => handleDeleteRole(role.id, role.name)}
                           >
                             Delete

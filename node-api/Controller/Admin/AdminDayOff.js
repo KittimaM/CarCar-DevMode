@@ -6,12 +6,12 @@ const secret = process.env.SECRET_WORD;
 const AdminGetAllDayOff = (req, res, next) => {
   Conn.execute("SELECT * FROM day_off", function (error, results) {
     if (error) {
-      res.json({ status: "ERROR", msg: error });
+      return res.json({ status: "ERROR", msg: error });
     }
     if (results.length == 0) {
-      res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
-      res.json({ status: "SUCCESS", msg: results });
+      return res.json({ status: "SUCCESS", msg: results });
     }
   });
 };
@@ -23,11 +23,11 @@ const AdminUpdateDayOff = (req, res, next) => {
     [day_off, staff_id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 module.exports = { AdminGetAllDayOff, AdminUpdateDayOff };

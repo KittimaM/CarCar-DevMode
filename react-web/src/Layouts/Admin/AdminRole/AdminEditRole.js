@@ -1,306 +1,316 @@
-import React, { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import {
+  GetAllAdminRoleLabel,
+  GetRolePermissionById,
+  UpdateRole,
+} from "../../Api";
 import Notification from "../../Notification/Notification";
-import { GetAllAdminRoleLabel, UpdateRole } from "../../Api";
-import URLList from "../../Url/URLList";
 
 const AdminEditRole = ({ editItem }) => {
-  const [newEditItem, setNewEditItem] = useState(editItem);
-  const [roleLabelList, setRoleLabelList] = useState(null);
-  const [roleName, setRoleName] = useState(newEditItem);
-  const [errors, setErrors] = useState([]);
-  const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState();
-  const [notificationStatus, setNotificationStatus] = useState();
+  const [modules, setModules] = useState([]);
+  const [initialModules, setInitialModules] = useState([]);
+  const [roleName, setRoleName] = useState(editItem.name);
+  const [errors, setErrors] = useState("");
+  const [notificationKey, setNotificationKey] = useState(0);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    status: "",
+  });
 
-  const fetchRoleLabel = () => {
-    GetAllAdminRoleLabel().then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
-        msg.map((item) => {
-          const accessValue = newEditItem[item.role].split(",");
-          item["access"] = accessValue.map(Number);
-        });
-        setRoleLabelList(msg);
-      } else {
-        console.log(data);
-      }
-    });
-    setRoleName(newEditItem.role);
-    setErrors([]);
-  };
-  useEffect(() => {
-    fetchRoleLabel();
-  }, [newEditItem]);
+  const fetchAllModules = () => {
+    GetRolePermissionById({ role_id: editItem.id }).then(({ status, msg }) => {
+      if (status !== "SUCCESS") return;
 
-  const handleShowNotification = () => {
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-      setNotificationMessage(null);
-    }, 3000);
-  };
+      const allowedModules = msg;
 
-  const handleRoleName = (event) => {
-    setRoleName(event.target.value);
-  };
+      GetAllAdminRoleLabel().then(({ status, msg }) => {
+        if (status !== "SUCCESS") return;
 
-  const validateData = (data) => {
-    let errorMsg = {};
-    if (data.get("role") == null || data.get("role") == "") {
-      errorMsg["role"] = "please insert data";
-    }
-    if (Object.entries(errorMsg).length !== 0) {
-      return { status: "ERROR", msg: errorMsg };
-    } else {
-      return {
-        status: "SUCCESS",
-        msg: "",
-      };
-    }
-  };
-
-  const handleEnableAccess = (event) => {
-    const { name, value, checked } = event.target;
-    const accessValue = parseInt(value);
-    setRoleLabelList(
-      roleLabelList.map((roleLabel) => {
-        if (roleLabel.role == name) {
-          if (checked) {
-            if (value == "1") {
-              roleLabel["access"] = [accessValue];
-            } else {
-              roleLabel["access"] = [...roleLabel["access"], accessValue];
-            }
-          } else {
-            if (value == "1") {
-              roleLabel["access"] = [0];
-            } else {
-              roleLabel["access"] = roleLabel["access"].filter(
-                (item) => item !== accessValue
-              );
-            }
+        const grouped = msg.reduce((acc, row) => {
+          if (!acc[row.module_id]) {
+            acc[row.module_id] = {
+              module_id: row.module_id,
+              module_code: row.module_code,
+              module_name: row.module_name,
+              module_parent_id: row.module_parent_id,
+              permissions: [],
+            };
           }
-        }
-        return roleLabel;
-      })
-    );
-  };
 
-  const subRoleContent = (headerRole) => {
-    let subRole = [];
-    const roleLabelListDefault = roleLabelList;
-    roleLabelListDefault.map((roleLabel) => {
-      if (headerRole.is_have_sub_role == 1) {
-        if (roleLabel.header_module_id == headerRole.id) {
-          subRole.push(roleLabel);
-        }
-      }
+          const isAllowed = allowedModules.some(
+            (am) =>
+              am.module_id === row.module_id &&
+              am.permission_id === row.permission_id,
+          );
+
+          acc[row.module_id].permissions.push({
+            permission_id: row.permission_id,
+            permission_code: row.permission_code,
+            permission_name: row.permission_name,
+            is_allowed: isAllowed ? 1 : 0,
+          });
+
+          return acc;
+        }, {});
+
+        const result = Object.values(grouped);
+        setInitialModules(result);
+        setModules(result);
+        setRoleName(editItem.name);
+      });
     });
-
-    if (subRole.length == 0) {
-      if (
-        headerRole.role == "have_booking_access" ||
-        headerRole.role == "have_payment_access"
-      ) {
-        return;
-      } else {
-        return (
-          <tr>
-            <td className={subAccessContent(headerRole, 2)}>
-              <input
-                checked={headerRole.access.includes(2)}
-                className="checkbox"
-                type="checkbox"
-                name={headerRole.role}
-                value="2"
-                onChange={handleEnableAccess}
-              />
-              <label>add</label>
-            </td>
-            <td className={subAccessContent(headerRole, 3)}>
-              <input
-                checked={headerRole.access.includes(3)}
-                className="checkbox"
-                type="checkbox"
-                name={headerRole.role}
-                value="3"
-                onChange={handleEnableAccess}
-              />
-              <label>edit</label>
-            </td>
-            <td className={subAccessContent(headerRole, 4)}>
-              <input
-                checked={headerRole.access.includes(4)}
-                className="checkbox"
-                type="checkbox"
-                name={headerRole.role}
-                value="4"
-                onChange={handleEnableAccess}
-              />
-              <label>delete</label>
-            </td>
-            <td className={subAccessContent(headerRole, 5)}>
-              <input
-                checked={headerRole.access.includes(5)}
-                className="checkbox"
-                type="checkbox"
-                name={headerRole.role}
-                value="5"
-                onChange={handleEnableAccess}
-              />
-              <label>approve</label>
-            </td>
-          </tr>
-        );
-      }
-    } else {
-      return (
-        <tbody>
-          {subRole.map(
-            (role) =>
-              role.module_level == 2 && (
-                <tr>
-                  <td>
-                    <input
-                      checked={role.access.includes(1)}
-                      className="toggle"
-                      type="checkbox"
-                      name={role.role}
-                      value="1"
-                      onChange={handleEnableAccess}
-                    />
-                    <label>{role.label}</label>
-                    {role.access.includes(1) && subRoleContent(role)}
-                  </td>
-                </tr>
-              )
-          )}
-        </tbody>
-      );
-    }
   };
 
-  const subAccessContent = (roleList, actionValue) => {
-    //action value
-    // 1 view
-    // 2 add
-    // 3 edit
-    // 4 delete
-    // 5 approve
-    const { role } = roleList;
-    if (role == "have_on_leave_personal_access") {
-      if (actionValue == 3 || actionValue == 5) {
-        return "hidden";
-      }
-    } else if (role == "have_on_leave_list_access") {
-      if (actionValue == 3) {
-        return "hidden";
-      }
-    } else if (role == "have_general_setting_access") {
-      return "hidden";
-    } else if (role !== "have_on_leave_list_access") {
-      if (actionValue == 5) {
-        return "hidden";
-      }
-    }
+  useEffect(() => {
+    fetchAllModules();
+  }, []);
+
+  const handleAccessConfig = (e) => {
+    const { name, value, checked } = e.target;
+
+    setModules((prev) =>
+      prev.map((module) => {
+        if (module.module_code === name) {
+          if (value === "view" && !checked) {
+            return {
+              ...module,
+              permissions: module.permissions.map((p) => ({
+                ...p,
+                is_allowed: 0,
+              })),
+            };
+          }
+
+          return {
+            ...module,
+            permissions: module.permissions.map((p) =>
+              p.permission_code === value
+                ? { ...p, is_allowed: checked ? 1 : 0 }
+                : p,
+            ),
+          };
+        }
+
+        const parent = prev.find((m) => m.module_code === name);
+        if (
+          value === "view" &&
+          !checked &&
+          parent &&
+          module.module_parent_id === parent.module_id
+        ) {
+          return {
+            ...module,
+            permissions: module.permissions.map((p) => ({
+              ...p,
+              is_allowed: 0,
+            })),
+          };
+        }
+
+        return module;
+      }),
+    );
   };
 
   const handleEditRole = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    const validatedErrors = validateData(data);
-    const { status, msg } = validatedErrors;
-    if (status == "ERROR") {
-      setErrors(msg);
-    } else {
-      const accessData = [];
-      roleLabelList.map((roleLabel) => {
-        accessData[roleLabel.role] = roleLabel["access"].join(",");
-      });
-      const jsonData = {
-        id: newEditItem.id,
-        role: data.get("role"),
-        ...accessData,
-      };
-      UpdateRole(URLList.AdminRole, jsonData).then((data) => {
-        const { status, msg } = data;
-        if (status == "SUCCESS") {
-          setNotificationMessage(`success add = ${jsonData.role}`);
-          setNotificationStatus(status);
-          handleShowNotification();
-          setRoleLabelList(null);
-          setNewEditItem(jsonData);
-          fetchRoleLabel();
-        } else if (status == "ERROR") {
-          let errorMsg = {};
-          if (msg.code == "ER_DUP_ENTRY") {
-            errorMsg["role"] = "Duplicated Role Name";
-            setErrors(errorMsg);
-          } else {
-            console.log(data);
-          }
-        } else {
-          console.log(data);
-        }
-      });
+
+    const allowedAccess = modules.flatMap((module) =>
+      module.permissions
+        .filter((p) => p.is_allowed === 1)
+        .map((p) => ({
+          module_id: module.module_id,
+          permission_id: p.permission_id,
+        })),
+    );
+
+    if (allowedAccess.length === 0) {
+      setErrors("Please select at least 1 module");
+      return;
     }
+
+    const jsonData = {
+      role_id: editItem.id,
+      role_name: roleName,
+      allowedAccess,
+    };
+
+    UpdateRole(jsonData).then(({ status, msg }) => {
+      if (status === "ERROR") {
+        if (msg?.code === "ER_DUP_ENTRY") {
+          setErrors("Role name duplicated");
+        }
+      } else if (status === "SUCCESS") {
+        setErrors([]);
+        setNotification({
+          show: true,
+          status: status,
+          message: `SUCCESSFULLY UPDATE ROLE : ${roleName}`,
+        });
+        setNotificationKey((prev) => prev + 1);
+        fetchAllModules();
+      }
+    });
   };
 
   return (
-    <div >
-      <label>Edit Role</label>
-      {showNotification && (
-        <Notification message={notificationMessage} type={notificationStatus} />
+    <div className="space-y-4">
+      {notification.show == true && (
+        <Notification
+          key={notificationKey}
+          message={notification.message}
+          type={notification.status}
+        />
       )}
       <form onSubmit={handleEditRole}>
-        <div className="flex h-screen">
-          <div className="flex-1 p-6">
-            <div className="overflow-x-auto">
-              <div>
-                <label>Role Name</label>
-                <input
-                  type="text"
-                  name="role"
-                  defaultValue={editItem.role}
-                  value={roleName}
-                  onChange={handleRoleName}
-                />
-                {errors.role && errors.role}
-              </div>
-              <table className="table w-full">
-                <tbody>
-                  {roleLabelList &&
-                    roleLabelList.map(
-                      (roleLabel) =>
-                        roleLabel.module_level == 1 && (
-                          <tr>
-                            <td>
-                              <input
-                                checked={roleLabel.access.includes(1)}
-                                className="toggle"
-                                type="checkbox"
-                                name={roleLabel.role}
-                                value="1"
-                                onChange={handleEnableAccess}
-                              />
-                              <label>{roleLabel.label}</label>
-                            </td>
-
-                            {roleLabel.access.includes(1) &&
-                              subRoleContent(roleLabel)}
-                          </tr>
-                        )
-                    )}
-                </tbody>
-              </table>
-              <button type="submit" className="btn">
-                Submit
-              </button>
-              <button className="btn" onClick={fetchRoleLabel}>
-                Cancel
-              </button>
-            </div>
+        <div className="border p-4 bg-base-100 space-y-2">
+          <div className="flex justify-between items-center font-semibold">
+            ROLE NAME
+            <input
+              type="text"
+              name="roleName"
+              value={roleName}
+              required
+              onChange={(e) => {
+                setRoleName(e.target.value);
+                setErrors([]);
+              }}
+              className={`input input-bordered ${
+                roleName === "" ? "input-error" : ""
+              }`}
+            />
           </div>
+          {errors && <p className="text-red-500 text-md">{errors}</p>}
+        </div>
+        {modules
+          .filter((m) => m.module_parent_id === 0)
+          .map((parent) => {
+            const parentView = parent.permissions.find(
+              (p) => p.permission_code === "view",
+            );
+
+            const childModules = modules.filter(
+              (m) => m.module_parent_id === parent.module_id,
+            );
+
+            return (
+              <div
+                key={parent.module_id}
+                className="border p-4 bg-base-100 space-y-2"
+              >
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold">{parent.module_name}</span>
+
+                  <input
+                    type="checkbox"
+                    className="checkbox checkbox-success"
+                    value="view"
+                    name={parent.module_code}
+                    checked={parentView?.is_allowed === 1}
+                    onChange={handleAccessConfig}
+                  />
+                </div>
+
+                {parentView?.is_allowed === 1 && (
+                  <div>
+                    <p className="text-info text-xs">View enabled</p>
+
+                    {parent.permissions
+                      .filter((p) => p.permission_code !== "view")
+                      .map((p) => (
+                        <div
+                          key={p.permission_id}
+                          className="border p-4 bg-base-100 space-y-2"
+                        >
+                          <div className="flex justify-between items-center">
+                            {p.permission_name}
+                            <input
+                              type="checkbox"
+                              className="checkbox checkbox-success"
+                              value={p.permission_code}
+                              name={parent.module_code}
+                              checked={p.is_allowed === 1}
+                              onChange={handleAccessConfig}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                  </div>
+                )}
+
+                {parentView?.is_allowed === 1 && childModules.length > 0 && (
+                  <div className="ml-6 mt-3 space-y-3">
+                    {childModules.map((child) => {
+                      const childView = child.permissions.find(
+                        (p) => p.permission_code === "view",
+                      );
+
+                      return (
+                        <div key={child.module_id} className="space-y-1">
+                          <div className="flex justify-between items-center">
+                            <span className="text-sm font-medium">
+                              {child.module_name}
+                            </span>
+
+                            <input
+                              type="checkbox"
+                              className="checkbox checkbox-success"
+                              value="view"
+                              name={child.module_code}
+                              checked={childView?.is_allowed === 1}
+                              onChange={handleAccessConfig}
+                            />
+                          </div>
+
+                          {childView?.is_allowed === 1 && (
+                            <>
+                              <p className="text-info text-xs ml-1">
+                                View enabled
+                              </p>
+
+                              {child.permissions
+                                .filter((p) => p.permission_code !== "view")
+                                .map((p) => (
+                                  <div
+                                    key={p.permission_id}
+                                    className="border p-4 bg-base-100 space-y-2"
+                                  >
+                                    <div className="flex justify-between items-center">
+                                      {p.permission_name}
+                                      <input
+                                        type="checkbox"
+                                        className="checkbox checkbox-success"
+                                        value={p.permission_code}
+                                        name={child.module_code}
+                                        checked={p.is_allowed === 1}
+                                        onChange={handleAccessConfig}
+                                      />
+                                    </div>
+                                  </div>
+                                ))}
+                            </>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          })}
+
+        <div className="flex justify-end gap-2 mt-4">
+          <button type="button" className="btn" onClick={()=> {
+            setRoleName(editItem.name)
+            setErrors([])
+            fetchAllModules()
+          }}>
+            CANCEL
+          </button>
+          <button type="submit" className="btn btn-success text-white">
+            SUBMIT
+          </button>
         </div>
       </form>
     </div>
