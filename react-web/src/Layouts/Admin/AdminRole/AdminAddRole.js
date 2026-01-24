@@ -1,12 +1,20 @@
 import { useEffect, useState } from "react";
 import { GetAllAdminRoleLabel, PostAdminAddRole } from "../../Api";
+import Notification from "../../Notification/Notification";
 
 const AdminAddRole = () => {
   const [modules, setModules] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [errors, setErrors] = useState([]);
+  const [notificationKey, setNotificationKey] = useState(0);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    status: "",
+  });
 
-  useEffect(() => {
+  const fetchAllModules = () => {
+    setRoleName("");
     GetAllAdminRoleLabel().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         const grouped = msg.reduce((acc, row) => {
@@ -33,6 +41,10 @@ const AdminAddRole = () => {
         setModules(Object.values(grouped));
       }
     });
+  };
+
+  useEffect(() => {
+    fetchAllModules();
   }, []);
 
   const handleAccessConfig = (e) => {
@@ -56,38 +68,60 @@ const AdminAddRole = () => {
 
   const handleAddRole = (event) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
     const allowedAccess = modules.flatMap((module) =>
       module.permissions
-        .filter((p) => p.is_allowed == 1)
+        .filter((p) => p.is_allowed === 1)
         .map((p) => ({
           module_id: module.module_id,
           permission_id: p.permission_id,
         })),
     );
 
+    if (allowedAccess.length === 0) {
+      setErrors("Please select at least 1 module");
+      return;
+    }
+
     const jsonData = {
-      role_name: data.get("role_name"),
-      allowedAccess: allowedAccess,
+      role_name: roleName,
+      allowedAccess,
     };
+
     PostAdminAddRole(jsonData).then(({ status, msg }) => {
-      if (status == "ERROR") {
-        if (msg.code == "ER_DUP_ENTRY") {
-          setErrors("duplicated");
+      if (status === "ERROR") {
+        if (msg?.code === "ER_DUP_ENTRY") {
+          setErrors("Role name duplicated");
         }
+      } else if (status === "SUCCESS") {
+        setErrors([]);
+        setNotification({
+          show: true,
+          status: status,
+          message: `SUCCESSFULLY ADD ROLE : ${roleName}`,
+        });
+        setNotificationKey((prev) => prev + 1);
+        fetchAllModules();
       }
     });
   };
 
   return (
     <div className="space-y-4">
+      {notification.show == true && (
+        <Notification
+          key={notificationKey}
+          message={notification.message}
+          type={notification.status}
+        />
+      )}
       <form onSubmit={handleAddRole}>
         <div className="border p-4 bg-base-100 space-y-2">
           <div className="flex justify-between items-center font-semibold">
-            Role Name
+            ROLE NAME
             <input
               type="text"
-              name="role_name"
+              name="roleName"
+              value={roleName}
               required
               onChange={(e) => {
                 setRoleName(e.target.value);
@@ -134,13 +168,13 @@ const AdminAddRole = () => {
                     <p className="text-info text-xs">View enabled</p>
 
                     {parent.permissions
-                      .filter((p) => p.permission_code != "view")
+                      .filter((p) => p.permission_code !== "view")
                       .map((p) => (
-                        <div className="border p-4 bg-base-100 space-y-2">
-                          <div
-                            key={p.permission_id}
-                            className="flex justify-between items-center"
-                          >
+                        <div
+                          key={p.permission_id}
+                          className="border p-4 bg-base-100 space-y-2"
+                        >
+                          <div className="flex justify-between items-center">
                             {p.permission_name}
                             <input
                               type="checkbox"
@@ -186,13 +220,13 @@ const AdminAddRole = () => {
                               </p>
 
                               {child.permissions
-                                .filter((p) => p.permission_code != "view")
+                                .filter((p) => p.permission_code !== "view")
                                 .map((p) => (
-                                  <div className="border p-4 bg-base-100 space-y-2">
-                                    <div
-                                      key={p.permission_id}
-                                      className="flex justify-between items-center"
-                                    >
+                                  <div
+                                    key={p.permission_id}
+                                    className="border p-4 bg-base-100 space-y-2"
+                                  >
+                                    <div className="flex justify-between items-center">
                                       {p.permission_name}
                                       <input
                                         type="checkbox"
@@ -214,9 +248,15 @@ const AdminAddRole = () => {
               </div>
             );
           })}
-        <button type="submit" className="btn btn-success text-white">
-          SUBMIT
-        </button>
+
+        <div className="flex justify-end gap-2 mt-4">
+          <button type="button" className="btn" onClick={fetchAllModules}>
+            CANCEL
+          </button>
+          <button type="submit" className="btn btn-success text-white">
+            SUBMIT
+          </button>
+        </div>
       </form>
     </div>
   );
