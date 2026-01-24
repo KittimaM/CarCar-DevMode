@@ -4,6 +4,7 @@ import { GetAllAdminRoleLabel, PostAdminAddRole } from "../../Api";
 const AdminAddRole = () => {
   const [modules, setModules] = useState([]);
   const [roleName, setRoleName] = useState("");
+  const [errors, setErrors] = useState([]);
 
   useEffect(() => {
     GetAllAdminRoleLabel().then(({ status, msg }) => {
@@ -71,7 +72,9 @@ const AdminAddRole = () => {
     };
     PostAdminAddRole(jsonData).then(({ status, msg }) => {
       if (status == "ERROR") {
-        console.log("msg : ", msg);
+        if (msg.code == "ER_DUP_ENTRY") {
+          setErrors("duplicated");
+        }
       }
     });
   };
@@ -86,12 +89,16 @@ const AdminAddRole = () => {
               type="text"
               name="role_name"
               required
-              onChange={(e) => setRoleName(e.target.value)}
+              onChange={(e) => {
+                setRoleName(e.target.value);
+                setErrors([]);
+              }}
               className={`input input-bordered ${
                 roleName === "" ? "input-error" : ""
               }`}
             />
           </div>
+          {errors && <p className="text-red-500 text-md">{errors}</p>}
         </div>
         {modules
           .filter((m) => m.module_parent_id === 0)
