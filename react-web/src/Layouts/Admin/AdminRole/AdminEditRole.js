@@ -160,7 +160,7 @@ const AdminEditRole = ({ editItem }) => {
         <Notification
           key={notificationKey}
           message={notification.message}
-          type={notification.status}
+          status={notification.status}
         />
       )}
       <form onSubmit={handleEditRole}>

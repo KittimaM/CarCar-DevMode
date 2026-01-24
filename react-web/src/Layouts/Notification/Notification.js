@@ -1,17 +1,17 @@
 import React, { useEffect, useState } from "react";
 
-const Notification = ({ message, type = "SUCCESS", duration = 3000 }) => {
+const Notification = ({ message, status, duration = 3000 }) => {
   const [show, setShow] = useState(true);
 
   useEffect(() => {
     const timer = setTimeout(() => setShow(false), duration);
     return () => clearTimeout(timer);
-  }, [type, duration]);
+  }, [status, duration]);
 
   if (!show) return null;
 
   const getAlertClass = () => {
-    switch (type) {
+    switch (status) {
       case "ERROR":
         return "bg-red-100 text-red-800";
       case "WARNING":

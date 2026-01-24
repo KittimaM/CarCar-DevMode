@@ -117,7 +117,7 @@ const AdminAddRole = () => {
 
     PostAdminAddRole(jsonData).then(({ status, msg }) => {
       if (status === "ERROR") {
-        if (msg?.code === "ER_DUP_ENTRY") {
+        if (msg.code === "ER_DUP_ENTRY") {
           setErrors("Role name duplicated");
         }
       } else if (status === "SUCCESS") {
@@ -140,7 +140,7 @@ const AdminAddRole = () => {
         <Notification
           key={notificationKey}
           message={notification.message}
-          type={notification.status}
+          status={notification.status}
         />
       )}
       <form onSubmit={handleAddRole}>
@@ -154,7 +154,6 @@ const AdminAddRole = () => {
               required
               onChange={(e) => {
                 setRoleName(e.target.value);
-                setErrors([]);
               }}
               className={`input input-bordered ${
                 roleName === "" ? "input-error" : ""

@@ -1,7 +1,8 @@
 DROP TABLE IF EXISTS `module_permission`;
 
 CREATE TABLE IF NOT EXISTS `module_permission` (
-  `id` INT AUTO_INCREMENT PRIMARY KEY,
-  `module_id` INT,
-  `permission_id` INT
+  `module_id` INT NOT NULL,
+  `permission_id` INT NOT NULL,
+  FOREIGN KEY (module_id) REFERENCES module(id),
+  FOREIGN KEY (permission_id) REFERENCES permission(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
