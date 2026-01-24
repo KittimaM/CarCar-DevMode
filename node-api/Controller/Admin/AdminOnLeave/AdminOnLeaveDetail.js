@@ -13,16 +13,16 @@ const AdminGetLatestOnLeaveByType = (req, res, next) => {
       [id, on_leave_type_id],
       function (error, result) {
         if (error) {
-          res.json({ status: "ERROR", msg: error });
+          return res.json({ status: "ERROR", msg: error });
         } else if (result.length == 0 || result[0].length == 0) {
-          res.json({ status: "NO DATA", msg: "NO DATA" });
+          return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
-          res.json({ status: "SUCCESS", msg: result[0] });
+          return res.json({ status: "SUCCESS", msg: result[0] });
         }
-      }
+      },
     );
   } catch (err) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 
@@ -33,17 +33,17 @@ const AdminGetLatestOnLeaveByTypeAndStaffId = (req, res, next) => {
     [staff_id, on_leave_type_id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else if (result.length == 0 || result[0].length == 0) {
-        res.json({ status: "NO DATA", msg: "NO DATA" });
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
-        res.json({ status: "SUCCESS", msg: result[0] });
+        return res.json({ status: "SUCCESS", msg: result[0] });
       }
-    }
+    },
   );
 };
 
 module.exports = {
   AdminGetLatestOnLeaveByType,
-  AdminGetLatestOnLeaveByTypeAndStaffId
+  AdminGetLatestOnLeaveByTypeAndStaffId,
 };

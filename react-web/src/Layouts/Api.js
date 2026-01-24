@@ -108,8 +108,8 @@ export const DeleteRole = (jsonData) => {
   return deleteApi(URLList.AdminRole, jsonData);
 };
 
-export const UpdateRole = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateRole = (jsonData) => {
+  return putApi(URLList.AdminRole, jsonData);
 };
 
 export const GetAllBooking = (options = null) => {
@@ -451,8 +451,8 @@ export const GetAllModules = () => {
   return getApi(URLList.Modules);
 };
 
-export const GetRolePermissionById = () => {
-  return getApi(URLList.RolePermission + "/id", null, true);
+export const GetRolePermissionByToken = () => {
+  return getApi(URLList.RolePermission + "/token", null, true);
 };
 
 export const GetModuleByPermission = () => {
@@ -462,3 +462,7 @@ export const GetModuleByPermission = () => {
 export const GetAllPermissionActions = () => {
   return getApi(URLList.permissionActions);
 };
+
+export const GetRolePermissionById = (jsonData) => {
+  return postApi(URLList.RolePermission + "/id", jsonData);
+}

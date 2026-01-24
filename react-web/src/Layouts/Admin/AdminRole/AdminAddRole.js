@@ -14,7 +14,6 @@ const AdminAddRole = () => {
   });
 
   const fetchAllModules = () => {
-    setRoleName("");
     GetAllAdminRoleLabel().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         const grouped = msg.reduce((acc, row) => {
@@ -51,18 +50,48 @@ const AdminAddRole = () => {
     const { name, value, checked } = e.target;
 
     setModules((prev) =>
-      prev.map((module) => {
-        if (module.module_code !== name) return module;
+      prev
+        .map((module) => {
+          if (module.module_code !== name) return module;
 
-        return {
-          ...module,
-          permissions: module.permissions.map((p) =>
-            p.permission_code === value
-              ? { ...p, is_allowed: checked ? 1 : 0 }
-              : p,
-          ),
-        };
-      }),
+          if (value === "view" && !checked) {
+            return {
+              ...module,
+              permissions: module.permissions.map((p) => ({
+                ...p,
+                is_allowed: 0,
+              })),
+            };
+          }
+
+          return {
+            ...module,
+            permissions: module.permissions.map((p) =>
+              p.permission_code === value
+                ? { ...p, is_allowed: checked ? 1 : 0 }
+                : p,
+            ),
+          };
+        })
+        .map((module) => {
+          const parentModule = prev.find((m) => m.module_code === name);
+
+          if (
+            value === "view" &&
+            !checked &&
+            module.module_parent_id === parentModule?.module_id
+          ) {
+            return {
+              ...module,
+              permissions: module.permissions.map((p) => ({
+                ...p,
+                is_allowed: 0,
+              })),
+            };
+          }
+
+          return module;
+        }),
     );
   };
 
@@ -76,7 +105,6 @@ const AdminAddRole = () => {
           permission_id: p.permission_id,
         })),
     );
-
     if (allowedAccess.length === 0) {
       setErrors("Please select at least 1 module");
       return;
@@ -93,6 +121,7 @@ const AdminAddRole = () => {
           setErrors("Role name duplicated");
         }
       } else if (status === "SUCCESS") {
+        setRoleName("");
         setErrors([]);
         setNotification({
           show: true,
@@ -164,7 +193,7 @@ const AdminAddRole = () => {
                 </div>
 
                 {parentView?.is_allowed === 1 && (
-                  <>
+                  <div>
                     <p className="text-info text-xs">View enabled</p>
 
                     {parent.permissions
@@ -186,7 +215,7 @@ const AdminAddRole = () => {
                           </div>
                         </div>
                       ))}
-                  </>
+                  </div>
                 )}
 
                 {parentView?.is_allowed === 1 && childModules.length > 0 && (
@@ -250,7 +279,15 @@ const AdminAddRole = () => {
           })}
 
         <div className="flex justify-end gap-2 mt-4">
-          <button type="button" className="btn" onClick={fetchAllModules}>
+          <button
+            type="button"
+            className="btn"
+            onClick={() => {
+              setRoleName("");
+              setErrors([]);
+              fetchAllModules();
+            }}
+          >
             CANCEL
           </button>
           <button type="submit" className="btn btn-success text-white">

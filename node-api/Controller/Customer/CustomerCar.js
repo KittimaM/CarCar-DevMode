@@ -11,17 +11,17 @@ const CustomerCar = (req, res, next) => {
       [id],
       function (error, results) {
         if (error) {
-          res.json({ status: "ERROR", msg: error });
+          return res.json({ status: "ERROR", msg: error });
         }
         if (results.length == 0) {
-          res.json({ status: "NO DATA", msg: "NO DATA" });
+          return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
-          res.json({ status: "SUCCESS", msg: results });
+          return res.json({ status: "SUCCESS", msg: results });
         }
-      }
+      },
     );
   } catch (error) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 
@@ -46,15 +46,15 @@ const CustomerAddCustomerCar = (req, res, next) => {
       [id, plate_no, prefix, postfix, province, brand, model, size_id, color],
       function (error, result) {
         if (error) {
-          res.json({ status: "ERROR", msg: error });
+          return res.json({ status: "ERROR", msg: error });
         } else {
           const insertId = result.insertId;
-          res.json({ status: "SUCCESS", msg: insertId });
+          return res.json({ status: "SUCCESS", msg: insertId });
         }
-      }
+      },
     );
   } catch (error) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 
@@ -65,11 +65,11 @@ const CustomerDeleteCustomerCar = (req, res, next) => {
     [id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 
@@ -104,11 +104,11 @@ const CustomerUpdateCustomerCar = (req, res, next) => {
     ],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 

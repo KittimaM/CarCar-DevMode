@@ -15,9 +15,9 @@ const AdminLogin = (req, res, next) => {
     [userName],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else if (result.length == 0) {
-        res.json({ status: "ERROR", msg: "Wrong username or password" });
+        return res.json({ status: "ERROR", msg: "Wrong username or password" });
       } else {
         const {
           id,
@@ -30,19 +30,19 @@ const AdminLogin = (req, res, next) => {
           role_name,
         } = result[0];
         if (is_locked == 1) {
-          res.json({
+          return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${staff_failed_login_limit} times`,
           });
         } else if (is_active != 1) {
-          res.json({
+          return res.json({
             status: "INACTIVE",
             msg: `this user is inactive`,
           });
         } else {
           bcrypt.compare(passWord, password, function (error, result) {
             if (error) {
-              res.json({ status: "ERROR", msg: error });
+              return res.json({ status: "ERROR", msg: error });
             } else {
               if (result) {
                 Conn.execute(
@@ -50,14 +50,17 @@ const AdminLogin = (req, res, next) => {
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {
-                      res.json({ status: "ERROR", msg: successLoginError });
+                      return res.json({
+                        status: "ERROR",
+                        msg: successLoginError,
+                      });
                     } else {
                       const token = jwt.sign(
                         { id: id, username: username, role_id: role_id },
                         secret,
-                        { expiresIn: `${staff_user_login_mins_limit}m` }
+                        { expiresIn: `${staff_user_login_mins_limit}m` },
                       );
-                      res.json({
+                      return res.json({
                         status: "SUCCESS",
                         msg: {
                           token: token,
@@ -66,7 +69,7 @@ const AdminLogin = (req, res, next) => {
                         },
                       });
                     }
-                  }
+                  },
                 );
               } else {
                 let count = failed_login_count + 1;
@@ -75,10 +78,10 @@ const AdminLogin = (req, res, next) => {
                   [count, id],
                   function (failLoginError, failLoginResult) {
                     if (failLoginError) {
-                      res.json({ status: "ERROR", msg: error });
+                      return res.json({ status: "ERROR", msg: error });
                     } else {
                       if (count < staff_failed_login_limit) {
-                        res.json({
+                        return res.json({
                           status: "ERROR",
                           msg: "Wrong username or password",
                         });
@@ -88,25 +91,28 @@ const AdminLogin = (req, res, next) => {
                           [id],
                           function (lockedError, lockedResult) {
                             if (lockedError) {
-                              res.json({ status: "ERROR", msg: lockedError });
+                              return res.json({
+                                status: "ERROR",
+                                msg: lockedError,
+                              });
                             } else {
-                              res.json({
+                              return res.json({
                                 status: "LOCK",
                                 msg: `This user locked due to failed login more than ${staff_failed_login_limit} times`,
                               });
                             }
-                          }
+                          },
                         );
                       }
                     }
-                  }
+                  },
                 );
               }
             }
           });
         }
       }
-    }
+    },
   );
 };
 

@@ -15,10 +15,10 @@ const CustomerLogin = (req, res, next) => {
     [phone],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", error });
+        return res.json({ status: "ERROR", error });
       }
       if (result.length == 0) {
-        res.json({ status: "ERROR", msg: "Wrong username or password" });
+        return res.json({ status: "ERROR", msg: "Wrong username or password" });
       } else {
         const {
           password: customerPassword,
@@ -29,19 +29,19 @@ const CustomerLogin = (req, res, next) => {
           is_active,
         } = result[0];
         if (is_locked == 1) {
-          res.json({
+          return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${customer_failed_login_limit} times`,
           });
         } else if (is_active != 1) {
-          res.json({
+          return res.json({
             status: "INACTIVE",
             msg: `this user is inactive`,
           });
         } else {
           bcrypt.compare(password, customerPassword, function (error, result) {
             if (error) {
-              res.json({ status: "ERROR", msg: error });
+              return res.json({ status: "ERROR", msg: error });
             } else {
               if (result) {
                 Conn.execute(
@@ -49,18 +49,21 @@ const CustomerLogin = (req, res, next) => {
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {
-                      res.json({ status: "ERROR", msg: successLoginError });
+                      return res.json({
+                        status: "ERROR",
+                        msg: successLoginError,
+                      });
                     } else {
                       const token = jwt.sign(
                         { id: id, phone: phone, name: name },
                         secret,
                         {
                           expiresIn: `${customer_user_login_mins_limit}m`,
-                        }
+                        },
                       );
-                      res.json({ status: "SUCCESS", msg: token });
+                      return res.json({ status: "SUCCESS", msg: token });
                     }
-                  }
+                  },
                 );
               } else {
                 let count = failed_login_count + 1;
@@ -69,10 +72,10 @@ const CustomerLogin = (req, res, next) => {
                   [count, id],
                   function (failLoginError, failLoginResult) {
                     if (failLoginError) {
-                      res.json({ status: "ERROR", msg: error });
+                      return res.json({ status: "ERROR", msg: error });
                     } else {
                       if (count < customer_failed_login_limit) {
-                        res.json({
+                        return res.json({
                           status: "ERROR",
                           msg: "Wrong username or password",
                         });
@@ -82,25 +85,28 @@ const CustomerLogin = (req, res, next) => {
                           [id],
                           function (lockedError, lockedResult) {
                             if (lockedError) {
-                              res.json({ status: "ERROR", msg: lockedError });
+                              return res.json({
+                                status: "ERROR",
+                                msg: lockedError,
+                              });
                             } else {
-                              res.json({
+                              return res.json({
                                 status: "LOCK",
                                 msg: `This user locked due to failed login more than ${customer_failed_login_limit} times`,
                               });
                             }
-                          }
+                          },
                         );
                       }
                     }
-                  }
+                  },
                 );
               }
             }
           });
         }
       }
-    }
+    },
   );
 };
 

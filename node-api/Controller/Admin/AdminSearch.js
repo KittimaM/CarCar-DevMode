@@ -3,12 +3,12 @@ const Conn = require("../../db");
 const AdminGetAllSearchFilters = (req, res, next) => {
   Conn.execute("SELECT * FROM search_filter", function (error, results) {
     if (error) {
-      res.json({ status: "ERROR", msg: error });
+      return res.json({ status: "ERROR", msg: error });
     }
     if (results.length == 0) {
-      res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
-      res.json({ status: "SUCCESS", msg: results });
+      return res.json({ status: "SUCCESS", msg: results });
     }
   });
 };
@@ -20,14 +20,14 @@ const AdminGetSearchResult = (req, res, next) => {
     [customer_id, car_id],
     function (error, results) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       }
       if (results.length == 0) {
-        res.json({ status: "NO DATA", msg: "NO DATA" });
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
-        res.json({ status: "SUCCESS", msg: results });
+        return res.json({ status: "SUCCESS", msg: results });
       }
-    }
+    },
   );
 };
 
@@ -38,10 +38,10 @@ const AdminGetSearchResult = (req, res, next) => {
 //     [name, template, is_available],
 //     function (error, result) {
 //       if (error) {
-//         res.json({ status: "ERROR", msg: error });
+//         return res.json({ status: "ERROR", msg: error });
 //       } else {
 //         const insertId = result.insertId;
-//         res.json({ status: "SUCCESS", msg: insertId });
+//         return res.json({ status: "SUCCESS", msg: insertId });
 //       }
 //     }
 //   );
@@ -54,9 +54,9 @@ const AdminGetSearchResult = (req, res, next) => {
 //     [id],
 //     function (error, result) {
 //       if (error) {
-//         res.json({ status: "ERROR", msg: error });
+//         return res.json({ status: "ERROR", msg: error });
 //       } else {
-//         res.json({ status: "SUCCESS", msg: "SUCCESS" });
+//         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
 //       }
 //     }
 //   );
@@ -69,9 +69,9 @@ const AdminGetSearchResult = (req, res, next) => {
 //     [name, template, is_available, id],
 //     function (error, result) {
 //       if (error) {
-//         res.json({ status: "ERROR", msg: error });
+//         return res.json({ status: "ERROR", msg: error });
 //       } else {
-//         res.json({ status: "SUCCESS", msg: "SUCCESS" });
+//         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
 //       }
 //     }
 //   );

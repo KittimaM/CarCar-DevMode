@@ -12,16 +12,16 @@ const CustomerIndex = (req, res, next) => {
       [phone],
       function (error, result) {
         if (error) {
-          res.json({ status: "ERROR", msg: error });
+          return res.json({ status: "ERROR", msg: error });
         } else if (result.length == 0) {
-          res.json({ status: "NO DATA", msg: "NO DATA" });
+          return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
-          res.json({ status: "SUCCESS", msg: result });
+          return res.json({ status: "SUCCESS", msg: result });
         }
-      }
+      },
     );
   } catch (error) {
-    res.json({ status: "ERROR", msg: "token expired" });
+    return res.json({ status: "ERROR", msg: "token expired" });
   }
 };
 

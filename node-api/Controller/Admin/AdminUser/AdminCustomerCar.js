@@ -5,12 +5,12 @@ const saltRounds = 10;
 const AdminGetAllCustomerCar = (req, res, next) => {
   Conn.execute("SELECT * FROM customer_car", function (error, results) {
     if (error) {
-      res.json({ status: "ERROR", msg: error });
+      return res.json({ status: "ERROR", msg: error });
     }
     if (results.length == 0) {
-      res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
-      res.json({ status: "SUCCESS", msg: results });
+      return res.json({ status: "SUCCESS", msg: results });
     }
   });
 };
@@ -42,12 +42,12 @@ const AdminAddCustomerCar = (req, res, next) => {
     ],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
         const insertId = result.insertId;
-        res.json({ status: "SUCCESS", msg: insertId });
+        return res.json({ status: "SUCCESS", msg: insertId });
       }
-    }
+    },
   );
 };
 
@@ -80,11 +80,11 @@ const AdminUpdateCustomerCar = (req, res, next) => {
     ],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 
@@ -95,11 +95,11 @@ const AdminDeleteCustomerCar = (req, res, next) => {
     [id],
     function (error, result) {
       if (error) {
-        res.json({ status: "ERROR", msg: error });
+        return res.json({ status: "ERROR", msg: error });
       } else {
-        res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    }
+    },
   );
 };
 
