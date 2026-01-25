@@ -1,6 +1,6 @@
 const URLList = {
   //Admin
-  AdminCustomerURL: "admin/customer",
+  AdminCustomer: "admin/customer",
   AdminCustomerCarURL: "admin/customer-car",
   AdminCarSizeURL: "admin/carsize",
   AdminService: "admin/service",

@@ -356,19 +356,19 @@ export const DeleteStatusGroup = (url, jsonData) => {
 };
 
 export const GetAdminCustomer = () => {
-  return getApi(URLList.AdminCustomerURL);
+  return getApi(URLList.AdminCustomer);
 };
 
 export const UpdateAdminCustomer = (jsonData) => {
-  return putApi(URLList.AdminCustomerURL, jsonData);
+  return putApi(URLList.AdminCustomer, jsonData);
 };
 
 export const PostAdminAddCustomer = (jsonData) => {
-  return postApi(URLList.AdminCustomerURL, jsonData);
+  return postApi(URLList.AdminCustomer, jsonData);
 };
 
 export const DeleteAdminCustomer = (jsonData) => {
-  return deleteApi(URLList.AdminCustomerURL, jsonData);
+  return deleteApi(URLList.AdminCustomer, jsonData);
 };
 
 export const GetAdminCustomerCar = () => {
@@ -432,11 +432,11 @@ export const UpdateAdminAdvanceSetting = (jsonData) => {
 };
 
 export const UpdateAdminActiveCustomer = (jsonData) => {
-  return putApi(URLList.AdminCustomerURL + "/active-user", jsonData);
+  return putApi(URLList.AdminCustomer + "/active-user", jsonData);
 };
 
 export const UpdateAdminUnlockCustomer = (jsonData) => {
-  return putApi(URLList.AdminCustomerURL + "/unlock-user", jsonData);
+  return putApi(URLList.AdminCustomer + "/unlock-user", jsonData);
 };
 
 export const UpdateAdminActiveStaff = (jsonData) => {
@@ -469,4 +469,8 @@ export const GetRolePermissionById = (jsonData) => {
 
 export const GetStaffUserById = (jsonData) => {
   return postApi(URLList.AdminStaff + "/id", jsonData);
+};
+
+export const GetCustomerUserById = (jsonData) => {
+  return postApi(URLList.AdminCustomer, jsonData);
 };

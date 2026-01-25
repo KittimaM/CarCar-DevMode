@@ -34,7 +34,6 @@ const AdminLogin = () => {
       if (status == "SUCCESS") {
         sessionStorage.setItem("token", msg.token);
         sessionStorage.setItem("username", msg.username);
-        sessionStorage.setItem("role_name", msg.role_name);
         navigate("/admin/main");
       } else {
         setErrors(msg);

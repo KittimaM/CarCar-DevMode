@@ -4,8 +4,8 @@ const {
   AdminAddCustomer,
   AdminUpdateCustomer,
   AdminDeleteCustomer,
-  AdminActiveCustomer,
   AdminUnlockCustomer,
+  GetCustomerUserById,
 } = require("../../../Controller/Admin/AdminUser/AdminCustomer");
 var router = express.Router();
 
@@ -13,7 +13,7 @@ router.get("/", AdminGetAllCustomer);
 router.post("/", AdminAddCustomer);
 router.put("/", AdminUpdateCustomer);
 router.delete("/", AdminDeleteCustomer);
-router.put("/active-user", AdminActiveCustomer);
 router.put("/unlock-user", AdminUnlockCustomer);
+router.post("/id", GetCustomerUserById);
 
 module.exports = router;

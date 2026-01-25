@@ -11,7 +11,7 @@ const CustomerLogin = (req, res, next) => {
     customer_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    "SELECT id, password, name, failed_login_count, is_locked, is_active FROM customer_user WHERE phone = ?",
+    "SELECT * FROM customer_user WHERE phone = ?",
     [phone],
     function (error, result) {
       if (error) {
@@ -26,17 +26,11 @@ const CustomerLogin = (req, res, next) => {
           id,
           failed_login_count,
           is_locked,
-          is_active,
         } = result[0];
         if (is_locked == 1) {
           return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${customer_failed_login_limit} times`,
-          });
-        } else if (is_active != 1) {
-          return res.json({
-            status: "INACTIVE",
-            msg: `this user is inactive`,
           });
         } else {
           bcrypt.compare(password, customerPassword, function (error, result) {
@@ -45,7 +39,7 @@ const CustomerLogin = (req, res, next) => {
             } else {
               if (result) {
                 Conn.execute(
-                  `UPDATE customer_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL, latest_logged_in = CURRENT_TIMESTAMP WHERE id = ?`,
+                  `UPDATE customer_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL WHERE id = ?`,
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {

@@ -1,13 +1,11 @@
-import { useEffect, useState } from "react";
-import { GetAllAdminRole, PostAddStaffUser } from "../../Api";
+import { useState } from "react";
 import Notification from "../../Notification/Notification";
+import { PostAddCustomer } from "../../Api";
 
-const AdminAddStaff = () => {
-  const [roleList, setRoleList] = useState([]);
-  const [userName, setUserName] = useState("");
+const AdminAddCustomer = () => {
+  const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -16,47 +14,33 @@ const AdminAddStaff = () => {
     status: "",
   });
 
-  const fetchAllRole = () => {
-    GetAllAdminRole().then(({ status, msg }) => {
-      if (status == "SUCCESS") {
-        setRoleList(msg);
-      }
-    });
-  };
-  useEffect(() => {
-    fetchAllRole();
-  }, []);
   const handleAddUser = (e) => {
     e.preventDefault();
     const jsonData = {
-      username: userName,
+      phone: phone,
       name: name,
       password: password,
-      role_id: role,
     };
-    PostAddStaffUser(jsonData).then(({ status, msg }) => {
+    PostAddCustomer(jsonData).then(({ status, msg }) => {
       if (status == "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Add ${userName}`,
+          message: `Successfully Add ${name}`,
         });
         setErrors([]);
-      } else if (status == "ERROR") {
-        if (msg.code === "ER_DUP_ENTRY") {
-          setErrors("user name duplicated");
-          setUserName("");
-        }
+      } else if (status == "ER_DUP_ENTRY") {
+        setErrors(msg);
+        setPhone("");
       }
       setNotificationKey((prev) => prev + 1);
     });
   };
 
   const handleReset = () => {
-    setUserName("");
+    setPhone("");
     setName("");
     setPassword("");
-    setRole("");
     setErrors([]);
   };
   return (
@@ -71,13 +55,18 @@ const AdminAddStaff = () => {
       <form onSubmit={handleAddUser}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Username</span>
+            <span className="w-32">Phone</span>
             <input
-              type="text"
-              value={userName}
-              className={`input input-bordered w-full max-w-md ${!userName ? `input-error` : ``}`}
+              type="tel"
+              inputMode="numeric"
+              value={phone}
+              className={`input validator tabular-nums input-bordered w-full max-w-md ${!phone ? `input-error` : ``}`}
               onChange={(e) => {
-                setUserName(e.target.value);
+                let value = e.target.value.replace(/[^0-9]/g, "");
+                if (value.length > 10) {
+                  value = value.slice(0, 10);
+                }
+                setPhone(value);
               }}
               required
             />
@@ -109,25 +98,6 @@ const AdminAddStaff = () => {
               required
             />
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Role</span>
-            <select
-              value={role}
-              className={`select w-full select-bordered max-w-md ${!role ? `select-error` : ``}`}
-              onChange={(e) => setRole(e.target.value)}
-              required
-            >
-              <option disabled={true} value="">
-                Pick A Role
-              </option>
-              {roleList &&
-                roleList.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-            </select>
-          </div>
 
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
@@ -143,4 +113,4 @@ const AdminAddStaff = () => {
   );
 };
 
-export default AdminAddStaff;
+export default AdminAddCustomer;
