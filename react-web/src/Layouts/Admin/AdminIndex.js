@@ -26,11 +26,9 @@ function AdminIndex() {
                 permission_actions: [],
               };
             }
-            acc[item.module_id].permission_actions.push(
-              item.permission_action
-            );
+            acc[item.module_id].permission_actions.push(item.permission_action);
             return acc;
-          }, {})
+          }, {}),
         ).filter((m) => m.permission_actions.includes("view"));
 
         setModules(result);
@@ -41,16 +39,13 @@ function AdminIndex() {
 
   const parentModules = useMemo(
     () => modules.filter((m) => Number(m.parent_id) === 0),
-    [modules]
+    [modules],
   );
 
   const getSubModules = (parentId) =>
-    modules.filter(
-      (m) => Number(m.parent_id) === Number(parentId)
-    );
+    modules.filter((m) => Number(m.parent_id) === Number(parentId));
 
-  const toggleSidebar = () =>
-    setIsSidebarOpen((prev) => !prev);
+  const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
   const handleMenuClick = (item, hasSub) => {
     if (hasSub) {
@@ -69,8 +64,7 @@ function AdminIndex() {
     }
   };
 
-  const ActiveComponent =
-    componentMap[activeCode] || componentMap["home"];
+  const ActiveComponent = componentMap[activeCode] || componentMap["home"];
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -101,9 +95,7 @@ function AdminIndex() {
             <div key={item.module_id}>
               <div
                 className="p-3 cursor-pointer hover:bg-gray-600 flex justify-between"
-                onClick={() =>
-                  handleMenuClick(item, hasSub)
-                }
+                onClick={() => handleMenuClick(item, hasSub)}
               >
                 {item.name}
                 {hasSub &&
@@ -114,22 +106,19 @@ function AdminIndex() {
                   ))}
               </div>
 
-              {hasSub &&
-                openSubmenus[item.module_id] && (
-                  <div className="ml-4 border-l border-gray-600">
-                    {subs.map((sub) => (
-                      <div
-                        key={sub.module_id}
-                        className="p-2 cursor-pointer hover:bg-gray-600"
-                        onClick={() =>
-                          handleMenuClick(sub, false)
-                        }
-                      >
-                        {sub.name}
-                      </div>
-                    ))}
-                  </div>
-                )}
+              {hasSub && openSubmenus[item.module_id] && (
+                <div className="ml-4 border-l border-gray-600">
+                  {subs.map((sub) => (
+                    <div
+                      key={sub.module_id}
+                      className="p-2 cursor-pointer hover:bg-gray-600"
+                      onClick={() => handleMenuClick(sub, false)}
+                    >
+                      {sub.name}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           );
         })}
@@ -137,10 +126,7 @@ function AdminIndex() {
 
       <div className="lg:ml-64">
         <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30 lg:ml-64">
-          <button
-            className="lg:hidden"
-            onClick={toggleSidebar}
-          >
+          <button className="lg:hidden" onClick={toggleSidebar}>
             <FaBars size={20} />
           </button>
 
@@ -151,10 +137,7 @@ function AdminIndex() {
               </div>
             </div>
 
-            <Link
-              to="/admin"
-              className="text-sm text-red-600 hover:underline"
-            >
+            <Link to="/admin" className="text-sm text-red-600 hover:underline">
               Log out
             </Link>
           </div>

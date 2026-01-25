@@ -42,7 +42,7 @@ const AdminStaff = ({ data }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
-          message: `${username} is successfully deleted`,
+          message: username + " " + msg,
           status: status,
         });
         fetchStaff();

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2026 at 02:57 PM
+-- Generation Time: Jan 25, 2026 at 05:23 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -193,26 +193,20 @@ CREATE TABLE `customer_car` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `plate_no` varchar(20) NOT NULL,
-  `prefix` varchar(10) NOT NULL,
-  `postfix` varchar(10) NOT NULL,
   `province` varchar(30) NOT NULL,
   `brand` varchar(25) NOT NULL,
-  `model` varchar(25) NOT NULL,
+  `model` varchar(25) DEFAULT NULL,
   `size_id` int(11) NOT NULL,
-  `color` varchar(25) NOT NULL,
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NULL DEFAULT NULL,
-  `deleted_at` timestamp NULL DEFAULT NULL
+  `color` varchar(25) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_car`
 --
 
-INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `prefix`, `postfix`, `province`, `brand`, `model`, `size_id`, `color`, `created_at`, `updated_at`, `deleted_at`) VALUES
-(23, 1, 'abc1234', 'abc', '1234', 'สมุทรปราการ', 'aespa', 'kwangya', 86, 'black mamba', '2024-06-05 11:58:35', NULL, NULL),
-(24, 6, 'รกจ980', 'รกจ', '980', 'กรุงเทพมหานคร', 'yamaha', 'series 1', 86, 'test', '2024-08-21 06:25:20', NULL, NULL),
-(25, 43, 'test1422', 'test', '1422', 'กรุงเทพมหานคร', 'test', 'test', 86, 'test', '2024-08-26 13:08:40', NULL, NULL);
+INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `province`, `brand`, `model`, `size_id`, `color`) VALUES
+(1, 1, '0000newcar', 'กรุงเทพมหานคร', 'toyota', NULL, 86, 'white'),
+(11, 61, 'sdd', 'กรุงเทพมหานคร', 's', 's', 87, 's');
 
 -- --------------------------------------------------------
 
@@ -237,7 +231,8 @@ CREATE TABLE `customer_user` (
 INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
 (1, '0000', 'name surname 0000', '$2b$10$GAA5SQm1Dio/yviAKVaHw.FChyPs8NQwHFwrfpEGt/dhQrbII9x8W', 0, 0, NULL),
 (6, '222', 'twotwotwo', '$2b$10$YJH7EVFO0dBFi/zNnvbr4.DZNIGZMuJSwuhLlr2ZrjzEIxKTGT81m', 0, 0, NULL),
-(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, NULL);
+(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, NULL),
+(61, '0922788380', 'Kittima Moolamart', '$2b$10$LCY8HnucIwojboDko/1BfOBIfXzZVwWak1EGakhRmq4gyZmpdiZpG', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -331,7 +326,8 @@ INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 (5, 'customer', 'CUSTOMER', 4),
 (6, 'staff', 'STAFF', 4),
 (7, 'masterData', 'MASTER DATA', 0),
-(8, 'carSize', 'CAR SIZE', 7);
+(8, 'carSize', 'CAR SIZE', 7),
+(9, 'customerCar', 'CUSTOMER\'S CAR', 4);
 
 -- --------------------------------------------------------
 
@@ -368,7 +364,11 @@ INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
 (8, 1),
 (8, 2),
 (8, 3),
-(8, 4);
+(8, 4),
+(9, 1),
+(9, 2),
+(9, 3),
+(9, 4);
 
 -- --------------------------------------------------------
 
@@ -576,7 +576,7 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', '2026-01-25 08:42:38'),
+(1, 'Super User', '2026-01-09 08:43:19', '2026-01-25 14:07:42'),
 (95, 'Super User2', '2026-01-24 16:06:34', '2026-01-24 18:45:36');
 
 -- --------------------------------------------------------
@@ -618,7 +618,11 @@ INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 8, 1),
 (1, 8, 2),
 (1, 8, 3),
-(1, 8, 4);
+(1, 8, 4),
+(1, 9, 1),
+(1, 9, 2),
+(1, 9, 3),
+(1, 9, 4);
 
 -- --------------------------------------------------------
 
@@ -695,8 +699,7 @@ INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_co
 (19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 1, NULL, 1),
 (20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 0, 1, NULL, 1),
 (21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 0, 1, NULL, 1),
-(30, 'adminnewnew', 'admin4', '$2b$10$monDz9DtKFyrNRu7G4SyRuiL.xEdiv5vVr5yEntZl5ZFpvx8k.YoC', 0, 1, NULL, 1),
-(60, '2baddies', 'baddies', '$2b$10$Di1jd9vlPD3xD24Z/mI4z.hBAfHWiwhrzIt/SNALlmM6R/4wTg3vu', 0, 0, NULL, 1);
+(30, 'adminnewnew', 'admin4', '$2b$10$monDz9DtKFyrNRu7G4SyRuiL.xEdiv5vVr5yEntZl5ZFpvx8k.YoC', 0, 1, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -835,9 +838,9 @@ ALTER TABLE `channel`
 --
 ALTER TABLE `customer_car`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `unique_plate_no` (`plate_no`),
-  ADD KEY `fk_customer_id` (`customer_id`),
-  ADD KEY `fk_size_id` (`size_id`);
+  ADD UNIQUE KEY `plate_no` (`plate_no`),
+  ADD KEY `customer_id` (`customer_id`),
+  ADD KEY `size_id` (`size_id`);
 
 --
 -- Indexes for table `customer_user`
@@ -1011,13 +1014,13 @@ ALTER TABLE `channel`
 -- AUTO_INCREMENT for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `customer_user`
 --
 ALTER TABLE `customer_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `general_setting`
@@ -1035,7 +1038,7 @@ ALTER TABLE `holiday`
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -1089,7 +1092,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT for table `staff_user`
 --
 ALTER TABLE `staff_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
 
 --
 -- AUTO_INCREMENT for table `status`
@@ -1123,8 +1126,8 @@ ALTER TABLE `template_field`
 -- Constraints for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  ADD CONSTRAINT `fk_customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customer_user` (`id`),
-  ADD CONSTRAINT `fk_size_id` FOREIGN KEY (`size_id`) REFERENCES `car_size` (`id`);
+  ADD CONSTRAINT `customer_car_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer_user` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `customer_car_ibfk_2` FOREIGN KEY (`size_id`) REFERENCES `car_size` (`id`);
 
 --
 -- Constraints for table `day_off`
