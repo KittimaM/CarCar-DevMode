@@ -26,6 +26,7 @@ const AdminAddStaff = () => {
   useEffect(() => {
     fetchAllRole();
   }, []);
+
   const handleAddUser = (e) => {
     e.preventDefault();
     const jsonData = {
@@ -39,14 +40,18 @@ const AdminAddStaff = () => {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Add ${userName}`,
+          message: userName + " " + msg,
         });
         setErrors([]);
+      } else if (status == "WARNNING") {
+        setErrors(userName + " " + msg);
+        setUserName("");
       } else if (status == "ERROR") {
-        if (msg.code === "ER_DUP_ENTRY") {
-          setErrors("user name duplicated");
-          setUserName("");
-        }
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
+        });
       }
       setNotificationKey((prev) => prev + 1);
     });

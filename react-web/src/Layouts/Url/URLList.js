@@ -2,7 +2,7 @@ const URLList = {
   //Admin
   AdminCustomer: "admin/customer",
   AdminCustomerCarURL: "admin/customer-car",
-  AdminCarSizeURL: "admin/carsize",
+  AdminCarSize: "admin/carsize",
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
   AdminOnLeaveType: "admin/onleave/type",

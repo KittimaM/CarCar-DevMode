@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const Notification = ({ message, status, duration = 3000 }) => {
   const [show, setShow] = useState(true);

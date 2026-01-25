@@ -24,12 +24,15 @@ const AdminAddStaffUser = (req, res, next) => {
       Conn.execute(
         `INSERT INTO staff_user (username, name , password, role_id) VALUES (?,?,?,?)`,
         [username, name, hash, role_id],
-        function (error, result) {
+        function (error) {
           if (error) {
-            return res.json({ status: "ERROR", msg: error });
+            if (error.code == "ER_DUP_ENTRY") {
+              return res.json({ status: "WARNING", msg: "Already In System" });
+            } else {
+              return res.json({ status: "ERROR", msg: error });
+            }
           } else {
-            const insertId = result.insertId;
-            return res.json({ status: "SUCCESS", msg: insertId });
+            return res.json({ status: "SUCCESS", msg: "Successfully Added" });
           }
         },
       );
@@ -41,7 +44,11 @@ const AdminDeleteStaffUser = (req, res, next) => {
   const { id } = req.body;
   Conn.execute("DELETE FROM staff_user WHERE id = ?", [id], function (error) {
     if (error) {
-      return res.json({ status: "ERROR", msg: error });
+      if (error.code == "ER_ROW_IS_REFERENCED_2") {
+        return res.json({ status: "WARNING", msg: "Currently In Use" });
+      } else {
+        return res.json({ status: "ERROR", msg: error });
+      }
     } else {
       return res.json({ status: "SUCCESS", msg: "SUCCESS" });
     }
@@ -56,8 +63,8 @@ const AdminUpdateStaffUser = (req, res, next) => {
       if (error) {
         if (error.code == "ER_DUP_ENTRY") {
           return res.json({
-            status: error.code,
-            msg: "This Username Already In System",
+            status: "WARNING",
+            msg: "Already In System",
           });
         } else {
           return res.json({ status: "ERROR", msg: error });

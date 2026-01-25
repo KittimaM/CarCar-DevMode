@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import {
-  GetAllAdminRoleLabel,
+  GetAllModules,
   GetRolePermissionById,
   UpdateRole,
 } from "../../Api";
@@ -24,7 +24,7 @@ const AdminEditRole = ({ editItem }) => {
 
       const allowedModules = msg;
 
-      GetAllAdminRoleLabel().then(({ status, msg }) => {
+      GetAllModules().then(({ status, msg }) => {
         if (status !== "SUCCESS") return;
 
         const grouped = msg.reduce((acc, row) => {

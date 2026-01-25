@@ -45,7 +45,7 @@ const AdminEditCustomer = ({ editItem }) => {
           message: `Successfully Update ${name}`,
         });
         setErrors([]);
-      } else if (status == "ER_DUP_ENTRY") {
+      } else if (status == "WARNING") {
         setErrors(msg);
         setPhone(editItem.phone);
       }
