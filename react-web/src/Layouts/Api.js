@@ -141,19 +141,19 @@ export const UpdateStaffUser = (jsonData) => {
 };
 
 export const GetAllCarSize = () => {
-  return getApi(URLList.AdminCarSizeURL);
+  return getApi(URLList.AdminCarSize);
 };
 
 export const PostAddCarSize = (jsonData) => {
-  return postApi(URLList.AdminCarSizeURL, jsonData);
+  return postApi(URLList.AdminCarSize, jsonData);
 };
 
 export const DeleteCarSize = (jsonData) => {
-  return deleteApi(URLList.AdminCarSizeURL, jsonData);
+  return deleteApi(URLList.AdminCarSize, jsonData);
 };
 
 export const UpdateCarSize = (jsonData) => {
-  return putApi(URLList.AdminCarSizeURL, jsonData);
+  return putApi(URLList.AdminCarSize, jsonData);
 };
 
 export const GetAllService = () => {
@@ -200,7 +200,7 @@ export const DeleteCustomerBooking = (jsonData) => {
 };
 
 export const PostAddCustomer = (jsonData) => {
-  return postApi("customer/register", jsonData);
+  return postApi(URLList.AdminCustomer, jsonData);
 };
 
 export const PostAddCustomerBooking = (jsonData) => {
@@ -387,10 +387,6 @@ export const UpdateAdminCustomerCar = (url, jsonData) => {
   return putApi(url, jsonData);
 };
 
-export const GetAllAdminRoleLabel = () => {
-  return getApi(URLList.AdminRoleLabel);
-};
-
 export const AdminGetLatestOnLeaveByType = (jsonData) => {
   return getApi(URLList.AdminLatestOnLeaveByTypePersonal, jsonData, true);
 };
@@ -473,4 +469,12 @@ export const GetStaffUserById = (jsonData) => {
 
 export const GetCustomerUserById = (jsonData) => {
   return postApi(URLList.AdminCustomer, jsonData);
+};
+
+export const UpdateCarSizeAvailable = (jsonData) => {
+  return putApi(URLList.AdminCarSize + "/is-available", jsonData);
+};
+
+export const GetCarSizeById = (jsonData) => {
+  return postApi(URLList.AdminCarSize + "/id", jsonData);
 };

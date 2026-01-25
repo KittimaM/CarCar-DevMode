@@ -26,7 +26,14 @@ const AdminAddCustomer = (req, res, next) => {
         [phone, name, hash],
         function (error, result) {
           if (error) {
-            return res.json({ status: "ERROR", msg: error });
+            if (error.code == "ER_DUP_ENTRY") {
+              return res.json({
+                status: "WARNING",
+                msg: "Already In System",
+              });
+            } else {
+              return res.json({ status: "ERROR", msg: error });
+            }
           } else {
             const insertId = result.insertId;
             return res.json({ status: "SUCCESS", msg: insertId });
@@ -44,8 +51,8 @@ const AdminUpdateCustomer = (req, res, next) => {
       if (error) {
         if (error.code == "ER_DUP_ENTRY") {
           return res.json({
-            status: error.code,
-            msg: "This Phone Number Already In System",
+            status: "WARNING",
+            msg: "Already In System",
           });
         } else {
           return res.json({ status: "ERROR", msg: error });
@@ -82,16 +89,16 @@ const AdminDeleteCustomer = (req, res, next) => {
     [id],
     function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code == "ER_ROW_IS_REFERENCED_2") {
           return res.json({
-            status: error.code,
-            msg: "This Phone Number Already In System",
+            status: "WARNING",
+            msg: "Currently In Use",
           });
         } else {
           return res.json({ status: "ERROR", msg: error });
         }
       } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
       }
     },
   );
@@ -106,7 +113,7 @@ const AdminUnlockCustomer = (req, res, next) => {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "Successfully Unlock" });
       }
     },
   );

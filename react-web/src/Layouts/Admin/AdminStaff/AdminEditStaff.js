@@ -68,8 +68,8 @@ const AdminEditStaff = ({ editItem }) => {
           message: `Successfully Update ${userName}`,
         });
         setErrors([]);
-      } else if (status == "ER_DUP_ENTRY") {
-        setErrors(msg);
+      } else if (status == "WARNING") {
+        setErrors(userName + " " + msg);
         setUserName(editItem.username);
       }
       setNotificationKey((prev) => prev + 1);

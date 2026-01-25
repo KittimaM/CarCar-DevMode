@@ -10,9 +10,6 @@ app.use(bodyParser.json());
 const CustomerProfileRoute = require("./Routes/Customer/CustomerProfile");
 app.use("/customer/profile", CustomerProfileRoute);
 
-const CustomerRegisterRoute = require("./Routes/Customer/CustomerRegister");
-app.use("/customer/register", CustomerRegisterRoute);
-
 const CustomerLoginRoute = require("./Routes/Customer/CustomerLogin");
 app.use("/customer/login", CustomerLoginRoute);
 
@@ -37,9 +34,6 @@ app.use("/admin/template", AdminTemplateRoute);
 
 const AdminOnLeaveDetailRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeaveDetail");
 app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
-
-const AdminRoleLabelRoute = require("./Routes/Admin/AdminRole/AdminRoleLabel");
-app.use("/admin/role-label", AdminRoleLabelRoute);
 
 const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
 app.use("/admin/customer-car", AdminCustomerCarRoute);

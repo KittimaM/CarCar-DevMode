@@ -1,19 +1,22 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+import Notification from "../../../Notification/Notification";
 import {
-  DeleteAdminCustomer,
-  GetAdminCustomer,
-  UpdateAdminUnlockCustomer,
-} from "../../Api";
-import Notification from "../../Notification/Notification";
-import lockedIcon from "../../../assets/padlock-icon.svg";
-import AdminAddCustomer from "./AdminAddCustomer";
-import AdminEditCustomer from "./AdminEditCustomer";
+  DeleteCarSize,
+  GetAllCarSize,
+  UpdateCarSizeAvailable,
+} from "../../../Api";
+import AdminAddCarSize from "./AdminAddCarSize";
+import AdminEditCarSize from "./AdminEditCarSize";
+import checkIcon from "../../../../assets/green-checkmark-line-icon.svg";
+import unCheckIcon from "../../../../assets/red-x-line-icon.svg";
 
-const AdminCustomer = ({ data }) => {
+const AdminCarSize = ({ data }) => {
   const { labelValue, permission } = data;
-  const actions = permission.find((p) => p.code === "staff").permission_actions;
+  const actions = permission.find(
+    (p) => p.code === "carSize",
+  ).permission_actions;
   const [viewMode, setViewMode] = useState("list");
-  const [user, setUser] = useState(null);
+  const [size, setSize] = useState("");
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -21,34 +24,59 @@ const AdminCustomer = ({ data }) => {
     message: "",
     status: "",
   });
-  const fetchCustomer = () => {
-    GetAdminCustomer().then((data) => {
-      const { status, msg } = data;
+
+  const fetchCarSize = () => {
+    GetAllCarSize().then(({ status, msg }) => {
       if (status == "SUCCESS") {
-        setUser(msg);
-      } else {
-        console.log(data);
+        setSize(msg);
       }
     });
   };
 
   useEffect(() => {
-    fetchCustomer();
+    fetchCarSize();
   }, []);
 
-  const handleDeleteUser = (id, name) => {
-    DeleteAdminCustomer({ id: id }).then(({ status, msg }) => {
+  const handleAvailable = (id, size, is_available) => {
+    UpdateCarSizeAvailable({ id: id, is_available: !is_available }).then(
+      ({ status, msg }) => {
+        if (status === "SUCCESS") {
+          setNotification({
+            show: true,
+            message: size + " " + msg,
+            status: status,
+          });
+          fetchCarSize();
+        } else if (status === "ERROR") {
+          setNotification({
+            show: true,
+            message: msg,
+            status: status,
+          });
+        }
+        setNotificationKey((prev) => prev + 1);
+      },
+    );
+  };
+
+  const handleEditCarSize = (id, size, description) => {
+    setEditItem({ id, size, description });
+    setViewMode("edit");
+  };
+
+  const handleDeleteCarSize = (id, size) => {
+    DeleteCarSize({ id: id }).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
-          message: name + " " + msg,
+          message: `${size} is successfully deleted`,
           status: status,
         });
-        fetchCustomer();
+        fetchCarSize();
       } else if (status == "WARNING") {
         setNotification({
           show: true,
-          message: name + " " + msg,
+          message: msg,
           status: status,
         });
       } else if (status === "ERROR") {
@@ -59,31 +87,6 @@ const AdminCustomer = ({ data }) => {
         });
       }
       setNotificationKey((prev) => prev + 1);
-    });
-  };
-
-  const handelEditUser = (id, phone, name) => {
-    setEditItem({ id, phone, name });
-    setViewMode("edit");
-  };
-
-  const handleUnLock = (id, name) => {
-    UpdateAdminUnlockCustomer({ id: id }).then((data) => {
-      const { status, msg } = data;
-      if (status == "SUCCESS") {
-        setNotification({
-          show: true,
-          message: name + " " + msg,
-          status: status,
-        });
-        fetchCustomer();
-      } else if (status == "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
     });
   };
 
@@ -101,9 +104,11 @@ const AdminCustomer = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">CUSTOMER LIST</li>}
-            {viewMode === "add" && <li className="text-xl">CREATE USER</li>}
-            {viewMode === "edit" && <li className="text-xl">EDIT USER</li>}
+            {viewMode === "list" && <li className="text-xl">CAR SIZE LIST</li>}
+            {viewMode === "add" && (
+              <li className="text-xl">CREATE NEW CAR SIZE</li>
+            )}
+            {viewMode === "edit" && <li className="text-xl">EDIT CAR SIZE</li>}
           </ul>
         </div>
       </div>
@@ -115,10 +120,10 @@ const AdminCustomer = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchCustomer();
+            fetchCarSize();
           }}
         >
-          Customer List
+          Car Size List
         </button>
 
         {actions.includes("add") && (
@@ -128,46 +133,48 @@ const AdminCustomer = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create User
+            + Create New Car Size
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddCustomer />}
+      {viewMode === "add" && <AdminAddCarSize />}
       {viewMode === "edit" && editItem && (
-        <AdminEditCustomer editItem={editItem} />
+        <AdminEditCarSize editItem={editItem} />
       )}
 
       {viewMode === "list" && (
         <table className="table table-lg">
           <thead>
             <tr>
-              <td>is locked</td>
-              <td>locked reason</td>
-              <td>phone</td>
-              <td>name</td>
+              <td>Status</td>
+              <td>Size</td>
+              <td>Description</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
               )}
             </tr>
           </thead>
           <tbody>
-            {user &&
-              user.map((u) => (
-                <tr key={u.id}>
+            {size &&
+              size.map((c) => (
+                <tr key={c.id}>
                   <td>
                     <button
                       type="button"
-                      onClick={() => handleUnLock(u.id, u.name)}
+                      onClick={() =>
+                        handleAvailable(c.id, c.size, c.is_available)
+                      }
                     >
-                      {u.is_locked === 1 && (
-                        <img height="12" width="12" src={lockedIcon} />
+                      {c.is_available === 1 ? (
+                        <img height="15" width="15" src={checkIcon} />
+                      ) : (
+                        <img height="15" width="15" src={unCheckIcon} />
                       )}
                     </button>
                   </td>
-                  <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
-                  <td>{u.phone}</td>
-                  <td>{u.name}</td>
+                  <td>{c.size}</td>
+                  <td>{c.description}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
@@ -175,7 +182,7 @@ const AdminCustomer = ({ data }) => {
                           <button
                             className="btn btn-warning"
                             onClick={() =>
-                              handelEditUser(u.id, u.phone, u.name)
+                              handleEditCarSize(c.id, c.size, c.description)
                             }
                           >
                             Edit
@@ -185,7 +192,7 @@ const AdminCustomer = ({ data }) => {
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDeleteUser(u.id, u.name)}
+                            onClick={() => handleDeleteCarSize(c.id, c.size)}
                           >
                             Delete
                           </button>
@@ -202,4 +209,4 @@ const AdminCustomer = ({ data }) => {
   );
 };
 
-export default AdminCustomer;
+export default AdminCarSize;

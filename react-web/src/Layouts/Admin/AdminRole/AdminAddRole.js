@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRoleLabel, PostAdminAddRole } from "../../Api";
+import { GetAllModules, PostAdminAddRole } from "../../Api";
 import Notification from "../../Notification/Notification";
 
 const AdminAddRole = () => {
@@ -14,7 +14,7 @@ const AdminAddRole = () => {
   });
 
   const fetchAllModules = () => {
-    GetAllAdminRoleLabel().then(({ status, msg }) => {
+    GetAllModules().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         const grouped = msg.reduce((acc, row) => {
           if (!acc[row.module_id]) {

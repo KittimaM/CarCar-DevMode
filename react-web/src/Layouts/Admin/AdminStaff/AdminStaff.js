@@ -46,21 +46,25 @@ const AdminStaff = ({ data }) => {
           status: status,
         });
         fetchStaff();
+      } else if (status == "WARNING") {
+        setNotification({
+          show: true,
+          message: username + " " + msg,
+          status: status,
+        });
       } else if (status === "ERROR") {
-        if (msg.code == "ER_ROW_IS_REFERENCED_2") {
-          setNotification({
-            show: true,
-            message: `${username} is currently in use`,
-            status: status,
-          });
-        }
+        setNotification({
+          show: true,
+          message: msg,
+          status: status,
+        });
       }
       setNotificationKey((prev) => prev + 1);
     });
   };
 
   const handelEditUser = (id, username, name, role_id) => {
-    setEditItem({id, username,name,role_id });
+    setEditItem({ id, username, name, role_id });
     setViewMode("edit");
   };
 
@@ -171,7 +175,14 @@ const AdminStaff = ({ data }) => {
                         {actions.includes("edit") && (
                           <button
                             className="btn btn-warning"
-                            onClick={() => handelEditUser(u.id, u.username, u.name, u.role_id)}
+                            onClick={() =>
+                              handelEditUser(
+                                u.id,
+                                u.username,
+                                u.name,
+                                u.role_id,
+                              )
+                            }
                           >
                             Edit
                           </button>

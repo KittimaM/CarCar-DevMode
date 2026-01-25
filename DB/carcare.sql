@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 24, 2026 at 08:50 PM
+-- Generation Time: Jan 25, 2026 at 02:57 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -145,8 +145,8 @@ INSERT INTO `booking` (`id`, `car_no`, `car_size_id`, `car_size`, `car_color`, `
 
 CREATE TABLE `car_size` (
   `id` int(11) NOT NULL,
-  `size` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
+  `size` varchar(30) NOT NULL,
+  `description` varchar(100) DEFAULT NULL,
   `is_available` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -158,11 +158,7 @@ INSERT INTO `car_size` (`id`, `size`, `description`, `is_available`) VALUES
 (86, ' mini car', '2 seats', 1),
 (87, 'normal ', '4 wheels', 1),
 (101, 'mini car', '', 1),
-(114, 'XXs', 'asdadasdasdasda', 0),
-(116, 'XXsh', 'asdadasdasdasda', 1),
-(120, 'XXshg', 'asdadasdasdasda', 0),
-(121, 'XXshgj', '', 0),
-(123, 'XXsff', 'asdadasdasdasda', 0);
+(114, 'XXs', 'asdadasdasdasda', 1);
 
 -- --------------------------------------------------------
 
@@ -229,22 +225,19 @@ CREATE TABLE `customer_user` (
   `phone` varchar(20) NOT NULL,
   `name` varchar(50) NOT NULL,
   `password` varchar(150) NOT NULL,
-  `is_active` tinyint(4) NOT NULL DEFAULT 0,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
   `is_locked` tinyint(4) NOT NULL DEFAULT 0,
-  `locked_reason` varchar(150) DEFAULT NULL,
-  `latest_logged_in` timestamp NULL DEFAULT NULL
+  `locked_reason` varchar(150) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `customer_user`
 --
 
-INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `is_active`, `failed_login_count`, `is_locked`, `locked_reason`, `latest_logged_in`) VALUES
-(1, '0000', 'name surname 0000', '$2b$10$GAA5SQm1Dio/yviAKVaHw.FChyPs8NQwHFwrfpEGt/dhQrbII9x8W', 1, 0, 0, NULL, '2025-03-01 06:20:08'),
-(6, '111', '111', '$2b$10$DyvBknbhozFHEhgAYlL7g.naUXbuUGfyJAl1iaaL97u/Q.P0EeAQ.', 1, 0, 0, NULL, '2025-02-20 17:18:10'),
-(35, 'test', 'test', '$2b$10$7sal0rsCUrKvhrjNuloYRu6lmlkzI1yZKgTJNMOb20PHTSHu2HBdm', 1, 0, 0, NULL, NULL),
-(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 1, 0, 0, NULL, NULL);
+INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `failed_login_count`, `is_locked`, `locked_reason`) VALUES
+(1, '0000', 'name surname 0000', '$2b$10$GAA5SQm1Dio/yviAKVaHw.FChyPs8NQwHFwrfpEGt/dhQrbII9x8W', 0, 0, NULL),
+(6, '222', 'twotwotwo', '$2b$10$YJH7EVFO0dBFi/zNnvbr4.DZNIGZMuJSwuhLlr2ZrjzEIxKTGT81m', 0, 0, NULL),
+(43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -336,7 +329,9 @@ INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 (3, 'role', 'ACCESS CONFIG', 2),
 (4, 'user', 'USER', 0),
 (5, 'customer', 'CUSTOMER', 4),
-(6, 'staff', 'STAFF', 4);
+(6, 'staff', 'STAFF', 4),
+(7, 'masterData', 'MASTER DATA', 0),
+(8, 'carSize', 'CAR SIZE', 7);
 
 -- --------------------------------------------------------
 
@@ -368,7 +363,12 @@ INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
 (6, 1),
 (6, 2),
 (6, 3),
-(6, 4);
+(6, 4),
+(7, 1),
+(8, 1),
+(8, 2),
+(8, 3),
+(8, 4);
 
 -- --------------------------------------------------------
 
@@ -576,9 +576,8 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', '2026-01-24 16:15:51'),
-(95, 'Super User2', '2026-01-24 16:06:34', '2026-01-24 18:45:36'),
-(107, 'be', '2026-01-24 19:35:06', NULL);
+(1, 'Super User', '2026-01-09 08:43:19', '2026-01-25 08:42:38'),
+(95, 'Super User2', '2026-01-24 16:06:34', '2026-01-24 18:45:36');
 
 -- --------------------------------------------------------
 
@@ -597,6 +596,9 @@ CREATE TABLE `role_permission` (
 --
 
 INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
+(95, 1, 1),
+(95, 2, 1),
+(95, 3, 1),
 (1, 1, 1),
 (1, 2, 1),
 (1, 3, 1),
@@ -612,10 +614,11 @@ INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 6, 2),
 (1, 6, 3),
 (1, 6, 4),
-(95, 1, 1),
-(95, 2, 1),
-(95, 3, 1),
-(107, 1, 1);
+(1, 7, 1),
+(1, 8, 1),
+(1, 8, 2),
+(1, 8, 3),
+(1, 8, 4);
 
 -- --------------------------------------------------------
 
@@ -685,14 +688,15 @@ CREATE TABLE `staff_user` (
 --
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_count`, `is_locked`, `locked_reason`, `role_id`) VALUES
-(6, 'admin', 'admin', '$2b$10$OPHGn5plf0P8ISXLHiSo5uxpZeUvYdd13995gMIHcRBkPkG3Yny3.', 0, 0, NULL, 1),
-(16, 'admin2', 'admin2', '$2b$10$ByE9eqDxL1I4qBQjC1Khd.cHRzcSlhr/m8emx07m6JGMU5ju4a08i', 0, 0, NULL, 95),
+(6, 'admin', 'admin', '$2b$10$S/ro0u/Ufy36muvZ1OC3betMfoMI7PEQtYV.36ZLeAxjqdNN1bvT2', 0, 0, NULL, 1),
+(16, 'admin2', 'admin2', '$2b$10$VL0whDlu/7NQ.iQuHPYzpOPjNlxBQU/qowIwf.gzrH10PrI3Q7XQC', 0, 0, NULL, 1),
 (17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 0, 0, NULL, 1),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 0, 0, NULL, 1),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 0, NULL, 1),
-(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 0, 0, NULL, 1),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 1, NULL, 1),
+(20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 0, 1, NULL, 1),
 (21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 0, 1, NULL, 1),
-(30, 'admin45', 'admin4', '$2b$10$7oGLC4658EuWxI2I2svbZOh7tIovR37CbW4lmX3NjYKJHGWWIRIry', 0, 0, NULL, 1);
+(30, 'adminnewnew', 'admin4', '$2b$10$monDz9DtKFyrNRu7G4SyRuiL.xEdiv5vVr5yEntZl5ZFpvx8k.YoC', 0, 1, NULL, 1),
+(60, '2baddies', 'baddies', '$2b$10$Di1jd9vlPD3xD24Z/mI4z.hBAfHWiwhrzIt/SNALlmM6R/4wTg3vu', 0, 0, NULL, 1);
 
 -- --------------------------------------------------------
 
@@ -816,7 +820,8 @@ ALTER TABLE `booking`
 ALTER TABLE `car_size`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `size` (`size`),
-  ADD UNIQUE KEY `size_2` (`size`);
+  ADD UNIQUE KEY `size_2` (`size`),
+  ADD UNIQUE KEY `size_3` (`size`);
 
 --
 -- Indexes for table `channel`
@@ -994,7 +999,7 @@ ALTER TABLE `booking`
 -- AUTO_INCREMENT for table `car_size`
 --
 ALTER TABLE `car_size`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=141;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
 
 --
 -- AUTO_INCREMENT for table `channel`
@@ -1012,7 +1017,7 @@ ALTER TABLE `customer_car`
 -- AUTO_INCREMENT for table `customer_user`
 --
 ALTER TABLE `customer_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `general_setting`
@@ -1030,7 +1035,7 @@ ALTER TABLE `holiday`
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -1066,7 +1071,7 @@ ALTER TABLE `province`
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
@@ -1084,7 +1089,7 @@ ALTER TABLE `service`
 -- AUTO_INCREMENT for table `staff_user`
 --
 ALTER TABLE `staff_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=61;
 
 --
 -- AUTO_INCREMENT for table `status`
