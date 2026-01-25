@@ -50,7 +50,7 @@ const AdminDeleteStaffUser = (req, res, next) => {
         return res.json({ status: "ERROR", msg: error });
       }
     } else {
-      return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
     }
   });
 };

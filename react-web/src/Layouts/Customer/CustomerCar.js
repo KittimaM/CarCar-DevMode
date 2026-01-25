@@ -42,7 +42,7 @@ const CustomerCar = () => {
         console.log(data);
       }
     });
-    GetAllProvince(URLList.ProvinceURL).then((data) => {
+    GetAllProvince(URLList.Province).then((data) => {
       const { status, msg } = data;
       if (status == "SUCCESS") {
         setProvince(msg);
@@ -172,7 +172,7 @@ const CustomerCar = () => {
                     <option key={item.id} value={[item.id, item.size]}>
                       {item.size}
                     </option>
-                  )
+                  ),
               )}
             </select>
           )}
@@ -261,7 +261,7 @@ const CustomerCar = () => {
                       <option key={item.id} value={[item.id, item.size]}>
                         {item.size}
                       </option>
-                    )
+                    ),
                 )}
               </select>
             )}

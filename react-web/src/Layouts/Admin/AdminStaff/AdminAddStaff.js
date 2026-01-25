@@ -43,7 +43,7 @@ const AdminAddStaff = () => {
           message: userName + " " + msg,
         });
         setErrors([]);
-      } else if (status == "WARNNING") {
+      } else if (status == "WARNING") {
         setErrors(userName + " " + msg);
         setUserName("");
       } else if (status == "ERROR") {

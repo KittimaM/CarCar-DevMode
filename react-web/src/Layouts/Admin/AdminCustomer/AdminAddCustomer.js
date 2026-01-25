@@ -62,7 +62,7 @@ const AdminAddCustomer = () => {
               value={phone}
               className={`input validator tabular-nums input-bordered w-full max-w-md ${!phone ? `input-error` : ``}`}
               onChange={(e) => {
-                let value = e.target.value.replace(/[^0-9]/g, "");
+                const value = e.target.value.replace(/[^0-9]/g, "");
                 if (value.length > 10) {
                   value = value.slice(0, 10);
                 }

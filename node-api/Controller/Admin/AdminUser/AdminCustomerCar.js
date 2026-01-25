@@ -1,88 +1,70 @@
-var bcrypt = require("bcrypt");
 const Conn = require("../../../db");
-const saltRounds = 10;
 
 const AdminGetAllCustomerCar = (req, res, next) => {
-  Conn.execute("SELECT * FROM customer_car", function (error, results) {
-    if (error) {
-      return res.json({ status: "ERROR", msg: error });
-    }
-    if (results.length == 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
-    } else {
-      return res.json({ status: "SUCCESS", msg: results });
-    }
-  });
+  Conn.execute(
+    `SELECT 
+      cc.id AS car_id,
+      cu.id AS customer_id,
+      cu.phone,
+      cu.name,
+      cc.plate_no,
+      cc.province,
+      cc.brand,
+      cc.color,
+      cc.model,
+      cc.size_id,
+      cz.size
+      FROM customer_car cc 
+      LEFT JOIN customer_user cu ON cu.id = cc.customer_id 
+      LEFT JOIN car_size cz on cz.id = cc.size_id;`,
+    function (error, results) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      }
+      if (results.length == 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: results });
+      }
+    },
+  );
 };
 
 const AdminAddCustomerCar = (req, res, next) => {
-  const {
-    plate_no,
-    prefix,
-    postfix,
-    province,
-    brand,
-    model,
-    color,
-    size_id,
-    customer_id,
-  } = req.body;
+  const { plate_no, province, brand, model, color, size_id, customer_id } =
+    req.body;
   Conn.execute(
-    `INSERT INTO customer_car (plate_no, prefix, postfix, province, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?,?,?)`,
-    [
-      plate_no,
-      prefix,
-      postfix,
-      province,
-      brand,
-      model,
-      color,
-      size_id,
-      customer_id,
-    ],
-    function (error, result) {
+    `INSERT INTO customer_car (plate_no, province, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?)`,
+    [plate_no, province, brand, model, color, size_id, customer_id],
+    function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.json({ status: "WARNING", msg: "Already In System" });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
-        const insertId = result.insertId;
-        return res.json({ status: "SUCCESS", msg: insertId });
+        return res.json({ status: "SUCCESS", msg: "Successfully Added" });
       }
     },
   );
 };
 
 const AdminUpdateCustomerCar = (req, res, next) => {
-  const {
-    id,
-    plate_no,
-    prefix,
-    postfix,
-    province,
-    brand,
-    model,
-    color,
-    size_id,
-    customer_id,
-  } = req.body;
+  const { id, plate_no, province, brand, model, color, size_id, customer_id } =
+    req.body;
   Conn.execute(
-    `UPDATE customer_car SET plate_no = ? , prefix = ?, postfix = ?, province = ?, brand = ?, model = ?, color = ?, size_id = ?, customer_id = ? WHERE id = ?`,
-    [
-      plate_no,
-      prefix,
-      postfix,
-      province,
-      brand,
-      model,
-      color,
-      size_id,
-      customer_id,
-      id,
-    ],
-    function (error, result) {
+    `UPDATE customer_car SET plate_no = ? , province = ?, brand = ?, model = ?, color = ?, size_id = ?, customer_id = ? WHERE id = ?`,
+    [plate_no, province, brand, model, color, size_id, customer_id, id],
+    function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.json({ status: "WARNING", msg: "Already In System" });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
     },
   );
@@ -90,17 +72,13 @@ const AdminUpdateCustomerCar = (req, res, next) => {
 
 const AdminDeleteCustomerCar = (req, res, next) => {
   const { id } = req.body;
-  Conn.execute(
-    "DELETE FROM customer_car WHERE id = ?",
-    [id],
-    function (error, result) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-      }
-    },
-  );
+  Conn.execute("DELETE FROM customer_car WHERE id = ?", [id], function (error) {
+    if (error) {
+      return res.json({ status: "ERROR", msg: error });
+    } else {
+      return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
+    }
+  });
 };
 
 module.exports = {

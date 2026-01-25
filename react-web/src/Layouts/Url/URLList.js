@@ -1,7 +1,7 @@
 const URLList = {
   //Admin
   AdminCustomer: "admin/customer",
-  AdminCustomerCarURL: "admin/customer-car",
+  AdminCustomerCar: "admin/customer-car",
   AdminCarSize: "admin/carsize",
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
@@ -30,7 +30,7 @@ const URLList = {
   CustomerProfile: "customer/profile",
 
   //others
-  ProvinceURL: "admin/province",
+  Province: "admin/province",
 };
 
 export default URLList;

@@ -293,8 +293,8 @@ export const AddOnLeaveType = (jsonData) => {
   return postApi(URLList.AdminOnLeaveType, jsonData);
 };
 
-export const GetAllProvince = (url) => {
-  return getApi(url);
+export const GetAllProvince = () => {
+  return getApi(URLList.Province);
 };
 
 export const GetCustomerProfile = () => {
@@ -372,19 +372,19 @@ export const DeleteAdminCustomer = (jsonData) => {
 };
 
 export const GetAdminCustomerCar = () => {
-  return getApi(URLList.AdminCustomerCarURL);
+  return getApi(URLList.AdminCustomerCar);
 };
 
-export const DeleteAdminCustomerCar = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteAdminCustomerCar = (jsonData) => {
+  return deleteApi(URLList.AdminCustomerCar, jsonData);
 };
 
-export const PostAddAdminCustomerCar = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddAdminCustomerCar = (jsonData) => {
+  return postApi(URLList.AdminCustomerCar, jsonData);
 };
 
-export const UpdateAdminCustomerCar = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateAdminCustomerCar = (jsonData) => {
+  return putApi(URLList.AdminCustomerCar, jsonData);
 };
 
 export const AdminGetLatestOnLeaveByType = (jsonData) => {
