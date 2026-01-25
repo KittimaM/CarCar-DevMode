@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    `SELECT id, username, password, role_id, failed_login_count, is_locked, role_name FROM staff_user WHERE username = ? LIMIT 1`,
+    `SELECT id, username, password, role_id, failed_login_count, is_locked FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -40,7 +40,7 @@ const AdminLogin = (req, res, next) => {
             } else {
               if (result) {
                 Conn.execute(
-                  `UPDATE staff_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL, latest_logged_in = CURRENT_TIMESTAMP WHERE id = ?`,
+                  `UPDATE staff_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL WHERE id = ?`,
                   [id],
                   function (successLoginError, successLoginResult) {
                     if (successLoginError) {

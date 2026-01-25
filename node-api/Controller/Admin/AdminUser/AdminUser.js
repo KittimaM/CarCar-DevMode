@@ -39,53 +39,51 @@ const AdminAddStaffUser = (req, res, next) => {
 
 const AdminDeleteStaffUser = (req, res, next) => {
   const { id } = req.body;
-  Conn.execute(
-    "DELETE FROM staff_user WHERE id = ?",
-    [id],
-    function (error, result) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-      }
-    },
-  );
-};
-
-const AdminUpdateStaffUser = (req, res, next) => {
-  const { id, username, name, password, role_id } = req.body;
-  bcrypt.hash(password, saltRounds, function (error, hash) {
+  Conn.execute("DELETE FROM staff_user WHERE id = ?", [id], function (error) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     } else {
-      Conn.execute(
-        `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ? WHERE id = ?`,
-        [username, name, hash, role_id, id],
-        function (error) {
-          if (error) {
-            return res.json({ status: "ERROR", msg: error });
-          } else {
-            return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-          }
-        },
-      );
+      return res.json({ status: "SUCCESS", msg: "SUCCESS" });
     }
   });
 };
 
-const AdminActiveStaff = (req, res, next) => {
-  const { id } = req.body;
-  Conn.execute(
-    "UPDATE staff_user SET is_active = 1 WHERE id = ?",
-    [id],
-    function (error, result) {
+const AdminUpdateStaffUser = (req, res, next) => {
+  const { id, username, name, password, role_id, isChangePassword } = req.body;
+
+  const handleUpdate = (query, params) => {
+    Conn.execute(query, params, function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.json({
+            status: error.code,
+            msg: "This Username Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
-  );
+    });
+  };
+  if (isChangePassword) {
+    bcrypt.hash(password, saltRounds, function (error, hash) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else {
+        handleUpdate(
+          `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ? WHERE id = ?`,
+          [username, name, hash, role_id, id],
+        );
+      }
+    });
+  } else {
+    handleUpdate(
+      `UPDATE staff_user SET username = ? , name = ?, role_id = ? WHERE id = ?`,
+      [username, name, role_id, id],
+    );
+  }
 };
 
 const AdminUnlockStaff = (req, res, next) => {
@@ -125,7 +123,6 @@ module.exports = {
   AdminAddStaffUser,
   AdminDeleteStaffUser,
   AdminUpdateStaffUser,
-  AdminActiveStaff,
   AdminUnlockStaff,
   GetStaffUserById,
 };

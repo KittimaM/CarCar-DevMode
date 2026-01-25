@@ -146,9 +146,6 @@ function AdminIndex() {
 
           <div className="ml-auto flex items-center gap-3">
             <div className="text-right">
-              <div className="text-sm text-green-600 font-semibold">
-                {sessionStorage.getItem("role_name")}
-              </div>
               <div className="text-sm">
                 {sessionStorage.getItem("username")}
               </div>

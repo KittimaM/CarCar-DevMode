@@ -38,24 +38,41 @@ const AdminAddCustomer = (req, res, next) => {
 };
 
 const AdminUpdateCustomer = (req, res, next) => {
-  const { id, phone, name, password } = req.body;
-  bcrypt.hash(password, saltRounds, function (error, hash) {
-    if (error) {
-      return res.json({ status: "ERROR", msg: error });
-    } else {
-      Conn.execute(
-        `UPDATE customer_user SET phone = ? , name = ?, password = ? WHERE id = ?`,
-        [phone, name, hash, id],
-        function (error, result) {
-          if (error) {
-            return res.json({ status: "ERROR", msg: error });
-          } else {
-            return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-          }
-        },
-      );
-    }
-  });
+  const { id, phone, name, password, isChangePassword } = req.body;
+  const handleUpdate = (query, params) => {
+    Conn.execute(query, params, function (error) {
+      if (error) {
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.json({
+            status: error.code,
+            msg: "This Phone Number Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
+      } else {
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    });
+  };
+  if (isChangePassword) {
+    bcrypt.hash(password, saltRounds, function (error, hash) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else {
+        handleUpdate(
+          `UPDATE customer_user SET phone = ? , name = ?, password = ? WHERE id = ?`,
+          [phone, name, hash, id],
+        );
+      }
+    });
+  } else {
+    handleUpdate(`UPDATE customer_user SET phone = ? , name = ? WHERE id = ?`, [
+      phone,
+      name,
+      id,
+    ]);
+  }
 };
 
 const AdminDeleteCustomer = (req, res, next) => {
@@ -63,24 +80,16 @@ const AdminDeleteCustomer = (req, res, next) => {
   Conn.execute(
     "DELETE FROM customer_user WHERE id = ?",
     [id],
-    function (error, result) {
+    function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-      }
-    },
-  );
-};
-
-const AdminActiveCustomer = (req, res, next) => {
-  const { id } = req.body;
-  Conn.execute(
-    "UPDATE customer_user SET is_active = 1 WHERE id = ?",
-    [id],
-    function (error, result) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code == "ER_DUP_ENTRY") {
+          return res.json({
+            status: error.code,
+            msg: "This Phone Number Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
@@ -93,11 +102,28 @@ const AdminUnlockCustomer = (req, res, next) => {
   Conn.execute(
     `UPDATE customer_user SET is_locked = 0, failed_login_count = 0, locked_reason = NULL WHERE id = ?`,
     [id],
-    function (error, result) {
+    function (error) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    },
+  );
+};
+
+const GetCustomerUserById = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "SELECT * FROM customer_user WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else if (result.length == 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: result[0] });
       }
     },
   );
@@ -108,6 +134,6 @@ module.exports = {
   AdminAddCustomer,
   AdminUpdateCustomer,
   AdminDeleteCustomer,
-  AdminActiveCustomer,
   AdminUnlockCustomer,
+  GetCustomerUserById,
 };
