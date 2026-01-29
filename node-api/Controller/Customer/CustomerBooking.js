@@ -60,7 +60,7 @@ const CustomerGetServiceChoice = (req, res, next) => {
     function (error, results) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else if (results.length == 0) {
+      } else if (results.length === 0) {
         return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
         return res.json({ status: "SUCCESS", msg: results });
@@ -81,7 +81,7 @@ const CustomerGetAllBooking = (req, res, next) => {
         if (error) {
           return res.json({ status: "ERROR", msg: error });
         }
-        if (results.length == 0) {
+        if (results.length === 0) {
           return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
           return res.json({ status: "SUCCESS", msg: results });

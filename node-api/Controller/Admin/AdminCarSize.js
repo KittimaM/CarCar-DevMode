@@ -5,7 +5,7 @@ const AdminCarSize = (req, res, next) => {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     }
-    if (results.length == 0) {
+    if (results.length === 0) {
       return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
       return res.json({ status: "SUCCESS", msg: results });
@@ -20,7 +20,7 @@ const AdminAddCarSize = (req, res, next) => {
     [size, description],
     function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({ status: "WARNING", msg: "Already In System" });
         } else {
           return res.json({ status: "ERROR", msg: error });
@@ -36,7 +36,7 @@ const AdminDeleteCarSize = (req, res, next) => {
   const { id } = req.body;
   Conn.execute("DELETE FROM car_size WHERE id = ?", [id], function (error) {
     if (error) {
-      if (error.code == "ER_ROW_IS_REFERENCED_2") {
+      if (error.code === "ER_ROW_IS_REFERENCED_2") {
         return res.json({ status: "WARNING", msg: "Currently In Use" });
       } else {
         return res.json({ status: "ERROR", msg: error });
@@ -54,7 +54,7 @@ const AdminUpdateCarSize = (req, res, next) => {
     [size, description, id],
     function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({ status: "WARNING", msg: "Already In System" });
         } else {
           return res.json({ status: "ERROR", msg: error });
@@ -89,7 +89,7 @@ const GetCarSizeById = (req, res, next) => {
     function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else if (result.length == 0) {
+      } else if (result.length === 0) {
         return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });

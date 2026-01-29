@@ -13,7 +13,7 @@ const CustomerCar = (req, res, next) => {
         if (error) {
           return res.json({ status: "ERROR", msg: error });
         }
-        if (results.length == 0) {
+        if (results.length === 0) {
           return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
           return res.json({ status: "SUCCESS", msg: results });

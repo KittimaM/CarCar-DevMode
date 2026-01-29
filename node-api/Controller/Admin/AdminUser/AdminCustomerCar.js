@@ -21,7 +21,7 @@ const AdminGetAllCustomerCar = (req, res, next) => {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       }
-      if (results.length == 0) {
+      if (results.length === 0) {
         return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
         return res.json({ status: "SUCCESS", msg: results });
@@ -38,7 +38,7 @@ const AdminAddCustomerCar = (req, res, next) => {
     [plate_no, province, brand, model, color, size_id, customer_id],
     function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({ status: "WARNING", msg: "Already In System" });
         } else {
           return res.json({ status: "ERROR", msg: error });
@@ -58,7 +58,7 @@ const AdminUpdateCustomerCar = (req, res, next) => {
     [plate_no, province, brand, model, color, size_id, customer_id, id],
     function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({ status: "WARNING", msg: "Already In System" });
         } else {
           return res.json({ status: "ERROR", msg: error });

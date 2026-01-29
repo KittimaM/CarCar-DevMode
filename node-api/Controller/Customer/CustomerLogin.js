@@ -17,7 +17,7 @@ const CustomerLogin = (req, res, next) => {
       if (error) {
         return res.json({ status: "ERROR", error });
       }
-      if (result.length == 0) {
+      if (result.length === 0) {
         return res.json({ status: "ERROR", msg: "Wrong username or password" });
       } else {
         const {
@@ -27,7 +27,7 @@ const CustomerLogin = (req, res, next) => {
           failed_login_count,
           is_locked,
         } = result[0];
-        if (is_locked == 1) {
+        if (is_locked === 1) {
           return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${customer_failed_login_limit} times`,

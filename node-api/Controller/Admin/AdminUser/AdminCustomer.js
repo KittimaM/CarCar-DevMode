@@ -7,7 +7,7 @@ const AdminGetAllCustomer = (req, res, next) => {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     }
-    if (results.length == 0) {
+    if (results.length === 0) {
       return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
       return res.json({ status: "SUCCESS", msg: results });
@@ -26,7 +26,7 @@ const AdminAddCustomer = (req, res, next) => {
         [phone, name, hash],
         function (error, result) {
           if (error) {
-            if (error.code == "ER_DUP_ENTRY") {
+            if (error.code === "ER_DUP_ENTRY") {
               return res.json({
                 status: "WARNING",
                 msg: "Already In System",
@@ -49,7 +49,7 @@ const AdminUpdateCustomer = (req, res, next) => {
   const handleUpdate = (query, params) => {
     Conn.execute(query, params, function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({
             status: "WARNING",
             msg: "Already In System",
@@ -89,7 +89,7 @@ const AdminDeleteCustomer = (req, res, next) => {
     [id],
     function (error) {
       if (error) {
-        if (error.code == "ER_ROW_IS_REFERENCED_2") {
+        if (error.code === "ER_ROW_IS_REFERENCED_2") {
           return res.json({
             status: "WARNING",
             msg: "Currently In Use",
@@ -127,7 +127,7 @@ const GetCustomerUserById = (req, res, next) => {
     function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else if (result.length == 0) {
+      } else if (result.length === 0) {
         return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });

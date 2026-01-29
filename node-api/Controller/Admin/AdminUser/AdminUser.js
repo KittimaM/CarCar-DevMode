@@ -7,7 +7,7 @@ const AdminUser = (req, res, next) => {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     }
-    if (results.length == 0) {
+    if (results.length === 0) {
       return res.json({ status: "NO DATA", msg: "NO DATA" });
     } else {
       return res.json({ status: "SUCCESS", msg: results });
@@ -26,7 +26,7 @@ const AdminAddStaffUser = (req, res, next) => {
         [username, name, hash, role_id],
         function (error) {
           if (error) {
-            if (error.code == "ER_DUP_ENTRY") {
+            if (error.code === "ER_DUP_ENTRY") {
               return res.json({ status: "WARNING", msg: "Already In System" });
             } else {
               return res.json({ status: "ERROR", msg: error });
@@ -44,7 +44,7 @@ const AdminDeleteStaffUser = (req, res, next) => {
   const { id } = req.body;
   Conn.execute("DELETE FROM staff_user WHERE id = ?", [id], function (error) {
     if (error) {
-      if (error.code == "ER_ROW_IS_REFERENCED_2") {
+      if (error.code === "ER_ROW_IS_REFERENCED_2") {
         return res.json({ status: "WARNING", msg: "Currently In Use" });
       } else {
         return res.json({ status: "ERROR", msg: error });
@@ -61,7 +61,7 @@ const AdminUpdateStaffUser = (req, res, next) => {
   const handleUpdate = (query, params) => {
     Conn.execute(query, params, function (error) {
       if (error) {
-        if (error.code == "ER_DUP_ENTRY") {
+        if (error.code === "ER_DUP_ENTRY") {
           return res.json({
             status: "WARNING",
             msg: "Already In System",
@@ -116,7 +116,7 @@ const GetStaffUserById = (req, res, next) => {
     function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else if (result.length == 0) {
+      } else if (result.length === 0) {
         return res.json({ status: "NO DATA", msg: "NO DATA" });
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });

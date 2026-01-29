@@ -16,7 +16,7 @@ const AdminLogin = (req, res, next) => {
     function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else if (result.length == 0) {
+      } else if (result.length === 0) {
         return res.json({ status: "ERROR", msg: "Wrong username or password" });
       } else {
         const {
@@ -28,7 +28,7 @@ const AdminLogin = (req, res, next) => {
           is_locked,
           role_name,
         } = result[0];
-        if (is_locked == 1) {
+        if (is_locked === 1) {
           return res.json({
             status: "LOCK",
             msg: `This user locked due to failed login more than ${staff_failed_login_limit} times`,

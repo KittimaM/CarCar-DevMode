@@ -14,7 +14,7 @@ const AdminPermission = (req, res, next) => {
       function (error, result) {
         if (error) {
           return res.json({ status: "ERROR", msg: error });
-        } else if (result[0].length == 0) {
+        } else if (result[0].length === 0) {
           return res.json({ status: "NO DATA", msg: "NO DATA" });
         } else {
           return res.json({ status: "SUCCESS", msg: result });
