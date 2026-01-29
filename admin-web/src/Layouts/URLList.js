@@ -24,12 +24,6 @@ const URLList = {
   AdminAdvanceSetting: "admin/advance_setting",
   Modules: "admin/module",
   RolePermission: "admin/role-permission",
-
-  //customer
-  CustomerLogin: "customer/login",
-  CustomerProfile: "customer/profile",
-
-  //others
   Province: "admin/province",
 };
 
