@@ -1,11 +1,7 @@
-import React, { useEffect, useState } from "react";
-import { GetCustomerUserById, UpdateAdminCustomer } from "../Api";
+import React, { useState } from "react";
+import { UpdateAdminCustomer } from "../Api";
 import Notification from "../Notification/Notification";
 const AdminEditCustomer = ({ editItem }) => {
-  const [phone, setPhone] = useState(editItem.phone);
-  const [name, setName] = useState(editItem.name);
-  const [password, setPassword] = useState("");
-  const [isChangePassword, setIsChangePassword] = useState(false);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -13,52 +9,39 @@ const AdminEditCustomer = ({ editItem }) => {
     message: "",
     status: "",
   });
-
-  const fetchUser = () => {
-    GetCustomerUserById({ id: editItem.id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setName(msg.name);
-        setPhone(msg.phone);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchUser();
-  }, []);
+  const [data, setData] = useState({
+    ...editItem,
+    password: "",
+    isChangePassword: false,
+  });
 
   const handleEditUser = (e) => {
     e.preventDefault();
-    const jsonData = {
-      id: editItem.id,
-      name: name,
-      phone: phone,
-      password: password,
-      isChangePassword: isChangePassword,
-    };
-
-    UpdateAdminCustomer(jsonData).then(({ status, msg }) => {
+    UpdateAdminCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Update ${name}`,
+          message: `Successfully Update ${data.name}`,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setPhone(editItem.phone);
+        setData({ ...data, phone: editItem.phone });
       }
-
       setNotificationKey((prev) => prev + 1);
     });
   };
 
   const handleReset = () => {
-    setName(editItem.name);
-    setPhone(editItem.phone);
+    setData({
+      ...editItem,
+      password: "",
+      isChangePassword: false,
+    });
     setErrors([]);
   };
+
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -75,14 +58,16 @@ const AdminEditCustomer = ({ editItem }) => {
             <input
               type="tel"
               inputMode="numeric"
-              value={phone}
-              className={`input validator tabular-nums input-bordered w-full max-w-md ${!phone ? `input-error` : ``}`}
+              value={data.phone}
+              className={`input validator tabular-nums input-bordered w-full max-w-md ${
+                !data.phone ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 let value = e.target.value.replace(/[^0-9]/g, "");
                 if (value.length > 10) {
                   value = value.slice(0, 10);
                 }
-                setPhone(value);
+                setData({ ...data, phone: value });
               }}
               required
             />
@@ -92,11 +77,13 @@ const AdminEditCustomer = ({ editItem }) => {
             <span className="w-32">Name</span>
             <input
               type="text"
-              value={name}
-              className={`input input-bordered w-full max-w-md ${!name ? `input-error` : ``}`}
+              value={data.name}
+              className={`input input-bordered w-full max-w-md ${
+                !data.name ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 const onlyLetters = e.target.value.replace(/[^A-Za-z ]/g, "");
-                setName(onlyLetters);
+                setData({ ...data, name: onlyLetters });
               }}
               required
             />
@@ -105,22 +92,26 @@ const AdminEditCustomer = ({ editItem }) => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <input
               type="checkbox"
-              checked={!isChangePassword}
+              checked={!data.isChangePassword}
               className="checkbox checkbox-success"
-              onChange={() => setIsChangePassword(!isChangePassword)}
+              onChange={() =>
+                setData({ ...data, isChangePassword: !data.isChangePassword })
+              }
             />
 
-            {!isChangePassword ? (
+            {!data.isChangePassword ? (
               <span>use same password</span>
             ) : (
               <>
                 <span className="w-32">Password</span>
                 <input
                   type="password"
-                  value={password}
-                  className={`input input-bordered w-full max-w-md ${!password ? `input-error` : ``}`}
+                  value={data.password}
+                  className={`input input-bordered w-full max-w-md ${
+                    !data.password ? `input-error` : ``
+                  }`}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setData({ ...data, password: e.target.value });
                   }}
                   required
                 />

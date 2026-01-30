@@ -3,9 +3,6 @@ import Notification from "../Notification/Notification";
 import { PostAddCustomer } from "../Api";
 
 const AdminAddCustomer = () => {
-  const [phone, setPhone] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -13,36 +10,39 @@ const AdminAddCustomer = () => {
     message: "",
     status: "",
   });
+  const [data, setData] = useState({
+    phone: "",
+    name: "",
+    password: "",
+  });
 
   const handleAddUser = (e) => {
     e.preventDefault();
-    const jsonData = {
-      phone: phone,
-      name: name,
-      password: password,
-    };
-    PostAddCustomer(jsonData).then(({ status, msg }) => {
+    PostAddCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Add ${name}`,
+          message: `Successfully Add ${data.name}`,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setPhone("");
+        setData({ ...data, phone: "" });
       }
       setNotificationKey((prev) => prev + 1);
     });
   };
 
   const handleReset = () => {
-    setPhone("");
-    setName("");
-    setPassword("");
+    setData({
+      phone: "",
+      name: "",
+      password: "",
+    });
     setErrors([]);
   };
+
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -59,14 +59,16 @@ const AdminAddCustomer = () => {
             <input
               type="tel"
               inputMode="numeric"
-              value={phone}
-              className={`input validator tabular-nums input-bordered w-full max-w-md ${!phone ? `input-error` : ``}`}
+              value={data.phone}
+              className={`input validator tabular-nums input-bordered w-full max-w-md ${
+                !data.phone ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                const value = e.target.value.replace(/[^0-9]/g, "");
+                let value = e.target.value.replace(/[^0-9]/g, "");
                 if (value.length > 10) {
                   value = value.slice(0, 10);
                 }
-                setPhone(value);
+                setData({ ...data, phone: value });
               }}
               required
             />
@@ -76,24 +78,27 @@ const AdminAddCustomer = () => {
             <span className="w-32">Name</span>
             <input
               type="text"
-              value={name}
-              className={`input input-bordered w-full max-w-md ${!name ? `input-error` : ``}`}
+              value={data.name}
+              className={`input input-bordered w-full max-w-md ${
+                !data.name ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 const onlyLetters = e.target.value.replace(/[^A-Za-z ]/g, "");
-                setName(onlyLetters);
+                setData({ ...data, name: onlyLetters });
               }}
               required
             />
           </div>
-
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Password</span>
             <input
               type="password"
-              value={password}
-              className={`input input-bordered w-full max-w-md ${!password ? `input-error` : ``}`}
+              value={data.password}
+              className={`input input-bordered w-full max-w-md ${
+                !data.password ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setPassword(e.target.value);
+                setData({ ...data, password: e.target.value });
               }}
               required
             />

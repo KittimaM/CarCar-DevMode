@@ -1,14 +1,9 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, GetStaffUserById, UpdateStaffUser } from "../Api";
+import { GetAllAdminRole, UpdateStaffUser } from "../Api";
 import Notification from "../Notification/Notification";
 
 const AdminEditStaff = ({ editItem }) => {
   const [roleList, setRoleList] = useState([]);
-  const [userName, setUserName] = useState(editItem.username);
-  const [name, setName] = useState(editItem.name);
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState(editItem.role_id);
-  const [isChangePassword, setIsChangePassword] = useState(false);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -16,65 +11,47 @@ const AdminEditStaff = ({ editItem }) => {
     message: "",
     status: "",
   });
+  const [data, setData] = useState({
+    ...editItem,
+    password: "",
+    isChangePassword: false,
+  });
 
-  const fetchUserbyId = () => {
-    GetStaffUserById({ id: editItem }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setUserName(msg.username);
-        setName(msg.name);
-        setRole(msg.role_id);
-      }
-    });
-  };
-
-  const fetchAllRole = () => {
+  useEffect(() => {
     GetAllAdminRole().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setRoleList(msg);
       }
     });
-  };
-
-  useEffect(() => {
-    fetchUserbyId();
-    fetchAllRole();
   }, []);
 
   const handleReset = () => {
-    setUserName(editItem.username);
-    setName(editItem.name);
-    setPassword("");
-    setRole(editItem.role_id);
+    setData({
+      ...editItem,
+      password: "",
+      isChangePassword: false,
+    });
     setErrors([]);
-    setIsChangePassword(false);
   };
 
   const handleEditUser = (e) => {
     e.preventDefault();
-    const jsonData = {
-      id: editItem.id,
-      name: name,
-      username: userName,
-      password: password,
-      role_id: role,
-      isChangePassword: isChangePassword,
-    };
-
-    UpdateStaffUser(jsonData).then(({ status, msg }) => {
+    UpdateStaffUser(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Update ${userName}`,
+          message: `Successfully Update ${data.username}`,
         });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(userName + " " + msg);
-        setUserName(editItem.username);
+        setErrors(data.username + " " + msg);
+        setData({ ...data, username: editItem.username });
       }
       setNotificationKey((prev) => prev + 1);
     });
   };
+
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -90,10 +67,12 @@ const AdminEditStaff = ({ editItem }) => {
             <span className="w-32">Username</span>
             <input
               type="text"
-              value={userName}
-              className={`input input-bordered w-full max-w-md ${!userName ? `input-error` : ``}`}
+              value={data.username}
+              className={`input input-bordered w-full max-w-md ${
+                !data.username ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setUserName(e.target.value);
+                setData({ ...data, username: e.target.value });
               }}
               required
             />
@@ -103,10 +82,12 @@ const AdminEditStaff = ({ editItem }) => {
             <span className="w-32">Name</span>
             <input
               type="text"
-              value={name}
-              className={`input input-bordered w-full max-w-md ${!name ? `input-error` : ``}`}
+              value={data.name}
+              className={`input input-bordered w-full max-w-md ${
+                !data.name ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setName(e.target.value);
+                setData({ ...data, name: e.target.value });
               }}
               required
             />
@@ -115,22 +96,26 @@ const AdminEditStaff = ({ editItem }) => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <input
               type="checkbox"
-              checked={!isChangePassword}
+              checked={!data.isChangePassword}
               className="checkbox checkbox-success"
-              onChange={() => setIsChangePassword(!isChangePassword)}
+              onChange={(e) =>
+                setData({ ...data, isChangePassword: !data.isChangePassword })
+              }
             />
 
-            {!isChangePassword ? (
+            {!data.isChangePassword ? (
               <span>use same password</span>
             ) : (
               <>
                 <span className="w-32">Password</span>
                 <input
                   type="password"
-                  value={password}
-                  className={`input input-bordered w-full max-w-md ${!password ? `input-error` : ``}`}
+                  value={data.password}
+                  className={`input input-bordered w-full max-w-md ${
+                    !data.password ? `input-error` : ``
+                  }`}
                   onChange={(e) => {
-                    setPassword(e.target.value);
+                    setData({ ...data, password: e.target.value });
                   }}
                   required
                 />
@@ -141,9 +126,11 @@ const AdminEditStaff = ({ editItem }) => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Role</span>
             <select
-              value={role}
-              className={`select w-full select-bordered max-w-md ${!role ? `select-error` : ``}`}
-              onChange={(e) => setRole(e.target.value)}
+              value={data.role_id}
+              className={`select w-full select-bordered max-w-md ${
+                !data.role_id ? `select-error` : ``
+              }`}
+              onChange={(e) => setData({ ...data, role_id: e.target.value })}
               required
             >
               <option disabled={true} value="">

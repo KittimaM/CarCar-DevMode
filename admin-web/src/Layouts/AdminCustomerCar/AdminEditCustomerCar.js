@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import Notification from "../Notification/Notification";
 import {
   GetAdminCustomer,
-  GetAllCarSize,
   GetAllProvince,
   GetAvailableCarSize,
   UpdateAdminCustomerCar,
 } from "../Api";
 
 const AdminEditCustomerCar = ({ editItem }) => {
+  const [data, setData] = useState(editItem);
   const [customer, setCustomer] = useState([]);
   const [size, setSize] = useState([]);
   const [province, setProvince] = useState([]);
@@ -18,16 +18,6 @@ const AdminEditCustomerCar = ({ editItem }) => {
     show: false,
     message: "",
     status: "",
-  });
-  const [data, setData] = useState({
-    id: editItem.car_id,
-    customer_id: editItem.customer_id,
-    plate_no: editItem.plate_no,
-    province: editItem.province,
-    brand: editItem.brand,
-    model: editItem.model,
-    size_id: editItem.size_id,
-    color: editItem.color,
   });
 
   useEffect(() => {
@@ -74,16 +64,7 @@ const AdminEditCustomerCar = ({ editItem }) => {
 
   const handleReset = () => {
     setErrors([]);
-    setData({
-      id: editItem.car_id,
-      customer_id: editItem.customer_id,
-      plate_no: editItem.plate_no,
-      province: editItem.province,
-      brand: editItem.brand,
-      model: editItem.model,
-      size_id: editItem.size_id,
-      color: editItem.color,
-    });
+    setData(editItem);
   };
 
   return (
@@ -101,7 +82,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <span className="w-32">Customer</span>
             <select
               value={data.customer_id}
-              className={`select w-full select-bordered max-w-md ${!data.customer_id ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.customer_id ? `select-error` : ``
+              }`}
               onChange={(e) =>
                 setData({ ...data, customer_id: e.target.value })
               }
@@ -124,7 +107,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <input
               type="text"
               value={data.plate_no}
-              className={`input input-bordered w-full max-w-md ${!data.plate_no ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.plate_no ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, plate_no: e.target.value });
               }}
@@ -137,7 +122,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <span className="w-32">Province</span>
             <select
               value={data.province}
-              className={`select w-full select-bordered max-w-md ${!data.province ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.province ? `select-error` : ``
+              }`}
               onChange={(e) => setData({ ...data, province: e.target.value })}
               required
             >
@@ -158,7 +145,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <input
               type="text"
               value={data.brand}
-              className={`input input-bordered w-full max-w-md ${!data.brand ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.brand ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, brand: e.target.value });
               }}
@@ -171,7 +160,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <input
               type="text"
               value={data.color}
-              className={`input input-bordered w-full max-w-md ${!data.color ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.color ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, color: e.target.value });
               }}
@@ -187,7 +178,7 @@ const AdminEditCustomerCar = ({ editItem }) => {
 
             <input
               type="text"
-              value={data.model}
+              value={data.model || ""}
               className={`input input-bordered w-full max-w-md`}
               onChange={(e) => {
                 setData({ ...data, model: e.target.value });
@@ -199,7 +190,9 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <span className="w-32">Size</span>
             <select
               value={data.size_id}
-              className={`select w-full select-bordered max-w-md ${!data.size_id ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.size_id ? `select-error` : ``
+              }`}
               onChange={(e) => setData({ ...data, size_id: e.target.value })}
               required
             >

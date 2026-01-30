@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import Notification from "../Notification/Notification";
 import {
   GetAdminCustomer,
-  GetAllCarSize,
   GetAllProvince,
   GetAvailableCarSize,
   PostAddAdminCustomerCar,

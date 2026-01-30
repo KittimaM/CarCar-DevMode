@@ -71,7 +71,9 @@ const AdminEditService = ({ editItem }) => {
             <input
               type="text"
               value={data.service}
-              className={`input input-bordered w-full max-w-md ${!data.service ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.service ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, service: e.target.value });
               }}
@@ -86,7 +88,7 @@ const AdminEditService = ({ editItem }) => {
             </span>
             <input
               type="text"
-              value={data.description}
+              value={data.description || ""}
               className={`input input-bordered w-full max-w-md`}
               onChange={(e) => {
                 setData({ ...data, description: e.target.value });
@@ -97,7 +99,9 @@ const AdminEditService = ({ editItem }) => {
             <span className="w-32">Car Size</span>
             <select
               value={data.car_size_id}
-              className={`select w-full select-bordered max-w-md ${!data.car_size_id ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.car_size_id ? `select-error` : ``
+              }`}
               onChange={(e) =>
                 setData({ ...data, car_size_id: e.target.value })
               }
@@ -120,7 +124,9 @@ const AdminEditService = ({ editItem }) => {
               type="number"
               min="1"
               value={data.price}
-              className={`input input-bordered w-full max-w-md ${!data.price ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.price ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, price: e.target.value });
               }}
@@ -136,7 +142,9 @@ const AdminEditService = ({ editItem }) => {
               type="number"
               min="1"
               value={data.used_time}
-              className={`input input-bordered w-full max-w-md ${!data.used_time ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.used_time ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, used_time: e.target.value });
               }}
@@ -150,7 +158,9 @@ const AdminEditService = ({ editItem }) => {
               min="1"
               max={staffNumber}
               value={data.used_people}
-              className={`input input-bordered w-full max-w-md ${!data.used_people ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.used_people ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, used_people: e.target.value });
               }}

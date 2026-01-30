@@ -12,7 +12,7 @@ const AdminService = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: results });
       }
-    },
+    }
   );
 };
 
@@ -24,11 +24,18 @@ const AdminAddService = (req, res, next) => {
     [service, description, car_size_id, used_time, price, used_people],
     function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
-        return res.json({ status: "SUCCESS", msg: "Successfully Add" });
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 
@@ -72,7 +79,7 @@ const AdminUpdateService = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 
@@ -87,7 +94,7 @@ const UpdateServiceAvailable = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
-    },
+    }
   );
 };
 
@@ -96,5 +103,5 @@ module.exports = {
   AdminAddService,
   AdminDeleteService,
   AdminUpdateService,
-  UpdateServiceAvailable
+  UpdateServiceAvailable,
 };
