@@ -3,8 +3,6 @@ import Notification from "../../Notification/Notification";
 import { PostAddCarSize } from "../../Api";
 
 const AdminAddCarSize = () => {
-  const [size, setSize] = useState("");
-  const [description, setDescription] = useState("");
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -12,33 +10,31 @@ const AdminAddCarSize = () => {
     message: "",
     status: "",
   });
+  const [data, setData] = useState({
+    size: "",
+    description: "",
+  });
 
   const handleAddCarSize = (e) => {
     e.preventDefault();
-    const jsonData = {
-      size,
-      description,
-    };
-
-    PostAddCarSize(jsonData).then(({ status, msg }) => {
+    PostAddCarSize(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: size + " " + msg,
+          message: data.size + " " + msg,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setSize("");
+        setData({ ...data, size: "" });
       }
       setNotificationKey((prev) => prev + 1);
     });
   };
 
   const handleReset = () => {
-    setSize("");
-    setDescription("");
+    setData({ size: "", description: "" });
     setErrors("");
   };
 
@@ -57,10 +53,12 @@ const AdminAddCarSize = () => {
             <span className="w-32">Size</span>
             <input
               type="text"
-              value={size}
-              className={`input input-bordered w-full max-w-md ${!size ? `input-error` : ``}`}
+              value={data.size}
+              className={`input input-bordered w-full max-w-md ${
+                !data.size ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setSize(e.target.value);
+                setData({ ...data, size: e.target.value });
               }}
               required
             />
@@ -73,10 +71,10 @@ const AdminAddCarSize = () => {
             </span>
             <input
               type="text"
-              value={description}
+              value={data.description || ""}
               className="input input-bordered w-full max-w-md"
               onChange={(e) => {
-                setDescription(e.target.value);
+                setData({ ...data, description: e.target.value });
               }}
             />
           </div>

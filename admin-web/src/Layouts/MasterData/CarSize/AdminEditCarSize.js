@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
-import { GetCarSizeById, UpdateCarSize } from "../../Api";
+import { useState } from "react";
+import { UpdateCarSize } from "../../Api";
 import Notification from "../../Notification/Notification";
 
 const AdminEditCarSize = ({ editItem }) => {
-  const [size, setSize] = useState(editItem.size);
-  const [description, setDescription] = useState(editItem.description);
+  const [data, setData] = useState(editItem);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -13,39 +12,19 @@ const AdminEditCarSize = ({ editItem }) => {
     status: "",
   });
 
-  const fetchCarSizeById = () => {
-    GetCarSizeById({ id: editItem, size, description }).then(
-      ({ status, msg }) => {
-        if (status === "SUCCESS") {
-          setSize(msg.size);
-          setDescription(msg.description);
-        }
-      },
-    );
-  };
-
-  useEffect(() => {
-    fetchCarSizeById();
-  }, []);
-
   const handleEditCarSize = (e) => {
     e.preventDefault();
-    const jsonData = {
-      id: editItem.id,
-      size,
-      description,
-    };
-    UpdateCarSize(jsonData).then(({ status, msg }) => {
+    UpdateCarSize(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: size + " " + msg,
+          message: data.size + " " + msg,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setSize(editItem.size);
+        setData({ ...data, size: editItem.size });
       } else if (status === "ERROR") {
         setNotification({
           show: true,
@@ -58,8 +37,7 @@ const AdminEditCarSize = ({ editItem }) => {
   };
 
   const handleReset = () => {
-    setSize(editItem.size);
-    setDescription(editItem.description);
+    setData(editItem);
     setErrors([]);
   };
   return (
@@ -77,25 +55,29 @@ const AdminEditCarSize = ({ editItem }) => {
             <span className="w-32">Size</span>
             <input
               type="text"
-              value={size}
-              className={`input input-bordered w-full max-w-md ${!size ? `input-error` : ``}`}
+              value={data.size}
+              className={`input input-bordered w-full max-w-md ${
+                !data.size ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setSize(e.target.value);
+                setData({ ...data, size: e.target.value });
               }}
               required
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Description</span>
+            <span className="w-32 flex flex-col leading-tight">
+              <span>Description</span>
+              <span className="text-xs text-success">(optional)</span>
+            </span>
             <input
               type="text"
-              value={description}
-              className={`input input-bordered w-full max-w-md ${!description ? `input-error` : ``}`}
+              value={data.description || ""}
+              className="input input-bordered w-full max-w-md "
               onChange={(e) => {
-                setDescription(e.target.value);
+                setData({ ...data, description: e.target.value });
               }}
-              required
             />
           </div>
 

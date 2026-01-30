@@ -4,10 +4,6 @@ import Notification from "../Notification/Notification";
 
 const AdminAddStaff = () => {
   const [roleList, setRoleList] = useState([]);
-  const [userName, setUserName] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [role, setRole] = useState("");
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -15,37 +11,34 @@ const AdminAddStaff = () => {
     message: "",
     status: "",
   });
+  const [data, setData] = useState({
+    username: "",
+    name: "",
+    password: "",
+    role_id: "",
+  });
 
-  const fetchAllRole = () => {
+  useEffect(() => {
     GetAllAdminRole().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setRoleList(msg);
       }
     });
-  };
-  useEffect(() => {
-    fetchAllRole();
   }, []);
 
   const handleAddUser = (e) => {
     e.preventDefault();
-    const jsonData = {
-      username: userName,
-      name: name,
-      password: password,
-      role_id: role,
-    };
-    PostAddStaffUser(jsonData).then(({ status, msg }) => {
+    PostAddStaffUser(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: userName + " " + msg,
+          message: data.username + " " + msg,
         });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(userName + " " + msg);
-        setUserName("");
+        setErrors(data.username + " " + msg);
+        setData({ ...data, username: "" });
       } else if (status === "ERROR") {
         setNotification({
           show: true,
@@ -58,10 +51,7 @@ const AdminAddStaff = () => {
   };
 
   const handleReset = () => {
-    setUserName("");
-    setName("");
-    setPassword("");
-    setRole("");
+    setData({});
     setErrors([]);
   };
   return (
@@ -79,10 +69,12 @@ const AdminAddStaff = () => {
             <span className="w-32">Username</span>
             <input
               type="text"
-              value={userName}
-              className={`input input-bordered w-full max-w-md ${!userName ? `input-error` : ``}`}
+              value={data.username}
+              className={`input input-bordered w-full max-w-md ${
+                !data.username ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setUserName(e.target.value);
+                setData({ ...data, username: e.target.value });
               }}
               required
             />
@@ -92,11 +84,13 @@ const AdminAddStaff = () => {
             <span className="w-32">Name</span>
             <input
               type="text"
-              value={name}
-              className={`input input-bordered w-full max-w-md ${!name ? `input-error` : ``}`}
+              value={data.name}
+              className={`input input-bordered w-full max-w-md ${
+                !data.name ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 const onlyLetters = e.target.value.replace(/[^A-Za-z ]/g, "");
-                setName(onlyLetters);
+                setData({ ...data, name: onlyLetters });
               }}
               required
             />
@@ -106,10 +100,12 @@ const AdminAddStaff = () => {
             <span className="w-32">Password</span>
             <input
               type="password"
-              value={password}
-              className={`input input-bordered w-full max-w-md ${!password ? `input-error` : ``}`}
+              value={data.password}
+              className={`input input-bordered w-full max-w-md ${
+                !data.password ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setPassword(e.target.value);
+                setData({ ...data, password: e.target.value });
               }}
               required
             />
@@ -117,9 +113,11 @@ const AdminAddStaff = () => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Role</span>
             <select
-              value={role}
-              className={`select w-full select-bordered max-w-md ${!role ? `select-error` : ``}`}
-              onChange={(e) => setRole(e.target.value)}
+              value={data.role_id}
+              className={`select w-full select-bordered max-w-md ${
+                !data.role_id ? `select-error` : ``
+              }`}
+              onChange={(e) => setData({ ...data, role_id: e.target.value })}
               required
             >
               <option disabled={true} value="">

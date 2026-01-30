@@ -463,20 +463,8 @@ export const GetRolePermissionById = (jsonData) => {
   return postApi(URLList.RolePermission + "/id", jsonData);
 };
 
-export const GetStaffUserById = (jsonData) => {
-  return postApi(URLList.AdminStaff + "/id", jsonData);
-};
-
-export const GetCustomerUserById = (jsonData) => {
-  return postApi(URLList.AdminCustomer, jsonData);
-};
-
 export const UpdateCarSizeAvailable = (jsonData) => {
   return putApi(URLList.AdminCarSize + "/is-available", jsonData);
-};
-
-export const GetCarSizeById = (jsonData) => {
-  return postApi(URLList.AdminCarSize + "/id", jsonData);
 };
 
 export const UpdateServiceAvailable = (jsonData) => {

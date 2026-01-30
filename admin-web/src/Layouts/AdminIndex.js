@@ -137,7 +137,7 @@ function AdminIndex() {
               </div>
             </div>
 
-            <Link to="/admin" className="text-sm text-red-600 hover:underline">
+            <Link to="/" className="text-sm text-red-600 hover:underline">
               Log out
             </Link>
           </div>
