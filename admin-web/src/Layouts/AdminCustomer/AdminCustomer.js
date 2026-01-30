@@ -10,8 +10,8 @@ import AdminAddCustomer from "./AdminAddCustomer";
 import AdminEditCustomer from "./AdminEditCustomer";
 
 const AdminCustomer = ({ data }) => {
-  const { labelValue, permission } = data;
-  const actions = permission.find((p) => p.code === "staff").permission_actions;
+  const { labelValue, permission, code } = data;
+  const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
   const [user, setUser] = useState(null);
   const [editItem, setEditItem] = useState(null);

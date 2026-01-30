@@ -5,8 +5,8 @@ import { DeleteRole, GetAllAdminRole } from "../Api";
 import Notification from "../Notification/Notification";
 
 const AdminRole = ({ data }) => {
-  const { labelValue, permission } = data;
-  const actions = permission.find((p) => p.code === "role").permission_actions;
+  const { labelValue, permission, code } = data;
+  const actions = permission.find((p) => p.code === code).permission_actions;
   const [roleList, setRoleList] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
@@ -107,48 +107,52 @@ const AdminRole = ({ data }) => {
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">
-          <table className="table table-lg table-pin-rows">
-            <thead>
-              <tr>
-                <th>Role</th>
-                {(actions.includes("edit") || actions.includes("delete")) && (
-                  <th className="text-right">Actions</th>
-                )}
-              </tr>
-            </thead>
-
-            <tbody>
-              {roleList.map((role) => (
-                <tr key={role.id}>
-                  <td>{role.name}</td>
-
+          <div className="overflow-x-auto">
+            <table className="table table-lg table-pin-rows">
+              <thead>
+                <tr>
+                  <th>Role</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
-                    <td className="text-right">
-                      <div className="flex justify-end gap-2">
-                        {actions.includes("edit") && (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() => handleEditRole(role)}
-                          >
-                            Edit
-                          </button>
-                        )}
-
-                        {actions.includes("delete") && (
-                          <button
-                            className="btn btn-error text-white"
-                            onClick={() => handleDeleteRole(role.id, role.name)}
-                          >
-                            Delete
-                          </button>
-                        )}
-                      </div>
-                    </td>
+                    <th className="text-right">Actions</th>
                   )}
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+
+              <tbody>
+                {roleList.map((role) => (
+                  <tr key={role.id}>
+                    <td>{role.name}</td>
+                    {(actions.includes("edit") ||
+                      actions.includes("delete")) && (
+                      <td className="text-right">
+                        <div className="flex justify-end gap-2">
+                          {actions.includes("edit") && (
+                            <button
+                              className="btn btn-warning"
+                              onClick={() => handleEditRole(role)}
+                            >
+                              Edit
+                            </button>
+                          )}
+
+                          {actions.includes("delete") && (
+                            <button
+                              className="btn btn-error text-white"
+                              onClick={() =>
+                                handleDeleteRole(role.id, role.name)
+                              }
+                            >
+                              Delete
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>

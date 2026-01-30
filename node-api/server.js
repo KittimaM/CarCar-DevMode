@@ -98,6 +98,10 @@ app.use("/admin/role-permission", RolePermissionRoute);
 const testPathRoute = require("./Routes/testPath");
 app.use("/api/test", testPathRoute);
 
+app.get("/api/hello", (req, res) => {
+  res.json({ message: "Hello from Express 👋" });
+});
+
 // Start the server
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);

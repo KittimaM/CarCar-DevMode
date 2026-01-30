@@ -57,7 +57,7 @@ function AdminIndex() {
     }
 
     setActiveCode(item.code);
-    setData({ labelValue: item.name, permission });
+    setData({ labelValue: item.name, permission, code: item.code });
 
     if (window.innerWidth < 1024) {
       setIsSidebarOpen(false);

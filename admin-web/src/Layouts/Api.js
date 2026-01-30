@@ -478,3 +478,11 @@ export const UpdateCarSizeAvailable = (jsonData) => {
 export const GetCarSizeById = (jsonData) => {
   return postApi(URLList.AdminCarSize + "/id", jsonData);
 };
+
+export const UpdateServiceAvailable = (jsonData) => {
+  return putApi(URLList.AdminService + "/is-available", jsonData);
+};
+
+export const GetAvailableCarSize = () => {
+  return getApi(URLList.AdminCarSize + "/is-available");
+};

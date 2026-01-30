@@ -22,6 +22,7 @@ const componentMap = {
   //   onLeaveType: lazy(() => import("./AdminOnLeaveType")),
   //   paymentType: lazy(() => import("./AdminPaymentType")),
   //   advSetting: lazy(() => import("./AdminAdvanceSetting")),
+  service: lazy(() => import ("./MasterData/Service/AdminService")),
 };
 
 export default componentMap;
