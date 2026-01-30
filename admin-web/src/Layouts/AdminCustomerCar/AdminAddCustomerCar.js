@@ -4,6 +4,7 @@ import {
   GetAdminCustomer,
   GetAllCarSize,
   GetAllProvince,
+  GetAvailableCarSize,
   PostAddAdminCustomerCar,
 } from "../Api";
 
@@ -34,7 +35,7 @@ const AdminAddCustomerCar = () => {
         setCustomer(msg);
       }
     });
-    GetAllCarSize().then(({ status, msg }) => {
+    GetAvailableCarSize().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setSize(msg);
       }

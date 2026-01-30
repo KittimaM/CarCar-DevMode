@@ -4,12 +4,11 @@ import {
   GetAdminCustomer,
   GetAllCarSize,
   GetAllProvince,
+  GetAvailableCarSize,
   UpdateAdminCustomerCar,
 } from "../Api";
 
 const AdminEditCustomerCar = ({ editItem }) => {
-  console.log("editItem : ", editItem);
-
   const [customer, setCustomer] = useState([]);
   const [size, setSize] = useState([]);
   const [province, setProvince] = useState([]);
@@ -37,7 +36,7 @@ const AdminEditCustomerCar = ({ editItem }) => {
         setCustomer(msg);
       }
     });
-    GetAllCarSize().then(({ status, msg }) => {
+    GetAvailableCarSize().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setSize(msg);
       }

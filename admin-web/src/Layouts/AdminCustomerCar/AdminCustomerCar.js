@@ -5,9 +5,9 @@ import AdminAddCustomerCar from "./AdminAddCustomerCar";
 import AdminEditCustomerCar from "./AdminEditCustomerCar";
 
 const AdminCustomerCar = ({ data }) => {
-  const { labelValue, permission } = data;
+  const { labelValue, permission, code } = data;
   const actions = permission.find(
-    (p) => p.code === "customerCar",
+    (p) => p.code === code,
   ).permission_actions;
   const [viewMode, setViewMode] = useState("list");
   const [customerCarList, setCustomerCarList] = useState();

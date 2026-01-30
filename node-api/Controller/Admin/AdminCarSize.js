@@ -98,6 +98,22 @@ const GetCarSizeById = (req, res, next) => {
   );
 };
 
+const GetAvailableCarSize = (req, res, next) => {
+  Conn.execute(
+    "SELECT * FROM car_size WHERE is_available = 1",
+    function (error, results) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      }
+      if (results.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: results });
+      }
+    },
+  );
+};
+
 module.exports = {
   AdminCarSize,
   AdminAddCarSize,
@@ -105,4 +121,5 @@ module.exports = {
   AdminUpdateCarSize,
   UpdateCarSizeAvailable,
   GetCarSizeById,
+  GetAvailableCarSize,
 };

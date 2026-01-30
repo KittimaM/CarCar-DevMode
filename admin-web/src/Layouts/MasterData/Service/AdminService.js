@@ -1,15 +1,20 @@
-import { useEffect, useState } from "react";
-import { DeleteStaffUser, GetAllStaff, UpdateAdminUnlockStaff } from "../Api";
-import Notification from "../Notification/Notification";
-import lockedIcon from "../../assets/padlock-icon.svg";
-import AdminAddStaff from "./AdminAddStaff";
-import AdminEditStaff from "./AdminEditStaff";
+import React, { useEffect, useState } from "react";
+import Notification from "../../Notification/Notification";
+import AdminAddService from "./AdminAddService";
+import AdminEditService from "./AdminEditService";
+import {
+  DeleteService,
+  GetAllService,
+  UpdateServiceAvailable,
+} from "../../Api";
+import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
+import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
-const AdminStaff = ({ data }) => {
+const AdminService = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
+  const [service, setService] = useState([]);
   const [viewMode, setViewMode] = useState("list");
-  const [user, setUser] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -18,61 +23,43 @@ const AdminStaff = ({ data }) => {
     status: "",
   });
 
-  useEffect(() => {
-    fetchStaff();
-  }, []);
-
-  const fetchStaff = () => {
-    GetAllStaff().then((data) => {
+  const fetchService = () => {
+    GetAllService().then((data) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
-        setUser(msg);
+        setService(msg);
+      } else if (status === "NO DATA") {
+        setService(null);
       } else {
         console.log(data);
       }
     });
   };
 
-  const handleDeleteUser = (id, username) => {
-    DeleteStaffUser({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: username + " " + msg,
-          status: status,
-        });
-        fetchStaff();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: username + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
-      setNotificationKey((prev) => prev + 1);
-    });
-  };
+  useEffect(() => {
+    fetchService();
+  }, []);
 
-  const handelEditUser = (id, username, name, role_id) => {
-    setEditItem({ id, username, name, role_id });
+  const handleEditService = (s) => {
+    setEditItem(s);
     setViewMode("edit");
   };
 
-  const handleUnLock = (id, username) => {
-    UpdateAdminUnlockStaff({ id: id }).then(({ status, msg }) => {
+  const handleDeleteService = (id, service) => {
+    DeleteService({ id: id }).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
-          message: `${username} is successfully unlock`,
+          message: service + " " + msg,
           status: status,
         });
-        fetchStaff();
+        fetchService();
+      } else if (status === "WARNING") {
+        setNotification({
+          show: true,
+          message: service + " " + msg,
+          status: status,
+        });
       } else if (status === "ERROR") {
         setNotification({
           show: true,
@@ -82,6 +69,28 @@ const AdminStaff = ({ data }) => {
       }
       setNotificationKey((prev) => prev + 1);
     });
+  };
+
+  const handleAvailable = (id, service, is_available) => {
+    UpdateServiceAvailable({ id: id, is_available: !is_available }).then(
+      ({ status, msg }) => {
+        if (status === "SUCCESS") {
+          setNotification({
+            show: true,
+            message: service + " " + msg,
+            status: status,
+          });
+          fetchService();
+        } else if (status === "ERROR") {
+          setNotification({
+            show: true,
+            message: msg,
+            status: status,
+          });
+        }
+        setNotificationKey((prev) => prev + 1);
+      },
+    );
   };
 
   return (
@@ -98,9 +107,11 @@ const AdminStaff = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">STAFF LIST</li>}
-            {viewMode === "add" && <li className="text-xl">CREATE USER</li>}
-            {viewMode === "edit" && <li className="text-xl">EDIT USER</li>}
+            {viewMode === "list" && <li className="text-xl">SERVICE LIST</li>}
+            {viewMode === "add" && (
+              <li className="text-xl">CREATE NEW SERVICE</li>
+            )}
+            {viewMode === "edit" && <li className="text-xl">EDIT SERVICE</li>}
           </ul>
         </div>
       </div>
@@ -112,10 +123,10 @@ const AdminStaff = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchStaff();
+            fetchService();
           }}
         >
-          Staff List
+          Service List
         </button>
 
         {actions.includes("add") && (
@@ -125,48 +136,59 @@ const AdminStaff = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create User
+            + Create New Service
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddStaff />}
+      {viewMode === "add" && <AdminAddService />}
       {viewMode === "edit" && editItem && (
-        <AdminEditStaff editItem={editItem} />
+        <AdminEditService editItem={editItem} />
       )}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">
           <div className="overflow-x-auto">
-            <table className="table table-lg">
+            <table className="table table-lg table-pin-rows">
               <thead>
                 <tr>
-                  <td>is locked</td>
-                  <td>locked reason</td>
-                  <td>username</td>
-                  <td>name</td>
+                  <th>Available Status</th>
+                  <th>Service</th>
+                  <th>Description</th>
+                  <th>Car Size</th>
+                  <th>Usage Time</th>
+                  <th>Price</th>
+                  <th>Usage Man</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
                 </tr>
               </thead>
+
               <tbody>
-                {user &&
-                  user.map((u) => (
-                    <tr key={u.id}>
+                {service &&
+                  service.map((s) => (
+                    <tr key={s.id}>
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleUnLock(u.id, u.username)}
+                          onClick={() =>
+                            handleAvailable(s.id, s.service, s.is_available)
+                          }
                         >
-                          {u.is_locked === 1 && (
-                            <img height="12" width="12" src={lockedIcon} />
+                          {s.is_available === 1 ? (
+                            <img height="15" width="15" src={checkIcon} />
+                          ) : (
+                            <img height="15" width="15" src={unCheckIcon} />
                           )}
                         </button>
                       </td>
-                      <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
-                      <td>{u.username}</td>
-                      <td>{u.name}</td>
+                      <td>{s.service}</td>
+                      <td>{s.description}</td>
+                      <td>{s.car_size}</td>
+                      <td>{s.used_time}</td>
+                      <td>{s.price}</td>
+                      <td>{s.used_people}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
@@ -174,14 +196,7 @@ const AdminStaff = ({ data }) => {
                             {actions.includes("edit") && (
                               <button
                                 className="btn btn-warning"
-                                onClick={() =>
-                                  handelEditUser(
-                                    u.id,
-                                    u.username,
-                                    u.name,
-                                    u.role_id,
-                                  )
-                                }
+                                onClick={() => handleEditService(s)}
                               >
                                 Edit
                               </button>
@@ -191,7 +206,7 @@ const AdminStaff = ({ data }) => {
                               <button
                                 className="btn btn-error text-white"
                                 onClick={() =>
-                                  handleDeleteUser(u.id, u.username)
+                                  handleDeleteService(s.id, s.service)
                                 }
                               >
                                 Delete
@@ -211,4 +226,4 @@ const AdminStaff = ({ data }) => {
   );
 };
 
-export default AdminStaff;
+export default AdminService;

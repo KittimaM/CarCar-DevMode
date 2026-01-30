@@ -11,9 +11,9 @@ import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
 import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
 const AdminCarSize = ({ data }) => {
-  const { labelValue, permission } = data;
+  const { labelValue, permission, code } = data;
   const actions = permission.find(
-    (p) => p.code === "carSize",
+    (p) => p.code === code,
   ).permission_actions;
   const [viewMode, setViewMode] = useState("list");
   const [size, setSize] = useState("");

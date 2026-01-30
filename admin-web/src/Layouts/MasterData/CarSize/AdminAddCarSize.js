@@ -67,15 +67,17 @@ const AdminAddCarSize = () => {
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Description</span>
+            <span className="w-32 flex flex-col leading-tight">
+              <span>Description</span>
+              <span className="text-xs text-success">(optional)</span>
+            </span>
             <input
               type="text"
               value={description}
-              className={`input input-bordered w-full max-w-md ${!description ? `input-error` : ``}`}
+              className="input input-bordered w-full max-w-md"
               onChange={(e) => {
                 setDescription(e.target.value);
               }}
-              required
             />
           </div>
 
