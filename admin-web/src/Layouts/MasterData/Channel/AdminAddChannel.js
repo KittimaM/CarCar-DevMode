@@ -1,8 +1,10 @@
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { GetAvailableService, PostAddChannel } from "../../Api";
 import Notification from "../../Notification/Notification";
-import { PostAddCarSize } from "../../Api";
+import Select from "react-select";
 
-const AdminAddCarSize = () => {
+const AdminAddChannel = () => {
+  const [service, setService] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -11,23 +13,36 @@ const AdminAddCarSize = () => {
     status: "",
   });
   const [data, setData] = useState({
-    size: "",
+    name: "",
     description: "",
+    service_ids: [],
   });
+
+  useEffect(() => {
+    GetAvailableService().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setService(
+          msg.map((service) => {
+            return { value: service.id, label: service.service };
+          })
+        );
+      }
+    });
+  }, []);
 
   const handleAdd = (e) => {
     e.preventDefault();
-    PostAddCarSize(data).then(({ status, msg }) => {
+    PostAddChannel(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: data.size + " " + msg,
+          message: data.name + " " + msg,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, size: "" });
+        setData({ ...data, name: "" });
       } else if (status === "ERROR") {
         setNotification({
           show: true,
@@ -40,8 +55,12 @@ const AdminAddCarSize = () => {
   };
 
   const handleReset = () => {
-    setData({ size: "", description: "" });
-    setErrors("");
+    setData({
+      name: "",
+      description: "",
+      service_ids: [],
+    });
+    setErrors([]);
   };
 
   return (
@@ -53,23 +72,48 @@ const AdminAddCarSize = () => {
           status={notification.status}
         />
       )}
+
       <form onSubmit={handleAdd}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Size</span>
+            <span className="w-32">Channel</span>
             <input
               type="text"
-              value={data.size}
+              value={data.name}
               className={`input input-bordered w-full max-w-md ${
-                !data.size ? `input-error` : ``
+                !data.name ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, size: e.target.value });
+                setData({ ...data, name: e.target.value });
               }}
               required
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
+
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Service</span>
+            <div className="w-full max-w-md">
+              <Select
+                required
+                isMulti
+                options={service}
+                placeholder="Pick Service(s)..."
+                value={service.filter((option) =>
+                  data.service_ids.includes(option.value)
+                )}
+                onChange={(selected) =>
+                  setData({
+                    ...data,
+                    service_ids: selected
+                      ? selected.map((item) => item.value)
+                      : [],
+                  })
+                }
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32 flex flex-col leading-tight">
               <span>Description</span>
@@ -84,7 +128,6 @@ const AdminAddCarSize = () => {
               }}
             />
           </div>
-
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
@@ -99,4 +142,4 @@ const AdminAddCarSize = () => {
   );
 };
 
-export default AdminAddCarSize;
+export default AdminAddChannel;

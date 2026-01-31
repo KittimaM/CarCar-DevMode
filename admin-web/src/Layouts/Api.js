@@ -474,3 +474,11 @@ export const UpdateServiceAvailable = (jsonData) => {
 export const GetAvailableCarSize = () => {
   return getApi(URLList.AdminCarSize + "/is-available");
 };
+
+export const GetAvailableService = () => {
+  return getApi(URLList.AdminService + "/is-available");
+};
+
+export const UpdateChannelAvailable = (jsonData) => {
+  return putApi(URLList.AdminChannel + "/is-available", jsonData);
+};
