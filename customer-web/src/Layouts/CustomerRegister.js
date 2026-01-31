@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  PostAddCustomer,
-  PostCustomerLogin,
-} from "../../../admin-web/src/Layouts/Api";
-import LoginImg from "../../assets/login-2.jpeg";
+import { PostAddCustomer, PostCustomerLogin } from "../Modules/Api";
 
 const CustomerRegister = () => {
   const [errors, setErrors] = useState(null);
@@ -46,7 +42,7 @@ const CustomerRegister = () => {
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 h-screen w-full">
         <div className="hidden sm:block">
-          <img className="w-full h-full object" src={LoginImg} alt="" />
+          <img className="w-full h-full object" src="/login-2.jpeg" alt="" />
         </div>
 
         <div className="bg-gray-100 flex flex-col justify-center">
