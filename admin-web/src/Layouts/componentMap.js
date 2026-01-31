@@ -12,7 +12,7 @@ const componentMap = {
   //   dayOffList: lazy(() => import("./AdminDayOff")),
   carSize: lazy(() => import("./MasterData/CarSize/AdminCarSize")),
   //   service: lazy(() => import("./AdminService")),
-  //   channel: lazy(() => import("./AdminChannel")),
+  channel: lazy(() => import("./MasterData/Channel/AdminChannel")),
   //   template: lazy(() => import("./AdminTemplate")),
   //   search: lazy(() => import("./AdminSearch")),
   role: lazy(() => import("./AdminRole/AdminRole")),
@@ -22,7 +22,7 @@ const componentMap = {
   //   onLeaveType: lazy(() => import("./AdminOnLeaveType")),
   //   paymentType: lazy(() => import("./AdminPaymentType")),
   //   advSetting: lazy(() => import("./AdminAdvanceSetting")),
-  service: lazy(() => import ("./MasterData/Service/AdminService")),
+  service: lazy(() => import("./MasterData/Service/AdminService")),
 };
 
 export default componentMap;

@@ -21,6 +21,8 @@ const AdminRole = ({ data }) => {
     GetAllAdminRole().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setRoleList(msg);
+      } else if (status == "NO DATA") {
+        setRoleList([]);
       }
     });
   };
@@ -51,7 +53,7 @@ const AdminRole = ({ data }) => {
     });
   };
 
-  const handleEditRole = (id) => {
+  const handleEdit = (id) => {
     setEditItem(id);
     setViewMode("edit");
   };
@@ -129,7 +131,7 @@ const AdminRole = ({ data }) => {
                           {actions.includes("edit") && (
                             <button
                               className="btn btn-warning"
-                              onClick={() => handleEditRole(role)}
+                              onClick={() => handleEdit(role)}
                             >
                               Edit
                             </button>

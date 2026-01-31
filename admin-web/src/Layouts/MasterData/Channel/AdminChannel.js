@@ -1,19 +1,16 @@
-import { useEffect, useState } from "react";
-import {
-  DeleteAdminCustomer,
-  GetAdminCustomer,
-  UpdateAdminUnlockCustomer,
-} from "../Api";
-import Notification from "../Notification/Notification";
-import lockedIcon from "../../assets/padlock-icon.svg";
-import AdminAddCustomer from "./AdminAddCustomer";
-import AdminEditCustomer from "./AdminEditCustomer";
+import React, { useEffect, useState } from "react";
+import Notification from "../../Notification/Notification";
+import { DeleteChannel, GetChannel, UpdateChannelAvailable } from "../../Api";
+import AdminAddChannel from "./AdminAddChannel";
+import AdminEditChannel from "./AdminEditChannel";
+import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
+import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
-const AdminCustomer = ({ data }) => {
+const AdminChannel = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
+  const [channel, setChannel] = useState([]);
   const [viewMode, setViewMode] = useState("list");
-  const [user, setUser] = useState(null);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -21,32 +18,53 @@ const AdminCustomer = ({ data }) => {
     message: "",
     status: "",
   });
-  const fetchCustomer = () => {
-    GetAdminCustomer().then((data) => {
-      const { status, msg } = data;
-      if (status === "SUCCESS") {
-        setUser(msg);
+
+  const fetchChannel = () => {
+    GetChannel().then(({ status, msg }) => {
+      if (status == "SUCCESS") {
+        const grouped = msg.reduce((acc, row) => {
+          if (!acc[row.channel_id]) {
+            acc[row.channel_id] = {
+              id: row.channel_id,
+              name: row.channel_name,
+              description: row.channel_description,
+              is_available: row.channel_is_available,
+              services: [],
+            };
+          }
+          acc[row.channel_id].services.push({
+            service_id: row.service_id,
+            service_name: row.service,
+          });
+
+          return acc;
+        }, {});
+
+        setChannel(Object.values(grouped));
       } else if (status == "NO DATA") {
-        setUser(null);
-      } else {
-        console.log(data);
+        setChannel([]);
       }
     });
   };
 
   useEffect(() => {
-    fetchCustomer();
+    fetchChannel();
   }, []);
 
-  const handleDeleteUser = (id, name) => {
-    DeleteAdminCustomer({ id: id }).then(({ status, msg }) => {
+  const handleEdit = (c) => {
+    setEditItem(c);
+    setViewMode("edit");
+  };
+
+  const handleDelete = (id, name) => {
+    DeleteChannel({ id }).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           message: name + " " + msg,
           status: status,
         });
-        fetchCustomer();
+        fetchChannel();
       } else if (status === "WARNING") {
         setNotification({
           show: true,
@@ -64,29 +82,26 @@ const AdminCustomer = ({ data }) => {
     });
   };
 
-  const handelEditUser = (id, phone, name) => {
-    setEditItem({ id, phone, name });
-    setViewMode("edit");
-  };
-
-  const handleUnLock = (id, name) => {
-    UpdateAdminUnlockCustomer({ id: id }).then((data) => {
-      const { status, msg } = data;
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: name + " " + msg,
-          status: status,
-        });
-        fetchCustomer();
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
+  const handleAvailable = (id, name, is_available) => {
+    UpdateChannelAvailable({ id: id, is_available: !is_available }).then(
+      ({ status, msg }) => {
+        if (status === "SUCCESS") {
+          setNotification({
+            show: true,
+            message: name + " " + msg,
+            status: status,
+          });
+          fetchChannel();
+        } else if (status === "ERROR") {
+          setNotification({
+            show: true,
+            message: msg,
+            status: status,
+          });
+        }
+        setNotificationKey((prev) => prev + 1);
       }
-    });
+    );
   };
 
   return (
@@ -103,9 +118,11 @@ const AdminCustomer = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">CUSTOMER LIST</li>}
-            {viewMode === "add" && <li className="text-xl">CREATE USER</li>}
-            {viewMode === "edit" && <li className="text-xl">EDIT USER</li>}
+            {viewMode === "list" && <li className="text-xl">CHANNEL LIST</li>}
+            {viewMode === "add" && (
+              <li className="text-xl">CREATE NEW CHANNEL</li>
+            )}
+            {viewMode === "edit" && <li className="text-xl">EDIT CHANNEL</li>}
           </ul>
         </div>
       </div>
@@ -117,10 +134,10 @@ const AdminCustomer = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchCustomer();
+            fetchChannel();
           }}
         >
-          Customer List
+          Channel List
         </button>
 
         {actions.includes("add") && (
@@ -130,64 +147,63 @@ const AdminCustomer = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create User
+            + Create New Channel
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddCustomer />}
+      {viewMode === "add" && <AdminAddChannel />}
       {viewMode === "edit" && editItem && (
-        <AdminEditCustomer editItem={editItem} />
+        <AdminEditChannel editItem={editItem} />
       )}
 
       {viewMode === "list" && (
         <table className="table table-lg">
           <thead>
             <tr>
-              <td>is locked</td>
-              <td>locked reason</td>
-              <td>phone</td>
-              <td>name</td>
+              <td>Available Status</td>
+              <td>Channel</td>
+              <td>Description</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
               )}
             </tr>
           </thead>
           <tbody>
-            {user &&
-              user.map((u) => (
-                <tr key={u.id}>
+            {channel &&
+              channel.map((c) => (
+                <tr key={c.id}>
                   <td>
                     <button
                       type="button"
-                      onClick={() => handleUnLock(u.id, u.name)}
+                      onClick={() =>
+                        handleAvailable(c.id, c.name, c.is_available)
+                      }
                     >
-                      {u.is_locked === 1 && (
-                        <img height="12" width="12" src={lockedIcon} />
+                      {c.is_available === 1 ? (
+                        <img height="15" width="15" src={checkIcon} />
+                      ) : (
+                        <img height="15" width="15" src={unCheckIcon} />
                       )}
                     </button>
                   </td>
-                  <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
-                  <td>{u.phone}</td>
-                  <td>{u.name}</td>
+                  <td>{c.name}</td>
+                  <td>{c.description}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
                         {actions.includes("edit") && (
                           <button
                             className="btn btn-warning"
-                            onClick={() =>
-                              handelEditUser(u.id, u.phone, u.name)
-                            }
+                            onClick={() => handleEdit(c)}
                           >
                             Edit
                           </button>
                         )}
-
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDeleteUser(u.id, u.name)}
+                            onClick={() => handleDelete(c.id, c.name)}
                           >
                             Delete
                           </button>
@@ -204,4 +220,4 @@ const AdminCustomer = ({ data }) => {
   );
 };
 
-export default AdminCustomer;
+export default AdminChannel;

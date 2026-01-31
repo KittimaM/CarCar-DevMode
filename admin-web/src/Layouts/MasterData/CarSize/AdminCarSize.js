@@ -12,9 +12,7 @@ import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
 const AdminCarSize = ({ data }) => {
   const { labelValue, permission, code } = data;
-  const actions = permission.find(
-    (p) => p.code === code,
-  ).permission_actions;
+  const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
   const [size, setSize] = useState("");
   const [editItem, setEditItem] = useState(null);
@@ -29,6 +27,8 @@ const AdminCarSize = ({ data }) => {
     GetAllCarSize().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setSize(msg);
+      } else if (status == "NO DATA") {
+        setSize();
       }
     });
   };
@@ -55,16 +55,16 @@ const AdminCarSize = ({ data }) => {
           });
         }
         setNotificationKey((prev) => prev + 1);
-      },
+      }
     );
   };
 
-  const handleEditCarSize = (id, size, description) => {
+  const handleEdit = (id, size, description) => {
     setEditItem({ id, size, description });
     setViewMode("edit");
   };
 
-  const handleDeleteCarSize = (id, size) => {
+  const handleDelete = (id, size) => {
     DeleteCarSize({ id: id }).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
@@ -182,7 +182,7 @@ const AdminCarSize = ({ data }) => {
                           <button
                             className="btn btn-warning"
                             onClick={() =>
-                              handleEditCarSize(c.id, c.size, c.description)
+                              handleEdit(c.id, c.size, c.description)
                             }
                           >
                             Edit
@@ -192,7 +192,7 @@ const AdminCarSize = ({ data }) => {
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDeleteCarSize(c.id, c.size)}
+                            onClick={() => handleDelete(c.id, c.size)}
                           >
                             Delete
                           </button>

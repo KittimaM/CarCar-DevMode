@@ -27,6 +27,8 @@ const AdminStaff = ({ data }) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setUser(msg);
+      } else if (status == "NO DATA") {
+        setUser(null);
       } else {
         console.log(data);
       }
@@ -179,7 +181,7 @@ const AdminStaff = ({ data }) => {
                                     u.id,
                                     u.username,
                                     u.name,
-                                    u.role_id,
+                                    u.role_id
                                   )
                                 }
                               >

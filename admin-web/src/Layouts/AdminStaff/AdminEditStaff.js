@@ -34,7 +34,7 @@ const AdminEditStaff = ({ editItem }) => {
     setErrors([]);
   };
 
-  const handleEditUser = (e) => {
+  const handleEdit = (e) => {
     e.preventDefault();
     UpdateStaffUser(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
@@ -61,7 +61,7 @@ const AdminEditStaff = ({ editItem }) => {
           status={notification.status}
         />
       )}
-      <form onSubmit={handleEditUser}>
+      <form onSubmit={handleEdit}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Username</span>

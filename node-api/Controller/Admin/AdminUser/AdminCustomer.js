@@ -35,10 +35,9 @@ const AdminAddCustomer = (req, res, next) => {
               return res.json({ status: "ERROR", msg: error });
             }
           } else {
-            const insertId = result.insertId;
-            return res.json({ status: "SUCCESS", msg: insertId });
+            return res.json({ status: "SUCCESS", msg: "Successfully Added" });
           }
-        },
+        }
       );
     }
   });
@@ -69,7 +68,7 @@ const AdminUpdateCustomer = (req, res, next) => {
       } else {
         handleUpdate(
           `UPDATE customer_user SET phone = ? , name = ?, password = ? WHERE id = ?`,
-          [phone, name, hash, id],
+          [phone, name, hash, id]
         );
       }
     });
@@ -100,7 +99,7 @@ const AdminDeleteCustomer = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
       }
-    },
+    }
   );
 };
 
@@ -115,7 +114,7 @@ const AdminUnlockCustomer = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Unlock" });
       }
-    },
+    }
   );
 };
 
@@ -132,7 +131,7 @@ const GetCustomerUserById = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });
       }
-    },
+    }
   );
 };
 

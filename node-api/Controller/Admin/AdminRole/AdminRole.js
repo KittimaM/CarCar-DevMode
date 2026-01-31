@@ -13,19 +13,18 @@ const AdminGetAllRole = (req, res, next) => {
   });
 };
 
-const AdminAddRole = (req, res) => {
+const AdminAddRole = (req, res, next) => {
   const { role_name, allowedAccess } = req.body;
 
   Conn.execute(
     `INSERT INTO role (name) VALUES (?)`,
     [role_name],
-    (error, result) => {
+    function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       }
 
       const role_id = result.insertId;
-
       const values = allowedAccess.map((item) => [
         role_id,
         item.module_id,
@@ -36,7 +35,7 @@ const AdminAddRole = (req, res) => {
         `INSERT INTO role_permission (role_id, module_id, permission_id)
          VALUES ?`,
         [values],
-        (error) => {
+        function (error) {
           if (error) {
             return res.json({ status: "ERROR", msg: error });
           }
@@ -45,9 +44,9 @@ const AdminAddRole = (req, res) => {
             status: "SUCCESS",
             msg: "SUCCESS",
           });
-        },
+        }
       );
-    },
+    }
   );
 };
 
@@ -79,13 +78,13 @@ const AdminDeleteRole = (req, res, next) => {
                   } else {
                     return res.json({ status: "SUCCESS", msg: "SUCCESS" });
                   }
-                },
+                }
               );
             }
-          },
+          }
         );
       }
-    },
+    }
   );
 };
 
@@ -125,11 +124,11 @@ const AdminUpdateRole = (req, res, next) => {
                   msg: "SUCCESS",
                 });
               }
-            },
+            }
           );
-        },
+        }
       );
-    },
+    }
   );
 };
 
