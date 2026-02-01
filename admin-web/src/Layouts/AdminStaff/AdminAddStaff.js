@@ -50,10 +50,6 @@ const AdminAddStaff = () => {
     });
   };
 
-  const handleReset = () => {
-    setData({});
-    setErrors([]);
-  };
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -136,7 +132,19 @@ const AdminAddStaff = () => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  username: "",
+                  name: "",
+                  password: "",
+                  role_id: "",
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

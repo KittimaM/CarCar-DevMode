@@ -33,15 +33,6 @@ const AdminEditCustomer = ({ editItem }) => {
     });
   };
 
-  const handleReset = () => {
-    setData({
-      ...editItem,
-      password: "",
-      isChangePassword: false,
-    });
-    setErrors([]);
-  };
-
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -123,7 +114,18 @@ const AdminEditCustomer = ({ editItem }) => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  ...editItem,
+                  password: "",
+                  isChangePassword: false,
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

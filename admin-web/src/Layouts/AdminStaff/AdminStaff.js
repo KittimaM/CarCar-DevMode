@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { DeleteStaffUser, GetAllStaff, UpdateAdminUnlockStaff } from "../Modules/Api";
+import {
+  DeleteStaffUser,
+  GetAllStaff,
+  UpdateAdminUnlockStaff,
+} from "../Modules/Api";
 import Notification from "../Notification/Notification";
 import lockedIcon from "../../assets/padlock-icon.svg";
 import AdminAddStaff from "./AdminAddStaff";
@@ -60,11 +64,6 @@ const AdminStaff = ({ data }) => {
       }
       setNotificationKey((prev) => prev + 1);
     });
-  };
-
-  const handelEditUser = (id, username, name, role_id) => {
-    setEditItem({ id, username, name, role_id });
-    setViewMode("edit");
   };
 
   const handleUnLock = (id, username) => {
@@ -190,14 +189,10 @@ const AdminStaff = ({ data }) => {
                             {actions.includes("edit") && (
                               <button
                                 className="btn btn-warning"
-                                onClick={() =>
-                                  handelEditUser(
-                                    u.id,
-                                    u.username,
-                                    u.name,
-                                    u.role_id
-                                  )
-                                }
+                                onClick={() => {
+                                  setEditItem(u);
+                                  setViewMode("edit");
+                                }}
                               >
                                 Edit
                               </button>

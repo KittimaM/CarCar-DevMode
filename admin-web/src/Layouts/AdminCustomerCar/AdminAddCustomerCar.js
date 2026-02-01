@@ -70,19 +70,6 @@ const AdminAddCustomerCar = () => {
     });
   };
 
-  const handleReset = () => {
-    setErrors([]);
-    setData({
-      customer_id: "",
-      plate_no: "",
-      province_id: "",
-      brand: "",
-      model: null,
-      size_id: "",
-      color: "",
-    });
-  };
-
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -230,7 +217,22 @@ const AdminAddCustomerCar = () => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setErrors([]);
+                setData({
+                  customer_id: "",
+                  plate_no: "",
+                  province_id: "",
+                  brand: "",
+                  model: null,
+                  size_id: "",
+                  color: "",
+                });
+              }}
+            >
               CANCEL
             </button>
           </div>

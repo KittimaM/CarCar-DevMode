@@ -128,15 +128,6 @@ const AdminRole = ({ data }) => {
                       actions.includes("delete")) && (
                       <td className="text-right">
                         <div className="flex justify-end gap-2">
-                          {actions.includes("edit") && (
-                            <button
-                              className="btn btn-warning"
-                              onClick={() => handleEdit(role)}
-                            >
-                              Edit
-                            </button>
-                          )}
-
                           {actions.includes("delete") && (
                             <button
                               className="btn btn-error text-white"
@@ -145,6 +136,17 @@ const AdminRole = ({ data }) => {
                               }
                             >
                               Delete
+                            </button>
+                          )}
+                          {actions.includes("edit") && (
+                            <button
+                              className="btn btn-warning"
+                              onClick={() => {
+                                setEditItem(role);
+                                setViewMode("edit");
+                              }}
+                            >
+                              Edit
                             </button>
                           )}
                         </div>

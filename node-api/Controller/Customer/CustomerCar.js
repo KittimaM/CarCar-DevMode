@@ -7,7 +7,7 @@ const CustomerCar = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const { id } = jwt.verify(token, secret);
     Conn.execute(
-      `SELECT * FROM customer_car WHERE customer_id = ? AND deleted_at IS NULL `,
+      `SELECT * FROM customer_car WHERE customer_id = ? `,
       [id],
       function (error, results) {
         if (error) {
@@ -18,7 +18,7 @@ const CustomerCar = (req, res, next) => {
         } else {
           return res.json({ status: "SUCCESS", msg: results });
         }
-      },
+      }
     );
   } catch (error) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -51,7 +51,7 @@ const CustomerAddCustomerCar = (req, res, next) => {
           const insertId = result.insertId;
           return res.json({ status: "SUCCESS", msg: insertId });
         }
-      },
+      }
     );
   } catch (error) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -69,7 +69,7 @@ const CustomerDeleteCustomerCar = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 
@@ -108,7 +108,7 @@ const CustomerUpdateCustomerCar = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 

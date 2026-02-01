@@ -25,15 +25,6 @@ const AdminEditStaff = ({ editItem }) => {
     });
   }, []);
 
-  const handleReset = () => {
-    setData({
-      ...editItem,
-      password: "",
-      isChangePassword: false,
-    });
-    setErrors([]);
-  };
-
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateStaffUser(data).then(({ status, msg }) => {
@@ -149,7 +140,18 @@ const AdminEditStaff = ({ editItem }) => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  ...editItem,
+                  password: "",
+                  isChangePassword: false,
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

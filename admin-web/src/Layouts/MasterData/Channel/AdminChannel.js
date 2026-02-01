@@ -34,15 +34,39 @@ const AdminChannel = ({ data }) => {
               max_capacity: row.max_capacity,
               is_available: row.channel_is_available,
               services: [],
+              schedule: [],
             };
           }
-          acc[row.channel_id].services.push({
-            service_id: row.service_id,
-            service_name: row.service_name,
-          });
+
+          const isServiceExist = acc[row.channel_id].services.some(
+            (s) => s.service_id === row.service_id
+          );
+
+          if (!isServiceExist) {
+            acc[row.channel_id].services.push({
+              service_id: row.service_id,
+              service_name: row.service_name,
+            });
+          }
+
+          if (row.day_of_week) {
+            const hasDay = acc[row.channel_id].schedule.some(
+              (s) => s.day_of_week === row.day_of_week
+            );
+            if (!hasDay) {
+              const st = row.start_time != null ? String(row.start_time).substring(0, 5) : "";
+              const et = row.end_time != null ? String(row.end_time).substring(0, 5) : "";
+              acc[row.channel_id].schedule.push({
+                day_of_week: row.day_of_week,
+                start_time: st,
+                end_time: et,
+              });
+            }
+          }
 
           return acc;
         }, {});
+      
 
         setChannel(Object.values(grouped));
       } else if (status == "NO DATA") {
@@ -54,11 +78,6 @@ const AdminChannel = ({ data }) => {
   useEffect(() => {
     fetchChannel();
   }, []);
-
-  const handleEdit = (c) => {
-    setEditItem(c);
-    setViewMode("edit");
-  };
 
   const handleDelete = (id, name) => {
     DeleteChannel({ id }).then(({ status, msg }) => {
@@ -209,7 +228,10 @@ const AdminChannel = ({ data }) => {
                         {actions.includes("edit") && (
                           <button
                             className="btn btn-warning"
-                            onClick={() => handleEdit(c)}
+                            onClick={() => {
+                              setEditItem(c);
+                              setViewMode("edit");
+                            }}
                           >
                             Edit
                           </button>

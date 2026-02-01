@@ -34,15 +34,6 @@ const AdminAddCustomer = () => {
     });
   };
 
-  const handleReset = () => {
-    setData({
-      phone: "",
-      name: "",
-      password: "",
-    });
-    setErrors([]);
-  };
-
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -108,7 +99,18 @@ const AdminAddCustomer = () => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  phone: "",
+                  name: "",
+                  password: "",
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

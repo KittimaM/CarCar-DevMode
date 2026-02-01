@@ -14,10 +14,10 @@ const AdminCarSize = (req, res, next) => {
 };
 
 const AdminAddCarSize = (req, res, next) => {
-  const { size, description } = req.body;
+  const { size } = req.body;
   Conn.execute(
-    `INSERT INTO car_size(size, description) VALUES(?,?)`,
-    [size, description],
+    `INSERT INTO car_size(size) VALUES(?)`,
+    [size],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
@@ -28,7 +28,7 @@ const AdminAddCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Added" });
       }
-    },
+    }
   );
 };
 
@@ -48,10 +48,10 @@ const AdminDeleteCarSize = (req, res, next) => {
 };
 
 const AdminUpdateCarSize = (req, res, next) => {
-  const { id, size, description } = req.body;
+  const { id, size } = req.body;
   Conn.execute(
-    `UPDATE car_size SET size = ? , description = ? WHERE id = ?`,
-    [size, description, id],
+    `UPDATE car_size SET size = ? WHERE id = ?`,
+    [size, id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
@@ -62,7 +62,7 @@ const AdminUpdateCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Upated" });
       }
-    },
+    }
   );
 };
 
@@ -77,7 +77,7 @@ const UpdateCarSizeAvailable = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
-    },
+    }
   );
 };
 
@@ -94,7 +94,7 @@ const GetCarSizeById = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });
       }
-    },
+    }
   );
 };
 
@@ -110,7 +110,7 @@ const GetAvailableCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: results });
       }
-    },
+    }
   );
 };
 

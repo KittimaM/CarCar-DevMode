@@ -59,11 +59,6 @@ const AdminCarSize = ({ data }) => {
     );
   };
 
-  const handleEdit = (id, size, description) => {
-    setEditItem({ id, size, description });
-    setViewMode("edit");
-  };
-
   const handleDelete = (id, size) => {
     DeleteCarSize({ id: id }).then(({ status, msg }) => {
       if (status === "SUCCESS") {
@@ -149,7 +144,6 @@ const AdminCarSize = ({ data }) => {
             <tr>
               <td>Status</td>
               <td>Size</td>
-              <td>Description</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
               )}
@@ -174,27 +168,26 @@ const AdminCarSize = ({ data }) => {
                     </button>
                   </td>
                   <td>{c.size}</td>
-                  <td>{c.description}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
-                        {actions.includes("edit") && (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() =>
-                              handleEdit(c.id, c.size, c.description)
-                            }
-                          >
-                            Edit
-                          </button>
-                        )}
-
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
                             onClick={() => handleDelete(c.id, c.size)}
                           >
                             Delete
+                          </button>
+                        )}
+                        {actions.includes("edit") && (
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => {
+                              setEditItem(c);
+                              setViewMode("edit");
+                            }}
+                          >
+                            Edit
                           </button>
                         )}
                       </div>

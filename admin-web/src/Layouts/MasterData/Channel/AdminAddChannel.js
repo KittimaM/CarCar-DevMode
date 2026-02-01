@@ -3,6 +3,16 @@ import { GetAvailableService, PostAddChannel } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 import Select from "react-select";
 
+const DAYS = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+
 const AdminAddChannel = () => {
   const [service, setService] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -15,6 +25,11 @@ const AdminAddChannel = () => {
   const [data, setData] = useState({
     name: "",
     max_capacity: "",
+    schedule: DAYS.map((day) => ({
+      day_of_week: day,
+      start_time: "",
+      end_time: "",
+    })),
     service_ids: [],
   });
 
@@ -54,15 +69,6 @@ const AdminAddChannel = () => {
     });
   };
 
-  const handleReset = () => {
-    setData({
-      name: "",
-      max_capacity: "",
-      service_ids: [],
-    });
-    setErrors([]);
-  };
-
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -99,7 +105,7 @@ const AdminAddChannel = () => {
                 options={service}
                 placeholder="Pick Service(s)..."
                 value={service.filter((option) =>
-                  data.service_ids.includes(option.value)
+                  (data.service_ids || []).includes(option.value)
                 )}
                 onChange={(selected) =>
                   setData({
@@ -127,11 +133,65 @@ const AdminAddChannel = () => {
               required
             />
           </div>
+          <div className="border p-4 bg-base-100 space-y-4 items-center">
+            <h2 className="text-lg font-bold">Channel Schedule</h2>
+            <p className="text-sm text-base-content/70 mb-2">
+              Set start and end time per day (leave blank if closed)
+            </p>
+            {(data.schedule || []).map((daySchedule, index) => (
+              <div
+                key={daySchedule.day_of_week}
+                className="flex flex-col md:flex-row gap-2 md:items-center font-semibold"
+              >
+                <span className="w-28">{daySchedule.day_of_week}</span>
+                <span className="text-sm">Start</span>
+                <input
+                  type="time"
+                  value={daySchedule.start_time}
+                  className="input input-bordered w-full max-w-xs"
+                  onChange={(e) => {
+                    const next = data.schedule.map((s, i) =>
+                      i === index ? { ...s, start_time: e.target.value } : s
+                    );
+                    setData({ ...data, schedule: next });
+                  }}
+                />
+                <span className="text-sm">End</span>
+                <input
+                  type="time"
+                  value={daySchedule.end_time}
+                  className="input input-bordered w-full max-w-xs"
+                  onChange={(e) => {
+                    const next = data.schedule.map((s, i) =>
+                      i === index ? { ...s, end_time: e.target.value } : s
+                    );
+                    setData({ ...data, schedule: next });
+                  }}
+                />
+              </div>
+            ))}
+          </div>
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  name: "",
+                  max_capacity: "",
+                  schedule: DAYS.map((day) => ({
+                    day_of_week: day,
+                    start_time: "",
+                    end_time: "",
+                  })),
+                  service_ids: [],
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>
