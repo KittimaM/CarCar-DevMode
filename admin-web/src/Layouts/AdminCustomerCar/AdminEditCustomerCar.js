@@ -62,11 +62,6 @@ const AdminEditCustomerCar = ({ editItem }) => {
     });
   };
 
-  const handleReset = () => {
-    setErrors([]);
-    setData(editItem);
-  };
-
   return (
     <div className="space-y-4">
       {notification.show === true && (
@@ -212,7 +207,14 @@ const AdminEditCustomerCar = ({ editItem }) => {
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setErrors([]);
+                setData(editItem);
+              }}
+            >
               CANCEL
             </button>
           </div>

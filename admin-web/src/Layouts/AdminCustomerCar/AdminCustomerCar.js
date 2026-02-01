@@ -6,9 +6,7 @@ import AdminEditCustomerCar from "./AdminEditCustomerCar";
 
 const AdminCustomerCar = ({ data }) => {
   const { labelValue, permission, code } = data;
-  const actions = permission.find(
-    (p) => p.code === code,
-  ).permission_actions;
+  const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
   const [customerCarList, setCustomerCarList] = useState();
   const [editItem, setEditItem] = useState(null);
@@ -32,29 +30,6 @@ const AdminCustomerCar = ({ data }) => {
   useEffect(() => {
     fetchCustomerCar();
   }, []);
-
-  const handleEditCustomerCar = (
-    car_id,
-    customer_id,
-    plate_no,
-    province,
-    brand,
-    model,
-    color,
-    size_id,
-  ) => {
-    setEditItem({
-      car_id,
-      customer_id,
-      plate_no,
-      province,
-      brand,
-      model,
-      color,
-      size_id,
-    });
-    setViewMode("edit");
-  };
 
   const handleDeleteCustomerCar = (id, plate_no) => {
     DeleteAdminCustomerCar({ id: id }).then(({ status, msg }) => {
@@ -153,7 +128,7 @@ const AdminCustomerCar = ({ data }) => {
           <tbody>
             {customerCarList &&
               customerCarList.map((c) => (
-                <tr key={c.car_id}>
+                <tr key={c.id}>
                   <td>{c.phone}</td>
                   <td>{c.name}</td>
                   <td>{c.plate_no}</td>
@@ -165,26 +140,6 @@ const AdminCustomerCar = ({ data }) => {
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
-                        {actions.includes("edit") && (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() =>
-                              handleEditCustomerCar(
-                                c.car_id,
-                                c.customer_id,
-                                c.plate_no,
-                                c.province,
-                                c.brand,
-                                c.model,
-                                c.color,
-                                c.size_id,
-                              )
-                            }
-                          >
-                            Edit
-                          </button>
-                        )}
-
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
@@ -193,6 +148,17 @@ const AdminCustomerCar = ({ data }) => {
                             }
                           >
                             Delete
+                          </button>
+                        )}
+                        {actions.includes("edit") && (
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => {
+                              setViewMode("edit");
+                              setEditItem(c);
+                            }}
+                          >
+                            Edit
                           </button>
                         )}
                       </div>

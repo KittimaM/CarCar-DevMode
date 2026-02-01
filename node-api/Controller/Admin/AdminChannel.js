@@ -2,7 +2,7 @@ const Conn = require("../../db");
 
 const AdminGetChannel = (req, res, next) => {
   Conn.execute(
-    `SELECT cs.channel_id, cs.service_id, c.name AS channel_name, c.is_available AS channel_is_available, s.name AS service_name, c.max_capacity FROM channel c JOIN channel_service cs ON cs.channel_id = c.id JOIN service s ON cs.service_id = s.id`,
+    `SELECT cs.channel_id, cs.service_id, c.name AS channel_name, c.is_available AS channel_is_available, s.name AS service_name, c.max_capacity, c_schedule.day_of_week, c_schedule.start_time, c_schedule.end_time FROM channel c JOIN channel_service cs ON cs.channel_id = c.id JOIN service s ON cs.service_id = s.id JOIN channel_schedule c_schedule ON c_schedule.channel_id = c.id`,
     function (error, results) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
@@ -17,7 +17,7 @@ const AdminGetChannel = (req, res, next) => {
 };
 
 const AdminAddChannel = (req, res, next) => {
-  const { name, max_capacity, service_ids } = req.body;
+  const { name, max_capacity, service_ids, schedule } = req.body;
   Conn.beginTransaction(function (error) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
@@ -47,17 +47,50 @@ const AdminAddChannel = (req, res, next) => {
                 res.json({ status: "ERROR", msg: error });
               });
             }
-            Conn.commit(function (error) {
-              if (error) {
-                return Conn.rollback(() => {
-                  res.json({ status: "ERROR", msg: error });
+            const scheduleRows = Array.isArray(schedule)
+              ? schedule.filter((s) => s.start_time && s.end_time)
+              : [];
+            if (scheduleRows.length === 0) {
+              return Conn.commit(function (error) {
+                if (error) {
+                  return Conn.rollback(() => {
+                    res.json({ status: "ERROR", msg: error });
+                  });
+                }
+                res.json({
+                  status: "SUCCESS",
+                  msg: "Successfully Added",
+                });
+              });
+            }
+            const scheduleValues = scheduleRows.map((s) => [
+              channel_id,
+              s.day_of_week,
+              s.start_time,
+              s.end_time,
+            ]);
+            Conn.query(
+              "INSERT INTO channel_schedule (channel_id, day_of_week, start_time, end_time) VALUES ?",
+              [scheduleValues],
+              function (error) {
+                if (error) {
+                  return Conn.rollback(() => {
+                    res.json({ status: "ERROR", msg: error });
+                  });
+                }
+                Conn.commit(function (error) {
+                  if (error) {
+                    return Conn.rollback(() => {
+                      res.json({ status: "ERROR", msg: error });
+                    });
+                  }
+                  res.json({
+                    status: "SUCCESS",
+                    msg: "Successfully Added",
+                  });
                 });
               }
-              res.json({
-                status: "SUCCESS",
-                msg: "Successfully Added",
-              });
-            });
+            );
           }
         );
       }
@@ -112,7 +145,7 @@ const AdminDeleteChannel = (req, res, next) => {
 };
 
 const AdminUpdateChannel = (req, res, next) => {
-  const { id, name, max_capacity, service_ids } = req.body;
+  const { id, name, max_capacity, service_ids, schedule } = req.body;
   Conn.beginTransaction(function (error) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
@@ -149,17 +182,61 @@ const AdminUpdateChannel = (req, res, next) => {
                     res.json({ status: "ERROR", msg: error });
                   });
                 }
-                Conn.commit(function (error) {
-                  if (error) {
-                    return Conn.rollback(() => {
-                      res.json({ status: "ERROR", msg: error });
-                    });
+                Conn.execute(
+                  "DELETE FROM channel_schedule WHERE channel_id = ?",
+                  [id],
+                  function (error) {
+                    if (error) {
+                      return Conn.rollback(() => {
+                        res.json({ status: "ERROR", msg: error });
+                      });
+                    }
+                    const scheduleRows = Array.isArray(schedule)
+                      ? schedule.filter((s) => s.start_time && s.end_time)
+                      : [];
+                    if (scheduleRows.length === 0) {
+                      return Conn.commit(function (error) {
+                        if (error) {
+                          return Conn.rollback(() => {
+                            res.json({ status: "ERROR", msg: error });
+                          });
+                        }
+                        res.json({
+                          status: "SUCCESS",
+                          msg: "Successfully Updated",
+                        });
+                      });
+                    }
+                    const scheduleValues = scheduleRows.map((s) => [
+                      id,
+                      s.day_of_week,
+                      s.start_time,
+                      s.end_time,
+                    ]);
+                    Conn.query(
+                      "INSERT INTO channel_schedule (channel_id, day_of_week, start_time, end_time) VALUES ?",
+                      [scheduleValues],
+                      function (error) {
+                        if (error) {
+                          return Conn.rollback(() => {
+                            res.json({ status: "ERROR", msg: error });
+                          });
+                        }
+                        Conn.commit(function (error) {
+                          if (error) {
+                            return Conn.rollback(() => {
+                              res.json({ status: "ERROR", msg: error });
+                            });
+                          }
+                          res.json({
+                            status: "SUCCESS",
+                            msg: "Successfully Updated",
+                          });
+                        });
+                      }
+                    );
                   }
-                  res.json({
-                    status: "SUCCESS",
-                    msg: "Successfully Updated",
-                  });
-                });
+                );
               }
             );
           }

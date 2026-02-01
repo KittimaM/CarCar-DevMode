@@ -12,7 +12,6 @@ const AdminAddCarSize = () => {
   });
   const [data, setData] = useState({
     size: "",
-    description: "",
   });
 
   const handleAdd = (e) => {
@@ -37,11 +36,6 @@ const AdminAddCarSize = () => {
       }
       setNotificationKey((prev) => prev + 1);
     });
-  };
-
-  const handleReset = () => {
-    setData({ size: "", description: "" });
-    setErrors("");
   };
 
   return (
@@ -70,26 +64,18 @@ const AdminAddCarSize = () => {
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Description</span>
-              <span className="text-xs text-success">(optional)</span>
-            </span>
-            <input
-              type="text"
-              value={data.description || ""}
-              className="input input-bordered w-full max-w-md"
-              onChange={(e) => {
-                setData({ ...data, description: e.target.value });
-              }}
-            />
-          </div>
-
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({ size: "" });
+                setErrors("");
+              }}
+            >
               CANCEL
             </button>
           </div>

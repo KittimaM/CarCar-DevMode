@@ -5,6 +5,7 @@ import {
   PostAddService,
 } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
+import Select from "react-select";
 
 const AdminAddService = () => {
   const [carSize, setCarSize] = useState([]);
@@ -22,6 +23,7 @@ const AdminAddService = () => {
     duration_minute: "",
     price: "",
     required_staff: "",
+    staff_ids: [],
   });
 
   const fetchCarSize = () => {
@@ -36,7 +38,11 @@ const AdminAddService = () => {
     fetchCarSize();
     GetAllStaff().then(({ status, msg }) => {
       if (status == "SUCCESS") {
-        setStaff(msg);
+        setStaff(
+          msg.map((staff) => {
+            return { value: staff.id, label: staff.name };
+          })
+        );
       }
     });
   }, []);
@@ -57,6 +63,7 @@ const AdminAddService = () => {
           duration_minute: "",
           price: "",
           required_staff: "",
+          staff_ids: [],
         });
       } else if (status === "WARNING") {
         setErrors(data.name + " " + msg);
@@ -70,17 +77,6 @@ const AdminAddService = () => {
       }
       setNotificationKey((prev) => prev + 1);
     });
-  };
-
-  const handleReset = () => {
-    setData({
-      name: "",
-      car_size_id: "",
-      duration_minute: "",
-      price: "",
-      required_staff: "",
-    });
-    setErrors([]);
   };
 
   return (
@@ -181,11 +177,47 @@ const AdminAddService = () => {
               required
             />
           </div>
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Staff</span>
+            <div className="w-full max-w-md">
+              <Select
+                required
+                isMulti
+                options={staff}
+                placeholder="Pick Staff(s)..."
+                value={staff.filter((option) =>
+                  (data.staff_ids || []).includes(option.value)
+                )}
+                onChange={(selected) =>
+                  setData({
+                    ...data,
+                    staff_ids: selected
+                      ? selected.map((item) => item.value)
+                      : [],
+                  })
+                }
+              />
+            </div>
+          </div>
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData({
+                  name: "",
+                  car_size_id: "",
+                  duration_minute: "",
+                  price: "",
+                  required_staff: "",
+                  staff_ids: [],
+                });
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

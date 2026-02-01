@@ -173,23 +173,23 @@ const AdminCustomer = ({ data }) => {
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
-                        {actions.includes("edit") && (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() =>
-                              handelEditUser(u.id, u.phone, u.name)
-                            }
-                          >
-                            Edit
-                          </button>
-                        )}
-
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
                             onClick={() => handleDeleteUser(u.id, u.name)}
                           >
                             Delete
+                          </button>
+                        )}
+                        {actions.includes("edit") && (
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => {
+                              setEditItem(u);
+                              setViewMode("edit");
+                            }}
+                          >
+                            Edit
                           </button>
                         )}
                       </div>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 25, 2026 at 05:23 PM
+-- Generation Time: Feb 01, 2026 at 06:19 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -53,112 +53,25 @@ INSERT INTO `account` (`id`, `label`, `income`, `expense`, `is_expense`, `is_inc
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin_role_label`
---
-
-CREATE TABLE `admin_role_label` (
-  `id` int(11) NOT NULL,
-  `role` varchar(100) NOT NULL,
-  `label` varchar(100) NOT NULL,
-  `module_level` int(11) NOT NULL DEFAULT 1,
-  `header_module_id` int(11) NOT NULL DEFAULT 0,
-  `is_have_sub_role` tinyint(4) NOT NULL DEFAULT 0,
-  `submenu` int(11) DEFAULT NULL,
-  `data_value` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admin_role_label`
---
-
-INSERT INTO `admin_role_label` (`id`, `role`, `label`, `module_level`, `header_module_id`, `is_have_sub_role`, `submenu`, `data_value`) VALUES
-(1, 'have_staff_access', 'staff', 2, 19, 0, 0, 'staff'),
-(2, 'have_car_size_access', 'car size', 1, 0, 0, 0, 'carSize'),
-(3, 'have_service_access', 'service', 1, 0, 0, 0, 'service'),
-(4, 'have_booking_access', 'booking', 1, 0, 0, 0, 'booking'),
-(5, 'have_role_access', 'role', 1, 0, 0, 0, 'role'),
-(6, 'have_account_access', 'account', 1, 0, 0, 0, 'account'),
-(7, 'have_schedule_access', 'schedule', 1, 0, 0, 0, 'schedule'),
-(8, 'have_payment_access', 'payment', 1, 0, 0, 0, 'payment'),
-(9, 'have_payment_type_access', 'payment type', 2, 18, 0, 0, 'paymentType'),
-(10, 'have_on_leave_list_access', 'onleave list', 1, 0, 0, 10, 'onLeaveList'),
-(11, 'have_on_leave_personal_access', 'onleave personal', 1, 0, 0, 10, 'onLeavePersonal'),
-(13, 'have_day_off_list_access', 'dayoff list', 1, 0, 0, 10, 'dayOffList'),
-(14, 'have_on_leave_type_access', 'onleave type', 2, 18, 0, 0, 'onLeaveType'),
-(15, 'have_channel_access', 'channel', 1, 0, 0, 0, 'channel'),
-(16, 'have_status_access', 'status', 1, 0, 0, 0, 'status'),
-(17, 'have_customer_access', 'customer', 2, 19, 0, 0, 'customer'),
-(18, 'have_master_table_access', 'master table', 1, 0, 1, 0, 'masterTable'),
-(19, 'have_user_access', 'user', 1, 0, 1, 0, 'user'),
-(20, 'have_template_access', 'template', 1, 0, 0, 0, 'template'),
-(21, 'have_search_access', 'Search', 1, 0, 0, 0, 'search'),
-(22, 'have_general_setting_access', 'General Setting', 1, 0, 0, 0, 'generalSetting'),
-(23, 'have_holiday_access', 'Holiday', 1, 0, 0, 0, 'holiday');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `booking`
---
-
-CREATE TABLE `booking` (
-  `id` int(11) NOT NULL,
-  `car_no` varchar(255) DEFAULT NULL,
-  `car_size_id` int(11) DEFAULT NULL,
-  `car_size` varchar(255) DEFAULT NULL,
-  `car_color` varchar(255) DEFAULT NULL,
-  `customer_phone` varchar(255) DEFAULT NULL,
-  `customer_name` varchar(255) DEFAULT NULL,
-  `service` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`service`)),
-  `service_usetime` int(11) DEFAULT NULL,
-  `start_service_datetime` datetime DEFAULT NULL,
-  `end_service_datetime` datetime DEFAULT NULL,
-  `payment_type_id` int(11) DEFAULT NULL,
-  `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `created_by_id` varchar(255) DEFAULT NULL,
-  `created_by` varchar(255) DEFAULT NULL,
-  `processing_status` varchar(255) DEFAULT 'Waiting',
-  `service_price` int(11) DEFAULT NULL,
-  `customer_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `booking`
---
-
-INSERT INTO `booking` (`id`, `car_no`, `car_size_id`, `car_size`, `car_color`, `customer_phone`, `customer_name`, `service`, `service_usetime`, `start_service_datetime`, `end_service_datetime`, `payment_type_id`, `created_at`, `created_by_id`, `created_by`, `processing_status`, `service_price`, `customer_id`) VALUES
-(169, 'admin', 12, 'super car', 'admin', 'admin', 'admin', '[9, 10]', 90, '2024-02-04 12:30:00', '2024-02-04 14:00:00', 1, '2024-02-04 05:13:05', '6', 'admin', 'Paid', 300, 0),
-(170, 'newcar', 13, 's', 'pink', '000', '000', '[11]', 30, '2024-02-28 08:00:00', '2024-02-28 08:30:00', 1, '2024-02-27 13:59:09', '000', '000', 'Paid', 50, 0),
-(171, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[]', 0, '2024-02-28 08:30:00', '2024-02-28 08:30:00', 1, '2024-02-27 14:30:31', '000', '000', 'Paid', 0, 0),
-(172, 'testchangecar_no', 12, 'super car', '000_car_color', '000', '000', '[10]', 60, '2024-02-28 17:00:00', '2024-02-28 18:00:00', 1, '2024-02-27 14:31:12', '000', '000', 'Paid', 200, 0),
-(182, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', NULL, '2024-04-05 16:18:24', NULL, NULL, '', 300, 0),
-(183, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:19:24', NULL, NULL, '', 300, 0),
-(184, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 16:30:00', '2024-04-06 18:00:00', 1, '2024-04-05 16:20:11', '1', '000', '', 300, 0),
-(185, '1กข990', 12, 'super car', 'silver', '000', '000', '[9, 10]', 90, '2024-04-06 08:00:00', '2024-04-06 09:30:00', 3, '2024-04-05 16:21:18', '1', '000', '', 300, 0),
-(186, '1กข990', 12, 'super car', 'silver', '000', 'name surname', '[9]', 30, '2024-04-10 14:30:00', '2024-04-10 15:00:00', 1, '2024-04-09 16:01:58', '1', 'name surname', '', 100, 0);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `car_size`
 --
 
 CREATE TABLE `car_size` (
   `id` int(11) NOT NULL,
   `size` varchar(30) NOT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  `is_available` tinyint(1) NOT NULL DEFAULT 0
+  `is_available` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `car_size`
 --
 
-INSERT INTO `car_size` (`id`, `size`, `description`, `is_available`) VALUES
-(86, ' mini car', '2 seats', 1),
-(87, 'normal ', '4 wheels', 1),
-(101, 'mini car', '', 1),
-(114, 'XXs', 'asdadasdasdasda', 1);
+INSERT INTO `car_size` (`id`, `size`, `is_available`) VALUES
+(86, ' mini car', 1),
+(87, 'normal ', 1),
+(101, 'mini car', 1),
+(114, 'XXs', 1),
+(159, 'new gen1', 1);
 
 -- --------------------------------------------------------
 
@@ -168,20 +81,66 @@ INSERT INTO `car_size` (`id`, `size`, `description`, `is_available`) VALUES
 
 CREATE TABLE `channel` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL,
-  `is_available` tinyint(1) DEFAULT 0,
-  `description` varchar(120) DEFAULT NULL,
-  `service` varchar(200) NOT NULL
+  `name` varchar(30) NOT NULL,
+  `max_capacity` int(11) NOT NULL,
+  `is_available` tinyint(4) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `channel`
 --
 
-INSERT INTO `channel` (`id`, `name`, `is_available`, `description`, `service`) VALUES
-(16, 'channel1', 1, '', '14,15'),
-(18, 'channel2', 1, '', '14,15'),
-(20, 'channel3', 1, '', '17');
+INSERT INTO `channel` (`id`, `name`, `max_capacity`, `is_available`) VALUES
+(1, 'channel 1', 3, 1),
+(2, 'channel 2', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `channel_schedule`
+--
+
+CREATE TABLE `channel_schedule` (
+  `channel_id` int(11) NOT NULL,
+  `day_of_week` enum('Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday') NOT NULL,
+  `start_time` time NOT NULL,
+  `end_time` time NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `channel_schedule`
+--
+
+INSERT INTO `channel_schedule` (`channel_id`, `day_of_week`, `start_time`, `end_time`) VALUES
+(1, 'Sunday', '09:00:00', '18:00:00'),
+(1, 'Monday', '09:00:00', '18:00:00'),
+(1, 'Tuesday', '09:00:00', '18:00:00'),
+(1, 'Wednesday', '09:00:00', '18:00:00'),
+(1, 'Thursday', '09:00:00', '18:00:00'),
+(1, 'Friday', '09:00:00', '18:00:00'),
+(1, 'Saturday', '09:00:00', '18:00:00'),
+(2, 'Sunday', '09:00:00', '20:00:00'),
+(2, 'Monday', '01:01:00', '01:01:00');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `channel_service`
+--
+
+CREATE TABLE `channel_service` (
+  `channel_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `channel_service`
+--
+
+INSERT INTO `channel_service` (`channel_id`, `service_id`) VALUES
+(1, 2),
+(1, 3),
+(2, 3);
 
 -- --------------------------------------------------------
 
@@ -193,7 +152,7 @@ CREATE TABLE `customer_car` (
   `id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
   `plate_no` varchar(20) NOT NULL,
-  `province` varchar(30) NOT NULL,
+  `province_id` int(11) NOT NULL,
   `brand` varchar(25) NOT NULL,
   `model` varchar(25) DEFAULT NULL,
   `size_id` int(11) NOT NULL,
@@ -204,9 +163,10 @@ CREATE TABLE `customer_car` (
 -- Dumping data for table `customer_car`
 --
 
-INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `province`, `brand`, `model`, `size_id`, `color`) VALUES
-(1, 1, '0000newcar', 'กรุงเทพมหานคร', 'toyota', NULL, 86, 'white'),
-(11, 61, 'sdd', 'กรุงเทพมหานคร', 's', 's', 87, 's');
+INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `province_id`, `brand`, `model`, `size_id`, `color`) VALUES
+(2, 6, 'csdd1234', 51, 'sd', NULL, 86, 'ds'),
+(4, 6, 'csdd1234s', 51, 'sd', 'fcv', 86, 'ds'),
+(5, 1, '123abc', 60, 'toyota', 'altiz 7.4', 87, 'pink');
 
 -- --------------------------------------------------------
 
@@ -232,32 +192,8 @@ INSERT INTO `customer_user` (`id`, `phone`, `name`, `password`, `failed_login_co
 (1, '0000', 'name surname 0000', '$2b$10$GAA5SQm1Dio/yviAKVaHw.FChyPs8NQwHFwrfpEGt/dhQrbII9x8W', 0, 0, NULL),
 (6, '222', 'twotwotwo', '$2b$10$YJH7EVFO0dBFi/zNnvbr4.DZNIGZMuJSwuhLlr2ZrjzEIxKTGT81m', 0, 0, NULL),
 (43, 'test1', 'test', '$2b$10$DVgCD4s4eXlQpFZ0q71xm.Lep9WGo9RYw9fduugzfCku1dv5KO.oi', 0, 0, NULL),
-(61, '0922788380', 'Kittima Moolamart', '$2b$10$LCY8HnucIwojboDko/1BfOBIfXzZVwWak1EGakhRmq4gyZmpdiZpG', 0, 0, NULL);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `day_off`
---
-
-CREATE TABLE `day_off` (
-  `staff_id` int(11) NOT NULL,
-  `day_off` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `day_off`
---
-
-INSERT INTO `day_off` (`staff_id`, `day_off`) VALUES
-(6, 'Friday'),
-(16, 'Sunday'),
-(17, 'Sunday'),
-(18, 'Thursday'),
-(19, 'Saturday'),
-(20, 'Sunday'),
-(21, 'Wednesday'),
-(30, 'Sunday');
+(61, '0922788380', 'Kittima Moolamart', '$2b$10$LCY8HnucIwojboDko/1BfOBIfXzZVwWak1EGakhRmq4gyZmpdiZpG', 0, 0, NULL),
+(62, '232222', 'new member', '$2b$10$Vxk7Iy0y1zRtGjmExvT4wui05n9T2o91If9R91T6lvDS47E2prjfO', 0, 0, NULL);
 
 -- --------------------------------------------------------
 
@@ -280,7 +216,7 @@ CREATE TABLE `general_setting` (
 --
 
 INSERT INTO `general_setting` (`id`, `staff_failed_login_limit`, `customer_failed_login_limit`, `staff_user_login_mins_limit`, `customer_user_login_mins_limit`, `staff_inactive_limit`, `customer_inactive_limit`) VALUES
-(1, 5, 3, 480, 480, 4, 1);
+(1, 3, 3, 480, 480, 4, 1);
 
 -- --------------------------------------------------------
 
@@ -327,7 +263,11 @@ INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 (6, 'staff', 'STAFF', 4),
 (7, 'masterData', 'MASTER DATA', 0),
 (8, 'carSize', 'CAR SIZE', 7),
-(9, 'customerCar', 'CUSTOMER\'S CAR', 4);
+(9, 'customerCar', 'CUSTOMER\'S CAR', 4),
+(10, 'service', 'SERVICE', 0),
+(11, 'service', 'SERVICE', 7),
+(12, 'channel', 'CHANNEL', 7),
+(13, 'general', 'GENERAL', 2);
 
 -- --------------------------------------------------------
 
@@ -345,7 +285,6 @@ CREATE TABLE `module_permission` (
 --
 
 INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
-(1, 1),
 (2, 1),
 (3, 1),
 (3, 2),
@@ -360,7 +299,7 @@ INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
 (6, 2),
 (6, 3),
 (6, 4),
-(7, 1),
+(11, 1),
 (8, 1),
 (8, 2),
 (8, 3),
@@ -368,7 +307,19 @@ INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
 (9, 1),
 (9, 2),
 (9, 3),
-(9, 4);
+(9, 4),
+(11, 1),
+(11, 2),
+(11, 3),
+(11, 4),
+(7, 1),
+(11, 1),
+(12, 1),
+(12, 2),
+(12, 3),
+(12, 4),
+(13, 1),
+(13, 3);
 
 -- --------------------------------------------------------
 
@@ -471,92 +422,91 @@ INSERT INTO `permission` (`id`, `code`, `name`) VALUES
 
 CREATE TABLE `province` (
   `id` int(11) NOT NULL,
-  `province` varchar(30) NOT NULL,
-  `region` varchar(20) NOT NULL
+  `province` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `province`
 --
 
-INSERT INTO `province` (`id`, `province`, `region`) VALUES
-(1, 'กรุงเทพมหานคร', 'กลาง'),
-(2, 'นนทบุรี', 'กลาง'),
-(3, 'นครปฐม', 'กลาง'),
-(4, 'สมุทรสาคร', 'กลาง'),
-(5, 'สมุทรปราการ', 'กลาง'),
-(6, 'ชลบุรี', 'ตะวันออก'),
-(7, 'ราชบุรี', 'ตะวันตก'),
-(8, 'ระยอง', 'ตะวันออก'),
-(9, 'ระนอง', 'ใต้'),
-(10, 'ยะลา', 'ใต้'),
-(11, 'เชียงใหม่', 'เหนือ'),
-(12, 'เชียงราย', 'เหนือ'),
-(13, 'แม่ฮ่องสอน', 'เหนือ'),
-(14, 'ลำปาง', 'เหนือ'),
-(15, 'ตราด', 'ตะวันออก'),
-(16, 'ตาก', 'ตะวันตก'),
-(17, 'น่าน', 'เหนือ'),
-(18, 'พะเยา', 'เหนือ'),
-(19, 'นครสวรรค์', 'กลาง'),
-(20, 'นครนายก', 'กลาง'),
-(21, 'นครราชศรีมา', 'อีสาน'),
-(22, 'อุบลราชธานี', 'อีสาน'),
-(23, 'อุดรธานี', 'อีสาน'),
-(24, 'ขอนแก่น', 'อีสาน'),
-(25, 'สระแก้ว', 'ตะวันออก'),
-(26, 'จันทบุรี', 'ตะวันออก'),
-(27, 'ปราจีนบุรี', 'ตะวันออก'),
-(28, 'ฉะเชิงเทรา', 'ตะวันออก'),
-(29, 'แพร่', 'เหนือ'),
-(30, 'ประจวบคีรีขันธ์', 'ตะวันตก'),
-(31, 'ศรีสะเกษ', 'อีสาน'),
-(32, 'ลำพูน', 'เหนือ'),
-(33, 'สงขลา', 'ใต้'),
-(34, 'เลย', 'อีสาน'),
-(35, 'นราธิวาส', 'ใต้'),
-(36, 'กาญจนบุรี', 'ตะวันตก'),
-(37, 'สิงห์บุรี', 'กลาง'),
-(38, 'พระนครศรีอยุธยา', 'กลาง'),
-(39, 'ชัยนาท', 'กลาง'),
-(40, 'สุราษฎร์ธานี', 'ใต้'),
-(41, 'ชัยภูมิ', 'อีสาน'),
-(42, 'เพชรบูรณ์', 'กลาง'),
-(43, 'พิษณุโลก', 'กลาง'),
-(44, 'บุรีรัมย์', 'อีสาน'),
-(45, 'นครศรีธรรมราช', 'ใต้'),
-(46, 'สกลนคร', 'อีสาน'),
-(47, 'กำแพงเพชร', 'กลาง'),
-(48, 'ร้อยเอ็ด', 'อีสาน'),
-(49, 'สุรินทร์', 'อีสาน'),
-(50, 'อุตรดิตถ์', 'เหนือ'),
-(51, 'กาฬสินธุ์', 'อีสาน'),
-(52, 'อุทัยธานี', 'กลาง'),
-(53, 'เพชรบุรี', 'ตะวันตก'),
-(54, 'ลพบุรี', 'กลาง'),
-(55, 'ชุมพร', 'ใต้'),
-(56, 'นครพนม', 'อีสาน'),
-(57, 'สุพรรณบุรี', 'กลาง'),
-(58, 'มหาสารคาม', 'อีสาน'),
-(59, 'ตรัง', 'ใต้'),
-(60, 'กระบี่', 'ใต้'),
-(61, 'พิจิตร', 'กลาง'),
-(62, 'มุกดาหาร', 'อีสาน'),
-(63, 'บึงกาฬ', 'อีสาน'),
-(64, 'พังงา', 'ใต้'),
-(65, 'ยโสธร', 'อีสาน'),
-(66, 'หนองบัวลำภู', 'อีสาน'),
-(67, 'พัทลุง', 'ใต้'),
-(68, 'อำนาจเจริญ', 'อีสาน'),
-(69, 'สระบุรี', 'กลาง'),
-(70, 'หนองคาย', 'อีสาน'),
-(71, 'ปัตตานี', 'ใต้'),
-(72, 'ปทุมธานี', 'กลาง'),
-(73, 'อ่างทอง', 'กลาง'),
-(74, 'ภูเก็ต', 'ใต้'),
-(75, 'สตูล', 'ใต้'),
-(76, 'สมุทรสงคราม', 'กลาง'),
-(77, 'สุโขทัย', 'กลาง');
+INSERT INTO `province` (`id`, `province`) VALUES
+(60, 'กระบี่'),
+(1, 'กรุงเทพมหานคร'),
+(36, 'กาญจนบุรี'),
+(51, 'กาฬสินธุ์'),
+(47, 'กำแพงเพชร'),
+(24, 'ขอนแก่น'),
+(26, 'จันทบุรี'),
+(28, 'ฉะเชิงเทรา'),
+(6, 'ชลบุรี'),
+(39, 'ชัยนาท'),
+(41, 'ชัยภูมิ'),
+(55, 'ชุมพร'),
+(59, 'ตรัง'),
+(15, 'ตราด'),
+(16, 'ตาก'),
+(20, 'นครนายก'),
+(3, 'นครปฐม'),
+(56, 'นครพนม'),
+(21, 'นครราชศรีมา'),
+(45, 'นครศรีธรรมราช'),
+(19, 'นครสวรรค์'),
+(2, 'นนทบุรี'),
+(35, 'นราธิวาส'),
+(17, 'น่าน'),
+(63, 'บึงกาฬ'),
+(44, 'บุรีรัมย์'),
+(72, 'ปทุมธานี'),
+(30, 'ประจวบคีรีขันธ์'),
+(27, 'ปราจีนบุรี'),
+(71, 'ปัตตานี'),
+(38, 'พระนครศรีอยุธยา'),
+(18, 'พะเยา'),
+(64, 'พังงา'),
+(67, 'พัทลุง'),
+(61, 'พิจิตร'),
+(43, 'พิษณุโลก'),
+(74, 'ภูเก็ต'),
+(58, 'มหาสารคาม'),
+(62, 'มุกดาหาร'),
+(10, 'ยะลา'),
+(65, 'ยโสธร'),
+(9, 'ระนอง'),
+(8, 'ระยอง'),
+(7, 'ราชบุรี'),
+(48, 'ร้อยเอ็ด'),
+(54, 'ลพบุรี'),
+(14, 'ลำปาง'),
+(32, 'ลำพูน'),
+(31, 'ศรีสะเกษ'),
+(46, 'สกลนคร'),
+(33, 'สงขลา'),
+(75, 'สตูล'),
+(5, 'สมุทรปราการ'),
+(76, 'สมุทรสงคราม'),
+(4, 'สมุทรสาคร'),
+(69, 'สระบุรี'),
+(25, 'สระแก้ว'),
+(37, 'สิงห์บุรี'),
+(57, 'สุพรรณบุรี'),
+(40, 'สุราษฎร์ธานี'),
+(49, 'สุรินทร์'),
+(77, 'สุโขทัย'),
+(70, 'หนองคาย'),
+(66, 'หนองบัวลำภู'),
+(68, 'อำนาจเจริญ'),
+(23, 'อุดรธานี'),
+(50, 'อุตรดิตถ์'),
+(52, 'อุทัยธานี'),
+(22, 'อุบลราชธานี'),
+(73, 'อ่างทอง'),
+(12, 'เชียงราย'),
+(11, 'เชียงใหม่'),
+(53, 'เพชรบุรี'),
+(42, 'เพชรบูรณ์'),
+(34, 'เลย'),
+(29, 'แพร่'),
+(13, 'แม่ฮ่องสอน');
 
 -- --------------------------------------------------------
 
@@ -576,8 +526,8 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', '2026-01-25 14:07:42'),
-(95, 'Super User2', '2026-01-24 16:06:34', '2026-01-24 18:45:36');
+(1, 'Super User', '2026-01-09 08:43:19', '2026-02-01 10:09:38'),
+(95, 'Admin', '2026-01-24 16:06:34', '2026-02-01 10:09:21');
 
 -- --------------------------------------------------------
 
@@ -596,10 +546,8 @@ CREATE TABLE `role_permission` (
 --
 
 INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
-(95, 1, 1),
 (95, 2, 1),
 (95, 3, 1),
-(1, 1, 1),
 (1, 2, 1),
 (1, 3, 1),
 (1, 3, 2),
@@ -622,7 +570,19 @@ INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 9, 1),
 (1, 9, 2),
 (1, 9, 3),
-(1, 9, 4);
+(1, 9, 4),
+(1, 11, 1),
+(1, 11, 1),
+(1, 11, 1),
+(1, 11, 2),
+(1, 11, 3),
+(1, 11, 4),
+(1, 12, 1),
+(1, 12, 2),
+(1, 12, 3),
+(1, 12, 4),
+(1, 13, 1),
+(1, 13, 3);
 
 -- --------------------------------------------------------
 
@@ -652,23 +612,44 @@ INSERT INTO `search_filter` (`id`, `label`, `data_value`) VALUES
 
 CREATE TABLE `service` (
   `id` int(11) NOT NULL,
-  `service` varchar(100) NOT NULL,
-  `description` varchar(150) DEFAULT NULL,
-  `car_size_id` int(11) DEFAULT NULL,
-  `used_time` int(11) NOT NULL,
-  `is_available` tinyint(4) DEFAULT 0,
+  `name` varchar(100) NOT NULL,
+  `car_size_id` int(11) NOT NULL,
+  `duration_minute` int(11) NOT NULL,
   `price` decimal(10,2) NOT NULL,
-  `used_people` int(11) DEFAULT 1
+  `required_staff` int(11) NOT NULL,
+  `is_available` tinyint(1) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `service`
 --
 
-INSERT INTO `service` (`id`, `service`, `description`, `car_size_id`, `used_time`, `is_available`, `price`, `used_people`) VALUES
-(14, 'normal wash', '', 86, 30, 1, 100.00, 8),
-(15, 'test noti', '', 87, 10, 1, 123.45, 1),
-(17, 'wash', '', 87, 30, 1, 450.20, 1);
+INSERT INTO `service` (`id`, `name`, `car_size_id`, `duration_minute`, `price`, `required_staff`, `is_available`) VALUES
+(2, 'wash', 87, 20, 200.00, 1, 1),
+(3, 'coated', 87, 60, 500.00, 3, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `staff_service`
+--
+
+CREATE TABLE `staff_service` (
+  `staff_id` int(11) NOT NULL,
+  `service_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `staff_service`
+--
+
+INSERT INTO `staff_service` (`staff_id`, `service_id`) VALUES
+(17, 2),
+(18, 2),
+(19, 2),
+(17, 3),
+(18, 3),
+(19, 3);
 
 -- --------------------------------------------------------
 
@@ -693,13 +674,14 @@ CREATE TABLE `staff_user` (
 
 INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_count`, `is_locked`, `locked_reason`, `role_id`) VALUES
 (6, 'admin', 'admin', '$2b$10$S/ro0u/Ufy36muvZ1OC3betMfoMI7PEQtYV.36ZLeAxjqdNN1bvT2', 0, 0, NULL, 1),
-(16, 'admin2', 'admin2', '$2b$10$VL0whDlu/7NQ.iQuHPYzpOPjNlxBQU/qowIwf.gzrH10PrI3Q7XQC', 0, 0, NULL, 1),
-(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 0, 0, NULL, 1),
+(16, 'admin2', 'admin2', '$2b$10$uzZYS/rfzH6DVwDUQ1Gh9eWU67P9UUn6BooroWlydgWm9jFSTtKRe', 0, 0, NULL, 1),
+(17, 'washer1', 'washer1', '$2b$10$YMkskvIU68wywwbwTHyNXOsVYKdSsWbLre9Reuig12Ino1yu2NPAm', 0, 0, NULL, 95),
 (18, 'washer2', 'washer2', '$2b$10$6oKHZTChMUr0OJmkhZHZb.g5uGvje429CRBck9FwXgQwhMTHJ8csa', 0, 0, NULL, 1),
-(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 1, NULL, 1),
+(19, 'washer3', 'washer3', '$2b$10$f46vFQTDkQ4sQ/3Q558lIODtI/O30JQ7YKSWkkyWa9aNyKWKNJrVa', 0, 0, NULL, 1),
 (20, 'manager2', 'manager2', '$2b$10$C2/cw.Jj.AuZYhEnGcPdWOVfc/nk33YQOHO8R881Cx6gqXuR3AD1i', 0, 1, NULL, 1),
 (21, 'manager3', 'manager3', '$2b$10$WuU4GwaZLBmj6sT6gz92genTr0Y6JYWfFoUIlmMQxIZp7ViC4YdJW', 0, 1, NULL, 1),
-(30, 'adminnewnew', 'admin4', '$2b$10$monDz9DtKFyrNRu7G4SyRuiL.xEdiv5vVr5yEntZl5ZFpvx8k.YoC', 0, 1, NULL, 1);
+(30, 'adminnewnew', 'admin4', '$2b$10$monDz9DtKFyrNRu7G4SyRuiL.xEdiv5vVr5yEntZl5ZFpvx8k.YoC', 0, 1, NULL, 1),
+(62, 'newstaff2', 'newstaff', '$2b$10$dVtXAxJMMNqEhHlnwn6jr.800YIxg5bkvveclaM7zDuToHa3z7nP.', 0, 0, NULL, 95);
 
 -- --------------------------------------------------------
 
@@ -709,21 +691,9 @@ INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_co
 
 CREATE TABLE `status` (
   `id` int(11) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `description` varchar(100) DEFAULT NULL,
-  `status_group_id` int(11) DEFAULT NULL
+  `code` varchar(20) NOT NULL,
+  `name` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `status`
---
-
-INSERT INTO `status` (`id`, `code`, `description`, `status_group_id`) VALUES
-(1, 'wait to be called', 'test desc', 1),
-(2, 'washing', NULL, 1),
-(4, 'paid', '', 2),
-(5, 'indept', 'not ready to pay', 2),
-(6, 'code', 'description', 1);
 
 -- --------------------------------------------------------
 
@@ -806,18 +776,6 @@ ALTER TABLE `account`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `admin_role_label`
---
-ALTER TABLE `admin_role_label`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `booking`
---
-ALTER TABLE `booking`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `car_size`
 --
 ALTER TABLE `car_size`
@@ -831,7 +789,20 @@ ALTER TABLE `car_size`
 --
 ALTER TABLE `channel`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `channel_name` (`name`);
+  ADD UNIQUE KEY `name` (`name`);
+
+--
+-- Indexes for table `channel_schedule`
+--
+ALTER TABLE `channel_schedule`
+  ADD KEY `channel_id` (`channel_id`);
+
+--
+-- Indexes for table `channel_service`
+--
+ALTER TABLE `channel_service`
+  ADD KEY `channel_id` (`channel_id`),
+  ADD KEY `service_id` (`service_id`);
 
 --
 -- Indexes for table `customer_car`
@@ -840,7 +811,8 @@ ALTER TABLE `customer_car`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `plate_no` (`plate_no`),
   ADD KEY `customer_id` (`customer_id`),
-  ADD KEY `size_id` (`size_id`);
+  ADD KEY `size_id` (`size_id`),
+  ADD KEY `province_id` (`province_id`);
 
 --
 -- Indexes for table `customer_user`
@@ -848,12 +820,6 @@ ALTER TABLE `customer_car`
 ALTER TABLE `customer_user`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `phone` (`phone`);
-
---
--- Indexes for table `day_off`
---
-ALTER TABLE `day_off`
-  ADD PRIMARY KEY (`staff_id`);
 
 --
 -- Indexes for table `general_setting`
@@ -913,7 +879,8 @@ ALTER TABLE `permission`
 -- Indexes for table `province`
 --
 ALTER TABLE `province`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `province` (`province`);
 
 --
 -- Indexes for table `role`
@@ -941,8 +908,15 @@ ALTER TABLE `search_filter`
 --
 ALTER TABLE `service`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `service` (`service`),
-  ADD KEY `fk_service_car_size_id` (`car_size_id`);
+  ADD UNIQUE KEY `name` (`name`),
+  ADD KEY `car_size_id` (`car_size_id`);
+
+--
+-- Indexes for table `staff_service`
+--
+ALTER TABLE `staff_service`
+  ADD KEY `staff_id` (`staff_id`),
+  ADD KEY `service_id` (`service_id`);
 
 --
 -- Indexes for table `staff_user`
@@ -956,7 +930,7 @@ ALTER TABLE `staff_user`
 --
 ALTER TABLE `status`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `status_group_id` (`status_group_id`);
+  ADD UNIQUE KEY `code` (`code`);
 
 --
 -- Indexes for table `status_group`
@@ -987,40 +961,28 @@ ALTER TABLE `account`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT for table `admin_role_label`
---
-ALTER TABLE `admin_role_label`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
-
---
--- AUTO_INCREMENT for table `booking`
---
-ALTER TABLE `booking`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=187;
-
---
 -- AUTO_INCREMENT for table `car_size`
 --
 ALTER TABLE `car_size`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=159;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT for table `channel`
 --
 ALTER TABLE `channel`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `customer_car`
 --
 ALTER TABLE `customer_car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `customer_user`
 --
 ALTER TABLE `customer_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=65;
 
 --
 -- AUTO_INCREMENT for table `general_setting`
@@ -1038,7 +1000,7 @@ ALTER TABLE `holiday`
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -1068,13 +1030,13 @@ ALTER TABLE `permission`
 -- AUTO_INCREMENT for table `province`
 --
 ALTER TABLE `province`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=79;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=78;
 
 --
 -- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=110;
 
 --
 -- AUTO_INCREMENT for table `search_filter`
@@ -1086,19 +1048,19 @@ ALTER TABLE `search_filter`
 -- AUTO_INCREMENT for table `service`
 --
 ALTER TABLE `service`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `staff_user`
 --
 ALTER TABLE `staff_user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=62;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=63;
 
 --
 -- AUTO_INCREMENT for table `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `status_group`
@@ -1123,17 +1085,25 @@ ALTER TABLE `template_field`
 --
 
 --
+-- Constraints for table `channel_schedule`
+--
+ALTER TABLE `channel_schedule`
+  ADD CONSTRAINT `channel_schedule_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channel` (`id`);
+
+--
+-- Constraints for table `channel_service`
+--
+ALTER TABLE `channel_service`
+  ADD CONSTRAINT `channel_service_ibfk_1` FOREIGN KEY (`channel_id`) REFERENCES `channel` (`id`),
+  ADD CONSTRAINT `channel_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`);
+
+--
 -- Constraints for table `customer_car`
 --
 ALTER TABLE `customer_car`
   ADD CONSTRAINT `customer_car_ibfk_1` FOREIGN KEY (`customer_id`) REFERENCES `customer_user` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `customer_car_ibfk_2` FOREIGN KEY (`size_id`) REFERENCES `car_size` (`id`);
-
---
--- Constraints for table `day_off`
---
-ALTER TABLE `day_off`
-  ADD CONSTRAINT `day_off_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`);
+  ADD CONSTRAINT `customer_car_ibfk_2` FOREIGN KEY (`size_id`) REFERENCES `car_size` (`id`),
+  ADD CONSTRAINT `customer_car_ibfk_3` FOREIGN KEY (`province_id`) REFERENCES `province` (`id`);
 
 --
 -- Constraints for table `module_permission`
@@ -1162,13 +1132,14 @@ ALTER TABLE `role_permission`
 -- Constraints for table `service`
 --
 ALTER TABLE `service`
-  ADD CONSTRAINT `fk_service_car_size_id` FOREIGN KEY (`car_size_id`) REFERENCES `car_size` (`id`);
+  ADD CONSTRAINT `service_ibfk_1` FOREIGN KEY (`car_size_id`) REFERENCES `car_size` (`id`);
 
 --
--- Constraints for table `status`
+-- Constraints for table `staff_service`
 --
-ALTER TABLE `status`
-  ADD CONSTRAINT `status_ibfk_1` FOREIGN KEY (`status_group_id`) REFERENCES `status_group` (`id`);
+ALTER TABLE `staff_service`
+  ADD CONSTRAINT `staff_service_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`),
+  ADD CONSTRAINT `staff_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

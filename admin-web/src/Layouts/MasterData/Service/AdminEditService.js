@@ -1,17 +1,30 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { GetAllStaff, GetAvailableCarSize, UpdateService } from "../../Modules/Api";
+import {
+  GetAllStaff,
+  GetAvailableCarSize,
+  UpdateService,
+} from "../../Modules/Api";
+import Select from "react-select";
 
 const AdminEditService = ({ editItem }) => {
-  const [data, setData] = useState(editItem);
   const [carSize, setCarSize] = useState([]);
-  const [staffNumber, setStaffNumber] = useState(0);
+  const [staff, setStaff] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
     message: "",
     status: "",
+  });
+  const [data, setData] = useState({
+    id: editItem.id,
+    name: editItem.name,
+    car_size_id: editItem.car_size_id,
+    duration_minute: editItem.duration_minute,
+    price: editItem.price,
+    required_staff: editItem.required_staff,
+    staff_ids: editItem.staffs.map((staff) => staff.staff_id),
   });
 
   useEffect(() => {
@@ -22,7 +35,11 @@ const AdminEditService = ({ editItem }) => {
     });
     GetAllStaff().then(({ status, msg }) => {
       if (status == "SUCCESS") {
-        setStaffNumber(msg.length);
+        setStaff(
+          msg.map((staff) => {
+            return { value: staff.id, label: staff.name };
+          })
+        );
       }
     });
   }, []);
@@ -34,11 +51,11 @@ const AdminEditService = ({ editItem }) => {
         setNotification({
           show: true,
           status: status,
-          message: data.service + " " + msg,
+          message: data.name + " " + msg,
         });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(data.service + " " + msg);
+        setErrors(data.name + " " + msg);
         setData({ ...data, service: null });
       } else if (status === "ERROR") {
         setNotification({
@@ -49,10 +66,6 @@ const AdminEditService = ({ editItem }) => {
       }
       setNotificationKey((prev) => prev + 1);
     });
-  };
-
-  const handleReset = () => {
-    setData(editItem);
   };
 
   return (
@@ -70,31 +83,17 @@ const AdminEditService = ({ editItem }) => {
             <span className="w-32">Service</span>
             <input
               type="text"
-              value={data.service}
+              value={data.name}
               className={`input input-bordered w-full max-w-md ${
-                !data.service ? `input-error` : ``
+                !data.name ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, service: e.target.value });
+                setData({ ...data, name: e.target.value });
               }}
               required
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Description</span>
-              <span className="text-xs text-success">(optional)</span>
-            </span>
-            <input
-              type="text"
-              value={data.description || ""}
-              className={`input input-bordered w-full max-w-md`}
-              onChange={(e) => {
-                setData({ ...data, description: e.target.value });
-              }}
-            />
-          </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Car Size</span>
             <select
@@ -135,43 +134,72 @@ const AdminEditService = ({ editItem }) => {
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32 flex flex-col leading-tight">
-              <span>Usage Time</span>
+              <span>Duration</span>
               <span className="text-xs text-success">(mins)</span>
             </span>
             <input
               type="number"
               min="1"
-              value={data.used_time}
+              value={data.duration_minute}
               className={`input input-bordered w-full max-w-md ${
-                !data.used_time ? `input-error` : ``
+                !data.duration_minute ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, used_time: e.target.value });
+                setData({ ...data, duration_minute: e.target.value });
               }}
               required
             />
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Usage Man</span>
+            <span className="w-32">Required Staff</span>
             <input
               type="number"
               min="1"
-              max={staffNumber}
-              value={data.used_people}
+              max={staff > 0 ? staff : undefined}
+              value={data.required_staff}
               className={`input input-bordered w-full max-w-md ${
-                !data.used_people ? `input-error` : ``
+                !data.required_staff ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, used_people: e.target.value });
+                setData({ ...data, required_staff: e.target.value });
               }}
               required
             />
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Staff</span>
+            <div className="w-full max-w-md">
+              <Select
+                required
+                isMulti
+                options={staff}
+                placeholder="Pick Staff(s)..."
+                value={staff.filter((option) =>
+                  (data.staff_ids || []).includes(option.value)
+                )}
+                onChange={(selected) =>
+                  setData({
+                    ...data,
+                    staff_ids: selected
+                      ? selected.map((item) => item.value)
+                      : [],
+                  })
+                }
+              />
+            </div>
           </div>
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
             </button>
-            <button type="button" className="btn" onClick={handleReset}>
+            <button
+              type="button"
+              className="btn"
+              onClick={() => {
+                setData(editItem);
+                setErrors([]);
+              }}
+            >
               CANCEL
             </button>
           </div>

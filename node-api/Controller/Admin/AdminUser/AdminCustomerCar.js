@@ -3,11 +3,12 @@ const Conn = require("../../../db");
 const AdminGetAllCustomerCar = (req, res, next) => {
   Conn.execute(
     `SELECT 
-      cc.id AS car_id,
+      cc.id,
       cu.id AS customer_id,
       cu.phone,
       cu.name,
       cc.plate_no,
+      cc.province_id,
       p.province,
       cc.brand,
       cc.color,
@@ -52,11 +53,11 @@ const AdminAddCustomerCar = (req, res, next) => {
 };
 
 const AdminUpdateCustomerCar = (req, res, next) => {
-  const { id, plate_no, province, brand, model, color, size_id, customer_id } =
+  const { id, plate_no, province_id, brand, model, color, size_id, customer_id } =
     req.body;
   Conn.execute(
-    `UPDATE customer_car SET plate_no = ? , province = ?, brand = ?, model = ?, color = ?, size_id = ?, customer_id = ? WHERE id = ?`,
-    [plate_no, province, brand, model, color, size_id, customer_id, id],
+    `UPDATE customer_car SET plate_no = ? , province_id = ?, brand = ?, model = ?, color = ?, size_id = ?, customer_id = ? WHERE id = ?`,
+    [plate_no, province_id, brand, model, color, size_id, customer_id, id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {

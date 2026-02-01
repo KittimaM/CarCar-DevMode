@@ -31,6 +31,8 @@ const postApi = async (url, jsonData, isUseToken = false) => {
     };
     if (isUseToken) {
       const token = sessionStorage.getItem("token");
+      console.log("token : ", token);
+
       headers.Authorization = `Bearer ${token}`;
     }
     const response = await axios.post(initialUrl + url, jsonData, { headers });
@@ -174,8 +176,7 @@ export const UpdateService = (jsonData) => {
 };
 
 export const GetCustomerCar = () => {
-  const isUseToken = true;
-  return getApi("customer/car", null, isUseToken);
+  return getApi("customer/car", null, true);
 };
 
 export const PostAddCustomerCar = (jsonData) => {
