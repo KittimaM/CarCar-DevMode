@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GetAvailableService, PostAddChannel } from "../../Api";
+import { GetAvailableService, PostAddChannel } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 import Select from "react-select";
 
@@ -14,7 +14,7 @@ const AdminAddChannel = () => {
   });
   const [data, setData] = useState({
     name: "",
-    description: "",
+    max_capacity: "",
     service_ids: [],
   });
 
@@ -23,7 +23,7 @@ const AdminAddChannel = () => {
       if (status === "SUCCESS") {
         setService(
           msg.map((service) => {
-            return { value: service.id, label: service.service };
+            return { value: service.id, label: service.name };
           })
         );
       }
@@ -57,7 +57,7 @@ const AdminAddChannel = () => {
   const handleReset = () => {
     setData({
       name: "",
-      description: "",
+      max_capacity: "",
       service_ids: [],
     });
     setErrors([]);
@@ -90,7 +90,6 @@ const AdminAddChannel = () => {
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
-
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Service</span>
             <div className="w-full max-w-md">
@@ -113,19 +112,19 @@ const AdminAddChannel = () => {
               />
             </div>
           </div>
-
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Description</span>
-              <span className="text-xs text-success">(optional)</span>
-            </span>
+            <span className="w-32">Max Capacity</span>
             <input
-              type="text"
-              value={data.description || ""}
-              className="input input-bordered w-full max-w-md"
+              type="number"
+              min="1"
+              value={data.max_capacity}
+              className={`input input-bordered w-full max-w-md ${
+                !data.max_capacity ? `input-error` : ``
+              }`}
               onChange={(e) => {
-                setData({ ...data, description: e.target.value });
+                setData({ ...data, max_capacity: e.target.value });
               }}
+              required
             />
           </div>
           <div className="flex gap-2 mt-4">

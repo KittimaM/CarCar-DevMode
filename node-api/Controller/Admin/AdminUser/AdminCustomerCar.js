@@ -8,15 +8,16 @@ const AdminGetAllCustomerCar = (req, res, next) => {
       cu.phone,
       cu.name,
       cc.plate_no,
-      cc.province,
+      p.province,
       cc.brand,
       cc.color,
       cc.model,
       cc.size_id,
       cz.size
       FROM customer_car cc 
-      LEFT JOIN customer_user cu ON cu.id = cc.customer_id 
-      LEFT JOIN car_size cz on cz.id = cc.size_id;`,
+      JOIN customer_user cu ON cu.id = cc.customer_id 
+      JOIN car_size cz on cz.id = cc.size_id
+      JOIN province p ON p.id = cc.province_id`,
     function (error, results) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
@@ -26,16 +27,16 @@ const AdminGetAllCustomerCar = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: results });
       }
-    },
+    }
   );
 };
 
 const AdminAddCustomerCar = (req, res, next) => {
-  const { plate_no, province, brand, model, color, size_id, customer_id } =
+  const { plate_no, province_id, brand, model, color, size_id, customer_id } =
     req.body;
   Conn.execute(
-    `INSERT INTO customer_car (plate_no, province, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?)`,
-    [plate_no, province, brand, model, color, size_id, customer_id],
+    `INSERT INTO customer_car (plate_no, province_id, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?)`,
+    [plate_no, province_id, brand, model, color, size_id, customer_id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
@@ -46,7 +47,7 @@ const AdminAddCustomerCar = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Added" });
       }
-    },
+    }
   );
 };
 
@@ -66,7 +67,7 @@ const AdminUpdateCustomerCar = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
-    },
+    }
   );
 };
 

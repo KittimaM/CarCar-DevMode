@@ -1,7 +1,8 @@
 import axios from "axios";
 import URLList from "./URLList";
 
-const initialUrl = process.env.REACT_APP_NODE_API_URL || "http://localhost:5000/";
+const initialUrl =
+  process.env.REACT_APP_NODE_API_URL || "http://localhost:5000/";
 
 const putApi = async (url, jsonData, isUseToken = false) => {
   try {
@@ -419,12 +420,12 @@ export const PostCustomerLogin = (jsonData) => {
   return postApi(URLList.CustomerLogin, jsonData);
 };
 
-export const GetAdminAdvanceSetting = () => {
-  return getApi(URLList.AdminAdvanceSetting);
+export const GetAdminGeneral = () => {
+  return getApi(URLList.AdminGeneral);
 };
 
-export const UpdateAdminAdvanceSetting = (jsonData) => {
-  return putApi(URLList.AdminAdvanceSetting, jsonData);
+export const UpdateAdminGeneral = (jsonData) => {
+  return putApi(URLList.AdminGeneral, jsonData);
 };
 
 export const UpdateAdminActiveCustomer = (jsonData) => {

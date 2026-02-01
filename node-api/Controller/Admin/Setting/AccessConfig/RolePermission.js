@@ -1,5 +1,5 @@
 var jwt = require("jsonwebtoken");
-const Conn = require("../../../db");
+const Conn = require("../../../../db");
 const secret = process.env.SECRET_WORD;
 
 const getRolePermissionByToken = (req, res, next) => {
@@ -18,7 +18,7 @@ const getRolePermissionByToken = (req, res, next) => {
         } else {
           return res.json({ status: "SUCCESS", msg: result });
         }
-      },
+      }
     );
   } catch (err) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -38,7 +38,7 @@ const getRolePermissionById = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: result });
       }
-    },
+    }
   );
 };
 

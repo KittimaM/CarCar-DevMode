@@ -419,12 +419,12 @@ export const PostCustomerLogin = (jsonData) => {
   return postApi(URLList.CustomerLogin, jsonData);
 };
 
-export const GetAdminAdvanceSetting = () => {
-  return getApi(URLList.AdminAdvanceSetting);
+export const GetAdminGeneral = () => {
+  return getApi(URLList.AdminGeneral);
 };
 
-export const UpdateAdminAdvanceSetting = (jsonData) => {
-  return putApi(URLList.AdminAdvanceSetting, jsonData);
+export const UpdateAdminGeneral = (jsonData) => {
+  return putApi(URLList.AdminGeneral, jsonData);
 };
 
 export const UpdateAdminActiveCustomer = (jsonData) => {

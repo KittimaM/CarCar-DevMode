@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { GetAllStaff, GetAvailableCarSize, PostAddService } from "../../Api";
+import {
+  GetAllStaff,
+  GetAvailableCarSize,
+  PostAddService,
+} from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminAddService = () => {
   const [carSize, setCarSize] = useState([]);
-  const [staffNumber, setStaffNumber] = useState(0);
+  const [staff, setStaff] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -13,12 +17,11 @@ const AdminAddService = () => {
     status: "",
   });
   const [data, setData] = useState({
-    service: "",
-    description: "",
+    name: "",
     car_size_id: "",
-    used_time: "",
+    duration_minute: "",
     price: "",
-    used_people: "",
+    required_staff: "",
   });
 
   const fetchCarSize = () => {
@@ -33,7 +36,7 @@ const AdminAddService = () => {
     fetchCarSize();
     GetAllStaff().then(({ status, msg }) => {
       if (status == "SUCCESS") {
-        setStaffNumber(msg.length);
+        setStaff(msg);
       }
     });
   }, []);
@@ -45,12 +48,19 @@ const AdminAddService = () => {
         setNotification({
           show: true,
           status: status,
-          message: data.service + " " + msg,
+          message: data.name + " " + msg,
         });
         setErrors([]);
+        setData({
+          name: "",
+          car_size_id: "",
+          duration_minute: "",
+          price: "",
+          required_staff: "",
+        });
       } else if (status === "WARNING") {
-        setErrors(data.service + " " + msg);
-        setData({ ...data, service: null });
+        setErrors(data.name + " " + msg);
+        setData({ ...data, name: "" });
       } else if (status === "ERROR") {
         setNotification({
           show: true,
@@ -64,12 +74,11 @@ const AdminAddService = () => {
 
   const handleReset = () => {
     setData({
-      service: "",
-      description: "",
+      name: "",
       car_size_id: "",
-      used_time: "",
+      duration_minute: "",
       price: "",
-      used_people: "",
+      required_staff: "",
     });
     setErrors([]);
   };
@@ -89,31 +98,17 @@ const AdminAddService = () => {
             <span className="w-32">Service</span>
             <input
               type="text"
-              value={data.service}
+              value={data.name}
               className={`input input-bordered w-full max-w-md ${
-                !data.service ? `input-error` : ``
+                !data.name ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, service: e.target.value });
+                setData({ ...data, name: e.target.value });
               }}
               required
             />
           </div>
           {errors && <p className="text-red-500 text-md">{errors}</p>}
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Description</span>
-              <span className="text-xs text-success">(optional)</span>
-            </span>
-            <input
-              type="text"
-              value={data.description}
-              className={`input input-bordered w-full max-w-md`}
-              onChange={(e) => {
-                setData({ ...data, description: e.target.value });
-              }}
-            />
-          </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Car Size</span>
             <select
@@ -154,34 +149,34 @@ const AdminAddService = () => {
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32 flex flex-col leading-tight">
-              <span>Usage Time</span>
+              <span>Duration</span>
               <span className="text-xs text-success">(mins)</span>
             </span>
             <input
               type="number"
               min="1"
-              value={data.used_time}
+              value={data.duration_minute}
               className={`input input-bordered w-full max-w-md ${
-                !data.used_time ? `input-error` : ``
+                !data.duration_minute ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, used_time: e.target.value });
+                setData({ ...data, duration_minute: e.target.value });
               }}
               required
             />
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Usage Man</span>
+            <span className="w-32">Required Staff</span>
             <input
               type="number"
               min="1"
-              max={staffNumber}
-              value={data.used_people}
+              max={staff > 0 ? staff : undefined}
+              value={data.required_staff}
               className={`input input-bordered w-full max-w-md ${
-                !data.used_people ? `input-error` : ``
+                !data.required_staff ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, used_people: e.target.value });
+                setData({ ...data, required_staff: e.target.value });
               }}
               required
             />

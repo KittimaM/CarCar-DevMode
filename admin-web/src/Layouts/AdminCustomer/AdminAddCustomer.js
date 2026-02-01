@@ -1,6 +1,6 @@
 import { useState } from "react";
 import Notification from "../Notification/Notification";
-import { PostAddCustomer } from "../Api";
+import { PostAddCustomer } from "../Modules/Api";
 
 const AdminAddCustomer = () => {
   const [errors, setErrors] = useState([]);

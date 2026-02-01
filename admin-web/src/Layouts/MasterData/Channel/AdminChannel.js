@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { DeleteChannel, GetChannel, UpdateChannelAvailable } from "../../Api";
+import {
+  DeleteChannel,
+  GetChannel,
+  UpdateChannelAvailable,
+} from "../../Modules/Api";
 import AdminAddChannel from "./AdminAddChannel";
 import AdminEditChannel from "./AdminEditChannel";
 import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
@@ -27,14 +31,14 @@ const AdminChannel = ({ data }) => {
             acc[row.channel_id] = {
               id: row.channel_id,
               name: row.channel_name,
-              description: row.channel_description,
+              max_capacity: row.max_capacity,
               is_available: row.channel_is_available,
               services: [],
             };
           }
           acc[row.channel_id].services.push({
             service_id: row.service_id,
-            service_name: row.service,
+            service_name: row.service_name,
           });
 
           return acc;
@@ -163,7 +167,8 @@ const AdminChannel = ({ data }) => {
             <tr>
               <td>Available Status</td>
               <td>Channel</td>
-              <td>Description</td>
+              <td>Service(s)</td>
+              <td>Max Capacity</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
               )}
@@ -188,24 +193,25 @@ const AdminChannel = ({ data }) => {
                     </button>
                   </td>
                   <td>{c.name}</td>
-                  <td>{c.description}</td>
+                  <td>{c.services.map((s) => s.service_name).join(", ")}</td>
+                  <td>{c.max_capacity}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
-                        {actions.includes("edit") && (
-                          <button
-                            className="btn btn-warning"
-                            onClick={() => handleEdit(c)}
-                          >
-                            Edit
-                          </button>
-                        )}
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
                             onClick={() => handleDelete(c.id, c.name)}
                           >
                             Delete
+                          </button>
+                        )}
+                        {actions.includes("edit") && (
+                          <button
+                            className="btn btn-warning"
+                            onClick={() => handleEdit(c)}
+                          >
+                            Edit
                           </button>
                         )}
                       </div>

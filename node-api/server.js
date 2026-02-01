@@ -23,8 +23,8 @@ const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
 app.use("/customer/car", CustomerCarRoute);
 
 //admin
-const AdminAdvanceSettingRoute = require("./Routes/Admin/AdminAdvanceSetting");
-app.use("/admin/advance_setting", AdminAdvanceSettingRoute);
+const AdminGeneralRoute = require("./Routes/Admin/Setting/AdminGeneral");
+app.use("/admin/general", AdminGeneralRoute);
 
 const AdminSearchRoute = require("./Routes/Admin/AdminSearch");
 app.use("/admin/search", AdminSearchRoute);
@@ -86,23 +86,15 @@ app.use("/admin/service", AdminServiceRoute);
 const AdminPermissionRoute = require("./Routes/Admin/AdminPermission");
 app.use("/admin/permission", AdminPermissionRoute);
 
-const AdminRoleRoute = require("./Routes/Admin/AdminRole/AdminRole");
+const AdminRoleRoute = require("./Routes/Admin/Setting/AccessConfig/AdminRole");
 app.use("/admin/role", AdminRoleRoute);
 
-const ModulesRoutes = require("./Routes/Admin/AdminRole/Modules");
+const ModulesRoutes = require("./Routes/Admin/Setting/AccessConfig/Modules");
 app.use("/admin/module", ModulesRoutes);
 
-const RolePermissionRoute = require("./Routes/Admin/AdminRole/RolePermission");
+const RolePermissionRoute = require("./Routes/Admin/Setting/AccessConfig/RolePermission");
 app.use("/admin/role-permission", RolePermissionRoute);
 
-const testPathRoute = require("./Routes/testPath");
-app.use("/api/test", testPathRoute);
-
-app.get("/api/hello", (req, res) => {
-  res.json({ message: "Hello from Express 👋" });
-});
-
-// Start the server
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);
 });

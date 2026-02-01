@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GetChannel } from "./Api";
+import { GetChannel } from "./Modules/Api";
 
 const AdminHome = () => {
   const [channel, setChannel] = useState();

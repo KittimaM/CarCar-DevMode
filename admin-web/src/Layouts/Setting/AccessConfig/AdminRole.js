@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import AdminAddRole from "./AdminAddRole";
 import AdminEditRole from "./AdminEditRole";
-import { DeleteRole, GetAllAdminRole } from "../Api";
-import Notification from "../Notification/Notification";
+import { DeleteRole, GetAllAdminRole } from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
 
 const AdminRole = ({ data }) => {
   const { labelValue, permission, code } = data;

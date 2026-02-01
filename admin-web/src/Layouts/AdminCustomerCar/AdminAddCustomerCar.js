@@ -5,7 +5,7 @@ import {
   GetAllProvince,
   GetAvailableCarSize,
   PostAddAdminCustomerCar,
-} from "../Api";
+} from "../Modules/Api";
 
 const AdminAddCustomerCar = () => {
   const [customer, setCustomer] = useState([]);
@@ -21,7 +21,7 @@ const AdminAddCustomerCar = () => {
   const [data, setData] = useState({
     customer_id: "",
     plate_no: "",
-    province: "",
+    province_id: "",
     brand: "",
     model: null,
     size_id: "",
@@ -75,7 +75,7 @@ const AdminAddCustomerCar = () => {
     setData({
       customer_id: "",
       plate_no: "",
-      province: "",
+      province_id: "",
       brand: "",
       model: null,
       size_id: "",
@@ -98,7 +98,9 @@ const AdminAddCustomerCar = () => {
             <span className="w-32">Customer</span>
             <select
               value={data.customer_id}
-              className={`select w-full select-bordered max-w-md ${!data.customer_id ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.customer_id ? `select-error` : ``
+              }`}
               onChange={(e) =>
                 setData({ ...data, customer_id: e.target.value })
               }
@@ -121,7 +123,9 @@ const AdminAddCustomerCar = () => {
             <input
               type="text"
               value={data.plate_no}
-              className={`input input-bordered w-full max-w-md ${!data.plate_no ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.plate_no ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, plate_no: e.target.value });
               }}
@@ -133,9 +137,13 @@ const AdminAddCustomerCar = () => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Province</span>
             <select
-              value={data.province}
-              className={`select w-full select-bordered max-w-md ${!data.province ? `select-error` : ``}`}
-              onChange={(e) => setData({ ...data, province: e.target.value })}
+              value={data.province_id}
+              className={`select w-full select-bordered max-w-md ${
+                !data.province_id ? `select-error` : ``
+              }`}
+              onChange={(e) =>
+                setData({ ...data, province_id: e.target.value })
+              }
               required
             >
               <option disabled={true} value="">
@@ -143,7 +151,7 @@ const AdminAddCustomerCar = () => {
               </option>
               {province &&
                 province.map((p) => (
-                  <option key={p.id} value={p.province}>
+                  <option key={p.id} value={p.id}>
                     {p.province}
                   </option>
                 ))}
@@ -155,7 +163,9 @@ const AdminAddCustomerCar = () => {
             <input
               type="text"
               value={data.brand}
-              className={`input input-bordered w-full max-w-md ${!data.brand ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.brand ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, brand: e.target.value });
               }}
@@ -168,7 +178,9 @@ const AdminAddCustomerCar = () => {
             <input
               type="text"
               value={data.color}
-              className={`input input-bordered w-full max-w-md ${!data.color ? `input-error` : ``}`}
+              className={`input input-bordered w-full max-w-md ${
+                !data.color ? `input-error` : ``
+              }`}
               onChange={(e) => {
                 setData({ ...data, color: e.target.value });
               }}
@@ -196,7 +208,9 @@ const AdminAddCustomerCar = () => {
             <span className="w-32">Size</span>
             <select
               value={data.size_id}
-              className={`select w-full select-bordered max-w-md ${!data.size_id ? `select-error` : ``}`}
+              className={`select w-full select-bordered max-w-md ${
+                !data.size_id ? `select-error` : ``
+              }`}
               onChange={(e) => setData({ ...data, size_id: e.target.value })}
               required
             >

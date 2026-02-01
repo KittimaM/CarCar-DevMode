@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { UpdateCarSize } from "../../Api";
+import { UpdateCarSize } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminEditCarSize = ({ editItem }) => {

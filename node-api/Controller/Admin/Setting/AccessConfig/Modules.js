@@ -1,4 +1,4 @@
-const Conn = require("../../../db");
+const Conn = require("../../../../db");
 var jwt = require("jsonwebtoken");
 const secret = process.env.SECRET_WORD;
 

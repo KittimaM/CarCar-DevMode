@@ -5,7 +5,7 @@ import {
   GetAllProvince,
   GetAvailableCarSize,
   UpdateAdminCustomerCar,
-} from "../Api";
+} from "../Modules/Api";
 
 const AdminEditCustomerCar = ({ editItem }) => {
   const [data, setData] = useState(editItem);

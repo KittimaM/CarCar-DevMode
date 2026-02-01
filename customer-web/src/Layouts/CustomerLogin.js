@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetAdminAdvanceSetting, PostCustomerLogin } from "../Modules/Api";
+import { GetAdminGeneral, PostCustomerLogin } from "../Modules/Api";
 import LoginImg from "../assets/login-2.jpeg";
 
 const CustomerLogin = () => {
@@ -11,7 +11,7 @@ const CustomerLogin = () => {
   useEffect(() => {
     localStorage.clear();
     sessionStorage.clear();
-    GetAdminAdvanceSetting().then((data) => {
+    GetAdminGeneral().then((data) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setSettings(msg[0]);
@@ -47,43 +47,43 @@ const CustomerLogin = () => {
           onSubmit={handleLogin}
           className="max-w-[400px] w-full mx-auto bg-white p-4 shadow-lg rounded-lg"
         >
-            <h1 className="text-4xl font-bold text-center py-6">Login</h1>
+          <h1 className="text-4xl font-bold text-center py-6">Login</h1>
 
-            <label className="form-control w-full flex flex-col p-2">
-              <div className="label">
-                <span className="label-text">Phone Number</span>
-              </div>
-              <input
-                type="tel"
-                name="phone"
-                required
-                placeholder="Type here"
-                className="input input-bordered w-full max-w-xs"
-              />
-            </label>
-
-            <label className="form-control w-full flex flex-col p-2 ">
-              <div className="label">
-                <span className="label-text">Password</span>
-              </div>
-
-              <input
-                type="password"
-                name="password"
-                required
-                placeholder="Type here"
-                className="input input-bordered w-full max-w-xs"
-              />
-            </label>
-            <label className="form-control w-full flex flex-col p-2 ">
-              {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
-            </label>
-
-            <div className="py-4">
-              <button className="btn btn-warning w-full" type="submit">
-                LOGIN
-              </button>
+          <label className="form-control w-full flex flex-col p-2">
+            <div className="label">
+              <span className="label-text">Phone Number</span>
             </div>
+            <input
+              type="tel"
+              name="phone"
+              required
+              placeholder="Type here"
+              className="input input-bordered w-full max-w-xs"
+            />
+          </label>
+
+          <label className="form-control w-full flex flex-col p-2 ">
+            <div className="label">
+              <span className="label-text">Password</span>
+            </div>
+
+            <input
+              type="password"
+              name="password"
+              required
+              placeholder="Type here"
+              className="input input-bordered w-full max-w-xs"
+            />
+          </label>
+          <label className="form-control w-full flex flex-col p-2 ">
+            {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
+          </label>
+
+          <div className="py-4">
+            <button className="btn btn-warning w-full" type="submit">
+              LOGIN
+            </button>
+          </div>
         </form>
       </div>
     </>

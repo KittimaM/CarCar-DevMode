@@ -3,6 +3,6 @@ DROP TABLE IF EXISTS channel;
 CREATE TABLE channel (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(30) UNIQUE NOT NULL,
-  `description` VARCHAR(100),
+  `max_capacity` INT NOT NULL,
   `is_available` TINYINT DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

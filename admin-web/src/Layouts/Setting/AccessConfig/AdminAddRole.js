@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { GetAllModules, PostAdminAddRole } from "../Api";
-import Notification from "../Notification/Notification";
+import { GetAllModules, PostAdminAddRole } from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
 
 const AdminAddRole = () => {
   const [modules, setModules] = useState([]);
@@ -69,7 +69,7 @@ const AdminAddRole = () => {
             permissions: module.permissions.map((p) =>
               p.permission_code === value
                 ? { ...p, is_allowed: checked ? 1 : 0 }
-                : p,
+                : p
             ),
           };
         })
@@ -91,7 +91,7 @@ const AdminAddRole = () => {
           }
 
           return module;
-        }),
+        })
     );
   };
 
@@ -103,7 +103,7 @@ const AdminAddRole = () => {
         .map((p) => ({
           module_id: module.module_id,
           permission_id: p.permission_id,
-        })),
+        }))
     );
     if (allowedAccess.length === 0) {
       setErrors("Please select at least 1 module");
@@ -166,11 +166,11 @@ const AdminAddRole = () => {
           .filter((m) => m.module_parent_id === 0)
           .map((parent) => {
             const parentView = parent.permissions.find(
-              (p) => p.permission_code === "view",
+              (p) => p.permission_code === "view"
             );
 
             const childModules = modules.filter(
-              (m) => m.module_parent_id === parent.module_id,
+              (m) => m.module_parent_id === parent.module_id
             );
 
             return (
@@ -221,7 +221,7 @@ const AdminAddRole = () => {
                   <div className="ml-6 mt-3 space-y-3">
                     {childModules.map((child) => {
                       const childView = child.permissions.find(
-                        (p) => p.permission_code === "view",
+                        (p) => p.permission_code === "view"
                       );
 
                       return (

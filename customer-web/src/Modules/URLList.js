@@ -24,7 +24,7 @@ const URLList = {
   AdminTemplate: "admin/template",
   AdminSearch: "admin/search",
   AdminLogin: "admin/login",
-  AdminAdvanceSetting: "admin/advance_setting",
+  AdminGeneral: "admin/general",
   Modules: "admin/module",
   RolePermission: "admin/role-permission",
   Province: "admin/province",

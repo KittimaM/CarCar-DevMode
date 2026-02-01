@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { GetAllStaff, GetAvailableCarSize, UpdateService } from "../../Api";
+import { GetAllStaff, GetAvailableCarSize, UpdateService } from "../../Modules/Api";
 
 const AdminEditService = ({ editItem }) => {
   const [data, setData] = useState(editItem);

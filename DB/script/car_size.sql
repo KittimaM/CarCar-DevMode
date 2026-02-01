@@ -3,6 +3,5 @@ DROP TABLE IF EXISTS car_size;
 CREATE TABLE car_size (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `size` VARCHAR(30) UNIQUE NOT NULL,
-  `description` VARCHAR(100),
   `is_available` TINYINT DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

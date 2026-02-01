@@ -15,13 +15,13 @@ const componentMap = {
   channel: lazy(() => import("./MasterData/Channel/AdminChannel")),
   //   template: lazy(() => import("./AdminTemplate")),
   //   search: lazy(() => import("./AdminSearch")),
-  role: lazy(() => import("./AdminRole/AdminRole")),
+  role: lazy(() => import("./Setting/AccessConfig/AdminRole")),
   //   account: lazy(() => import("./AdminAccount")),
   //   onLeaveList: lazy(() => import("./AdminOnLeaveList")),
   //   status: lazy(() => import("./AdminStatus")),
   //   onLeaveType: lazy(() => import("./AdminOnLeaveType")),
   //   paymentType: lazy(() => import("./AdminPaymentType")),
-  //   advSetting: lazy(() => import("./AdminAdvanceSetting")),
+  general: lazy(() => import("./Setting/General/AdminGeneral")),
   service: lazy(() => import("./MasterData/Service/AdminService")),
 };
 
