@@ -58,8 +58,8 @@ const AdminLogin = (req, res, next) => {
                         status: "SUCCESS",
                         msg: {
                           token: token,
+                          staff_id: id,
                           username: username,
-                          role_name: role_name,
                         },
                       });
                     }

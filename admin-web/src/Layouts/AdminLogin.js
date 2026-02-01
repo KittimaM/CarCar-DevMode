@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { GetAdminAdvanceSetting, PostAdminLogin } from "./Api";
+import { GetAdminGeneral, PostAdminLogin } from "./Modules/Api";
 import LoginImg from "../assets/login-2.jpeg";
 
 const AdminLogin = () => {
@@ -10,7 +10,7 @@ const AdminLogin = () => {
   useEffect(() => {
     localStorage.clear();
     sessionStorage.clear();
-    GetAdminAdvanceSetting().then((data) => {
+    GetAdminGeneral().then((data) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setSettings(msg[0]);
@@ -33,6 +33,7 @@ const AdminLogin = () => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         sessionStorage.setItem("token", msg.token);
+        sessionStorage.setItem("staff_id", msg.staff_id);
         sessionStorage.setItem("username", msg.username);
         navigate("/admin/main");
       } else {

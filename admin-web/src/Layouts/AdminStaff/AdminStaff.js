@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { DeleteStaffUser, GetAllStaff, UpdateAdminUnlockStaff } from "../Api";
+import { DeleteStaffUser, GetAllStaff, UpdateAdminUnlockStaff } from "../Modules/Api";
 import Notification from "../Notification/Notification";
 import lockedIcon from "../../assets/padlock-icon.svg";
 import AdminAddStaff from "./AdminAddStaff";
 import AdminEditStaff from "./AdminEditStaff";
 
 const AdminStaff = ({ data }) => {
+  const currentUser = sessionStorage.getItem("username");
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
@@ -143,10 +144,11 @@ const AdminStaff = ({ data }) => {
             <table className="table table-lg">
               <thead>
                 <tr>
-                  <td>is locked</td>
+                  <td>Is Locked</td>
                   <td>locked reason</td>
-                  <td>username</td>
-                  <td>name</td>
+                  <td>Username</td>
+                  <td>Name</td>
+                  <td>Role</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -169,10 +171,22 @@ const AdminStaff = ({ data }) => {
                       <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
                       <td>{u.username}</td>
                       <td>{u.name}</td>
+                      <td>{u.role_name}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
                           <div className="flex justify-end gap-2">
+                            {actions.includes("delete") &&
+                              sessionStorage.getItem("staff_id") != u.id && (
+                                <button
+                                  className="btn btn-error text-white"
+                                  onClick={() =>
+                                    handleDeleteUser(u.id, u.username)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              )}
                             {actions.includes("edit") && (
                               <button
                                 className="btn btn-warning"
@@ -186,17 +200,6 @@ const AdminStaff = ({ data }) => {
                                 }
                               >
                                 Edit
-                              </button>
-                            )}
-
-                            {actions.includes("delete") && (
-                              <button
-                                className="btn btn-error text-white"
-                                onClick={() =>
-                                  handleDeleteUser(u.id, u.username)
-                                }
-                              >
-                                Delete
                               </button>
                             )}
                           </div>

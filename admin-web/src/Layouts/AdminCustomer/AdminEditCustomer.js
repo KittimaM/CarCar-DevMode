@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UpdateAdminCustomer } from "../Api";
+import { UpdateAdminCustomer } from "../Modules/Api";
 import Notification from "../Notification/Notification";
 const AdminEditCustomer = ({ editItem }) => {
   const [errors, setErrors] = useState([]);

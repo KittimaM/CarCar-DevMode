@@ -17,11 +17,11 @@ const AdminService = (req, res, next) => {
 };
 
 const AdminAddService = (req, res, next) => {
-  const { service, description, car_size_id, used_time, price, used_people } =
+  const { name, car_size_id, duration_minute, price, required_staff } =
     req.body;
   Conn.execute(
-    "INSERT INTO service (service, description, car_size_id, used_time, price, used_people) VALUES (?,?,?,?,?,?)",
-    [service, description, car_size_id, used_time, price, used_people],
+    "INSERT INTO service (name, car_size_id, duration_minute, price, required_staff) VALUES (?,?,?,?,?)",
+    [name, car_size_id, duration_minute, price, required_staff],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {

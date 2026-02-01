@@ -6,7 +6,7 @@ import {
   DeleteService,
   GetAllService,
   UpdateServiceAvailable,
-} from "../../Api";
+} from "../../Modules/Api";
 import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
 import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
@@ -89,7 +89,7 @@ const AdminService = ({ data }) => {
           });
         }
         setNotificationKey((prev) => prev + 1);
-      },
+      }
     );
   };
 
@@ -153,12 +153,11 @@ const AdminService = ({ data }) => {
               <thead>
                 <tr>
                   <th>Available Status</th>
-                  <th>Service</th>
-                  <th>Description</th>
+                  <th>Name</th>
                   <th>Car Size</th>
-                  <th>Usage Time</th>
+                  <th>Duration (Mins)</th>
                   <th>Price</th>
-                  <th>Usage Man</th>
+                  <th>Required Staff</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -173,7 +172,7 @@ const AdminService = ({ data }) => {
                         <button
                           type="button"
                           onClick={() =>
-                            handleAvailable(s.id, s.service, s.is_available)
+                            handleAvailable(s.id, s.name, s.is_available)
                           }
                         >
                           {s.is_available === 1 ? (
@@ -183,33 +182,31 @@ const AdminService = ({ data }) => {
                           )}
                         </button>
                       </td>
-                      <td>{s.service}</td>
-                      <td>{s.description}</td>
+                      <td>{s.name}</td>
                       <td>{s.car_size}</td>
-                      <td>{s.used_time}</td>
+                      <td>{s.duration_minute}</td>
                       <td>{s.price}</td>
-                      <td>{s.used_people}</td>
+                      <td>{s.required_staff}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
                           <div className="flex justify-end gap-2">
+                            {actions.includes("delete") && (
+                              <button
+                                className="btn btn-error text-white"
+                                onClick={() =>
+                                  handleDeleteService(s.id, s.name)
+                                }
+                              >
+                                Delete
+                              </button>
+                            )}
                             {actions.includes("edit") && (
                               <button
                                 className="btn btn-warning"
                                 onClick={() => handleEditService(s)}
                               >
                                 Edit
-                              </button>
-                            )}
-
-                            {actions.includes("delete") && (
-                              <button
-                                className="btn btn-error text-white"
-                                onClick={() =>
-                                  handleDeleteService(s.id, s.service)
-                                }
-                              >
-                                Delete
                               </button>
                             )}
                           </div>

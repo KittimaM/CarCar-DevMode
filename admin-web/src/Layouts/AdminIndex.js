@@ -1,5 +1,5 @@
 import { useEffect, useState, Suspense, useMemo } from "react";
-import { GetModuleByPermission } from "./Api";
+import { GetModuleByPermission } from "./Modules/Api";
 import { FaAngleDown, FaAngleRight, FaBars } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import componentMap from "./componentMap";

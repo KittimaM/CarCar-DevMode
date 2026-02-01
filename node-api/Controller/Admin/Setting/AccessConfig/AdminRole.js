@@ -1,4 +1,4 @@
-const Conn = require("../../../db");
+const Conn = require("../../../../db");
 
 const AdminGetAllRole = (req, res, next) => {
   Conn.execute("SELECT * FROM role", function (error, results) {

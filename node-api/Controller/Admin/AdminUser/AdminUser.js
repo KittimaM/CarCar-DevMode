@@ -3,16 +3,19 @@ const Conn = require("../../../db");
 const saltRounds = 10;
 
 const AdminUser = (req, res, next) => {
-  Conn.execute("SELECT * FROM staff_user", function (error, results) {
-    if (error) {
-      return res.json({ status: "ERROR", msg: error });
+  Conn.execute(
+    "SELECT staff_user.* , role.name AS role_name FROM staff_user JOIN role ON role.id = staff_user.role_id",
+    function (error, results) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      }
+      if (results.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: results });
+      }
     }
-    if (results.length === 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
-    } else {
-      return res.json({ status: "SUCCESS", msg: results });
-    }
-  });
+  );
 };
 
 const AdminAddStaffUser = (req, res, next) => {
@@ -34,7 +37,7 @@ const AdminAddStaffUser = (req, res, next) => {
           } else {
             return res.json({ status: "SUCCESS", msg: "Successfully Added" });
           }
-        },
+        }
       );
     }
   });
@@ -81,14 +84,14 @@ const AdminUpdateStaffUser = (req, res, next) => {
       } else {
         handleUpdate(
           `UPDATE staff_user SET username = ? , name = ?, password = ?, role_id = ? WHERE id = ?`,
-          [username, name, hash, role_id, id],
+          [username, name, hash, role_id, id]
         );
       }
     });
   } else {
     handleUpdate(
       `UPDATE staff_user SET username = ? , name = ?, role_id = ? WHERE id = ?`,
-      [username, name, role_id, id],
+      [username, name, role_id, id]
     );
   }
 };
@@ -104,7 +107,7 @@ const AdminUnlockStaff = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 
@@ -121,7 +124,7 @@ const GetStaffUserById = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });
       }
-    },
+    }
   );
 };
 

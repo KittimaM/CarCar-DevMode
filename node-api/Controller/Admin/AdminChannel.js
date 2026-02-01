@@ -2,7 +2,7 @@ const Conn = require("../../db");
 
 const AdminGetChannel = (req, res, next) => {
   Conn.execute(
-    `SELECT cs.channel_id, cs.service_id, c.name AS channel_name, c.description AS channel_description, c.is_available AS channel_is_available, s.service AS service FROM channel c JOIN channel_service cs ON cs.channel_id = c.id JOIN service s ON cs.service_id = s.id`,
+    `SELECT cs.channel_id, cs.service_id, c.name AS channel_name, c.is_available AS channel_is_available, s.name AS service_name, c.max_capacity FROM channel c JOIN channel_service cs ON cs.channel_id = c.id JOIN service s ON cs.service_id = s.id`,
     function (error, results) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
@@ -17,14 +17,14 @@ const AdminGetChannel = (req, res, next) => {
 };
 
 const AdminAddChannel = (req, res, next) => {
-  const { name, description, service_ids } = req.body;
+  const { name, max_capacity, service_ids } = req.body;
   Conn.beginTransaction(function (error) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     }
     Conn.execute(
-      "INSERT INTO channel (name, description) VALUES (?, ?)",
-      [name, description],
+      "INSERT INTO channel (name, max_capacity) VALUES (?, ?)",
+      [name, max_capacity],
       function (error, result) {
         if (error) {
           return Conn.rollback(() => {
@@ -112,14 +112,14 @@ const AdminDeleteChannel = (req, res, next) => {
 };
 
 const AdminUpdateChannel = (req, res, next) => {
-  const { id, name, description, service_ids } = req.body;
+  const { id, name, max_capacity, service_ids } = req.body;
   Conn.beginTransaction(function (error) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     }
     Conn.execute(
-      "UPDATE channel SET name = ?, description = ? WHERE id = ?",
-      [name, description, id],
+      "UPDATE channel SET name = ?, max_capacity = ? WHERE id = ?",
+      [name, max_capacity, id],
       function (error) {
         if (error) {
           return Conn.rollback(() => {

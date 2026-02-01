@@ -4,7 +4,7 @@ import {
   DeleteCarSize,
   GetAllCarSize,
   UpdateCarSizeAvailable,
-} from "../../Api";
+} from "../../Modules/Api";
 import AdminAddCarSize from "./AdminAddCarSize";
 import AdminEditCarSize from "./AdminEditCarSize";
 import checkIcon from "../../../assets/green-checkmark-line-icon.svg";

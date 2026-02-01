@@ -3,7 +3,7 @@ import {
   DeleteAdminCustomer,
   GetAdminCustomer,
   UpdateAdminUnlockCustomer,
-} from "../Api";
+} from "../Modules/Api";
 import Notification from "../Notification/Notification";
 import lockedIcon from "../../assets/padlock-icon.svg";
 import AdminAddCustomer from "./AdminAddCustomer";

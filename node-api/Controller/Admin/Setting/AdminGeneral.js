@@ -1,9 +1,9 @@
 var bcrypt = require("bcrypt");
 var jwt = require("jsonwebtoken");
-const Conn = require("../../db");
+const Conn = require("../../../db");
 const secret = process.env.SECRET_WORD;
 
-const AdminGetAdvanceSetting = (req, res, next) => {
+const GetGeneralSetting = (req, res, next) => {
   Conn.execute("SELECT * FROM general_setting", function (error, results) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
@@ -16,7 +16,7 @@ const AdminGetAdvanceSetting = (req, res, next) => {
   });
 };
 
-const AdminUpdateAdvanceSetting = (req, res, next) => {
+const UpdateGeneralSetting = (req, res, next) => {
   const {
     staff_failed_login_limit,
     staff_user_login_mins_limit,
@@ -48,8 +48,8 @@ const AdminUpdateAdvanceSetting = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
       }
-    },
+    }
   );
 };
 
-module.exports = { AdminGetAdvanceSetting, AdminUpdateAdvanceSetting };
+module.exports = { GetGeneralSetting, UpdateGeneralSetting };
