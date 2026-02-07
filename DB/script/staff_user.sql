@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS staff_user;
+DROP TABLE IF EXISTS `staff_user`;
 
-CREATE TABLE staff_user (
+CREATE TABLE IF NOT EXISTS `staff_user`  (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `username` VARCHAR(100) UNIQUE,
   `name` VARCHAR(100),

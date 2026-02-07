@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 01, 2026 at 06:19 PM
+-- Generation Time: Feb 07, 2026 at 06:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -267,7 +267,9 @@ INSERT INTO `module` (`id`, `code`, `name`, `parent_id`) VALUES
 (10, 'service', 'SERVICE', 0),
 (11, 'service', 'SERVICE', 7),
 (12, 'channel', 'CHANNEL', 7),
-(13, 'general', 'GENERAL', 2);
+(13, 'general', 'GENERAL', 2),
+(14, 'status', 'STATUS', 7),
+(15, 'paymentType', 'PAYMENT TYPE', 7);
 
 -- --------------------------------------------------------
 
@@ -319,7 +321,15 @@ INSERT INTO `module_permission` (`module_id`, `permission_id`) VALUES
 (12, 3),
 (12, 4),
 (13, 1),
-(13, 3);
+(13, 3),
+(14, 1),
+(14, 2),
+(14, 3),
+(14, 4),
+(15, 1),
+(15, 2),
+(15, 3),
+(15, 4);
 
 -- --------------------------------------------------------
 
@@ -526,8 +536,8 @@ CREATE TABLE `role` (
 --
 
 INSERT INTO `role` (`id`, `name`, `created_at`, `updated_at`) VALUES
-(1, 'Super User', '2026-01-09 08:43:19', '2026-02-01 10:09:38'),
-(95, 'Admin', '2026-01-24 16:06:34', '2026-02-01 10:09:21');
+(1, 'Super User', '2026-01-09 08:43:19', '2026-02-07 11:52:38'),
+(95, 'Admin', '2026-01-24 16:06:34', '2026-02-07 11:19:22');
 
 -- --------------------------------------------------------
 
@@ -547,7 +557,6 @@ CREATE TABLE `role_permission` (
 
 INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (95, 2, 1),
-(95, 3, 1),
 (1, 2, 1),
 (1, 3, 1),
 (1, 3, 2),
@@ -582,7 +591,15 @@ INSERT INTO `role_permission` (`role_id`, `module_id`, `permission_id`) VALUES
 (1, 12, 3),
 (1, 12, 4),
 (1, 13, 1),
-(1, 13, 3);
+(1, 13, 3),
+(1, 14, 1),
+(1, 14, 2),
+(1, 14, 3),
+(1, 14, 4),
+(1, 15, 1),
+(1, 15, 2),
+(1, 15, 3),
+(1, 15, 4);
 
 -- --------------------------------------------------------
 
@@ -692,8 +709,23 @@ INSERT INTO `staff_user` (`id`, `username`, `name`, `password`, `failed_login_co
 CREATE TABLE `status` (
   `id` int(11) NOT NULL,
   `code` varchar(20) NOT NULL,
-  `name` varchar(50) DEFAULT NULL
+  `status_group_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `status`
+--
+
+INSERT INTO `status` (`id`, `code`, `status_group_id`) VALUES
+(1, 'Booking', 1),
+(7, 'Cancel', 1),
+(6, 'Failed', 2),
+(3, 'In Progress', 1),
+(12, 'NEW', 1),
+(15, 'NEW', 2),
+(5, 'Paid', 2),
+(4, 'Pending_TEST', 2),
+(2, 'WalkIn', 1);
 
 -- --------------------------------------------------------
 
@@ -703,18 +735,16 @@ CREATE TABLE `status` (
 
 CREATE TABLE `status_group` (
   `id` int(11) NOT NULL,
-  `code` varchar(50) NOT NULL,
-  `description` varchar(100) DEFAULT NULL
+  `code` varchar(30) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `status_group`
 --
 
-INSERT INTO `status_group` (`id`, `code`, `description`) VALUES
-(1, 'washing status', NULL),
-(2, 'payment status', NULL),
-(3, 'on leave status', NULL);
+INSERT INTO `status_group` (`id`, `code`) VALUES
+(2, 'Payment'),
+(1, 'Service');
 
 -- --------------------------------------------------------
 
@@ -930,13 +960,15 @@ ALTER TABLE `staff_user`
 --
 ALTER TABLE `status`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `code` (`code`);
+  ADD UNIQUE KEY `uniq_status_code_group` (`code`,`status_group_id`),
+  ADD KEY `status_group_id` (`status_group_id`);
 
 --
 -- Indexes for table `status_group`
 --
 ALTER TABLE `status_group`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `code` (`code`);
 
 --
 -- Indexes for table `template`
@@ -1000,7 +1032,7 @@ ALTER TABLE `holiday`
 -- AUTO_INCREMENT for table `module`
 --
 ALTER TABLE `module`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `on_leave`
@@ -1060,13 +1092,13 @@ ALTER TABLE `staff_user`
 -- AUTO_INCREMENT for table `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `status_group`
 --
 ALTER TABLE `status_group`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `template`
@@ -1140,6 +1172,12 @@ ALTER TABLE `service`
 ALTER TABLE `staff_service`
   ADD CONSTRAINT `staff_service_ibfk_1` FOREIGN KEY (`staff_id`) REFERENCES `staff_user` (`id`),
   ADD CONSTRAINT `staff_service_ibfk_2` FOREIGN KEY (`service_id`) REFERENCES `service` (`id`);
+
+--
+-- Constraints for table `status`
+--
+ALTER TABLE `status`
+  ADD CONSTRAINT `status_ibfk_1` FOREIGN KEY (`status_group_id`) REFERENCES `status_group` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

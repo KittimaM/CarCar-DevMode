@@ -44,6 +44,9 @@ app.use("/admin/customer", AdminCustomerRoute);
 const AdminStatusRoute = require("./Routes/Admin/AdminStatus");
 app.use("/admin/status", AdminStatusRoute);
 
+const AdminStatusGroupRoute = require("./Routes/Admin/AdminStatusGroup");
+app.use("/admin/status-group", AdminStatusGroupRoute);
+
 const AdminChannelRoute = require("./Routes/Admin/AdminChannel");
 app.use("/admin/channel", AdminChannelRoute);
 
