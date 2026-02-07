@@ -1,14 +1,22 @@
 import React, { useEffect, useState } from "react";
 import AdminAddStatus from "./AdminAddStatus";
 import AdminEditStatus from "./AdminEditStatus";
+import AdminAddStatusGroup from "./StatusGroup/AdminAddStatusGroup";
 import Notification from "../../Notification/Notification";
-import { DeleteStatus, GetAllStatus } from "../../Modules/Api";
+import {
+  DeleteStatus,
+  GetAllStatus,
+  DeleteStatusGroup,
+} from "../../Modules/Api";
+import AdminEditStatusGroup from "./StatusGroup/AdminEditStatusGroup";
 
 const AdminStatus = ({ data }) => {
   const { labelValue, permission, code } = data;
-  const actions = permission.find((p) => p.code === code).permission_actions;
+  const actions =
+    permission.find((p) => p.code === code)?.permission_actions || [];
+
   const [viewMode, setViewMode] = useState("list");
-  const [status, setStatus] = useState();
+  const [statusGroups, setStatusGroups] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -20,9 +28,26 @@ const AdminStatus = ({ data }) => {
   const fetchStatus = () => {
     GetAllStatus().then(({ status, msg }) => {
       if (status === "SUCCESS") {
-        setStatus(msg);
-      } else if (status === "NO DATA") {
-        setStatus(null);
+        const grouped = msg.reduce((acc, row) => {
+          if (!acc[row.status_group_id]) {
+            acc[row.status_group_id] = {
+              status_group_id: row.status_group_id,
+              status_group_code: row.status_group_code,
+              statuses: [],
+            };
+          }
+
+          acc[row.status_group_id].statuses.push({
+            status_id: row.status_id,
+            status_code: row.status_code,
+          });
+
+          return acc;
+        }, {});
+
+        setStatusGroups(Object.values(grouped));
+      } else {
+        setStatusGroups([]);
       }
     });
   };
@@ -31,23 +56,27 @@ const AdminStatus = ({ data }) => {
     fetchStatus();
   }, []);
 
-  const handleDelete = ({ id, code }) => {
+  const handleDeleteStatus = (id) => {
     DeleteStatus({ id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: `${code} is successfully deleted`,
-          status: status,
-        });
-        fetchStatus();
-      } else if (status === "ERROR" || status === "WARNING") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
-      setNotificationKey((prev) => prev + 1);
+      setNotification({
+        show: true,
+        message: msg,
+        status,
+      });
+      setNotificationKey((p) => p + 1);
+      if (status === "SUCCESS") fetchStatus();
+    });
+  };
+
+  const handleDeleteGroup = (id) => {
+    DeleteStatusGroup({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status,
+      });
+      setNotificationKey((p) => p + 1);
+      if (status === "SUCCESS") fetchStatus();
     });
   };
 
@@ -66,10 +95,14 @@ const AdminStatus = ({ data }) => {
           <ul>
             <li>{labelValue}</li>
             {viewMode === "list" && <li className="text-xl">STATUS LIST</li>}
-            {viewMode === "add" && (
-              <li className="text-xl">CREATE NEW STATUS</li>
-            )}
+            {viewMode === "add" && <li className="text-xl">CREATE STATUS</li>}
             {viewMode === "edit" && <li className="text-xl">EDIT STATUS</li>}
+            {viewMode === "add_group" && (
+              <li className="text-xl">CREATE STATUS GROUP</li>
+            )}
+            {viewMode === "edit_group" && (
+              <li className="text-xl">EDIT STATUS GROUP</li>
+            )}
           </ul>
         </div>
       </div>
@@ -94,7 +127,18 @@ const AdminStatus = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create New Status
+            + Create Status
+          </button>
+        )}
+
+        {actions.includes("add") && (
+          <button
+            className={`btn btn-wide font-bold ${
+              viewMode === "add_group" ? "btn-primary" : "btn-outline"
+            }`}
+            onClick={() => setViewMode("add_group")}
+          >
+            + Create Status Group
           </button>
         )}
       </div>
@@ -103,51 +147,130 @@ const AdminStatus = ({ data }) => {
       {viewMode === "edit" && editItem && (
         <AdminEditStatus editItem={editItem} />
       )}
+      {viewMode === "add_group" && <AdminAddStatusGroup />}
+      {viewMode === "edit_group" && editItem && (
+        <AdminEditStatusGroup editItem={editItem} />
+      )}
 
       {viewMode === "list" && (
-        <table className="table table-lg">
-          <thead>
-            <tr>
-              <td>Status Code</td>
-              {(actions.includes("edit") || actions.includes("delete")) && (
-                <th className="text-right">Actions</th>
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {status &&
-              status.map((s) => (
-                <tr key={s.id}>
-                  <td>{s.code}</td>
-                  {(actions.includes("edit") || actions.includes("delete")) && (
-                    <td className="text-right">
-                      <div className="flex justify-end gap-2">
+        <div className="mt-6 space-y-6">
+          {statusGroups.length === 0 ? (
+            <div className="text-center text-gray-400">NO DATA</div>
+          ) : (
+            statusGroups.map((group) => {
+              const hasStatus =
+                group.statuses.length > 0 &&
+                group.statuses.some((s) => s.status_id !== null);
+
+              return (
+                <div
+                  key={group.status_group_id}
+                  className="bg-gray-50 rounded-lg shadow-md p-4"
+                >
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-2xl font-bold text-gray-700">
+                      {group.status_group_code}
+                    </h2>
+
+                    {(actions.includes("edit") ||
+                      actions.includes("delete")) && (
+                      <div className="flex gap-2">
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDelete(s)}
+                            onClick={() =>
+                              handleDeleteGroup(group.status_group_id)
+                            }
                           >
-                            Delete
+                            Delete Group
                           </button>
                         )}
                         {actions.includes("edit") && (
                           <button
                             className="btn btn-warning"
                             onClick={() => {
-                              setViewMode("edit");
-                              setEditItem(s);
+                              setEditItem({
+                                id: group.status_group_id,
+                                code: group.status_group_code,
+                              });
+                              setViewMode("edit_group");
                             }}
                           >
-                            Edit
+                            Edit Group
                           </button>
                         )}
                       </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
-          </tbody>
-        </table>
+                    )}
+                  </div>
+
+                  <table className="table table-lg bg-white">
+                    <thead>
+                      <tr>
+                        <th>Status Code</th>
+                        {hasStatus &&
+                          (actions.includes("edit") ||
+                            actions.includes("delete")) && (
+                            <th className="text-right">Actions</th>
+                          )}
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {!hasStatus ? (
+                        <tr>
+                          <td className="text-center text-gray-400">
+                            No status
+                          </td>
+                        </tr>
+                      ) : (
+                        group.statuses.map((st) => (
+                          <tr key={st.status_id}>
+                            <td>{st.status_code}</td>
+
+                            {(actions.includes("edit") ||
+                              actions.includes("delete")) && (
+                              <td className="text-right">
+                                <div className="flex justify-end gap-2">
+                                  {actions.includes("delete") && (
+                                    <button
+                                      className="btn btn-error text-white"
+                                      onClick={() =>
+                                        handleDeleteStatus(st.status_id)
+                                      }
+                                    >
+                                      Delete
+                                    </button>
+                                  )}
+
+                                  {actions.includes("edit") && (
+                                    <button
+                                      className="btn btn-warning"
+                                      onClick={() => {
+                                        setEditItem({
+                                          id: st.status_id,
+                                          code: st.status_code,
+                                          status_group_id:
+                                            group.status_group_id,
+                                        });
+                                        setViewMode("edit");
+                                      }}
+                                    >
+                                      Edit
+                                    </button>
+                                  )}
+                                </div>
+                              </td>
+                            )}
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              );
+            })
+          )}
+        </div>
       )}
     </div>
   );

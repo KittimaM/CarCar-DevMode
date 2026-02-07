@@ -24,6 +24,7 @@ const URLList = {
   Modules: "admin/module",
   RolePermission: "admin/role-permission",
   Province: "admin/province",
+  AdminStatusGroup: "admin/status-group",
 };
 
 export default URLList;

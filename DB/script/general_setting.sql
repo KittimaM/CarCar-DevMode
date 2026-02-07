@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS general_setting;
+DROP TABLE IF EXISTS `general_setting`;
 
-CREATE TABLE general_setting (
+CREATE TABLE IF NOT EXISTS `general_setting`  (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `staff_failed_login_limit` INT NOT NULL,
   `customer_failed_login_limit` INT NOT NULL,

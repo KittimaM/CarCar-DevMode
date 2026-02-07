@@ -1,35 +1,22 @@
-import React, { useEffect, useState } from "react";
-import Notification from "../../Notification/Notification";
-import { GetAllStatusGroup, UpdateStatus } from "../../Modules/Api";
+import React, { useState } from "react";
+import Notification from "../../../Notification/Notification";
+import { PostAddStatusGroup } from "../../../Modules/Api";
 
-const AdminEditStatus = ({ editItem }) => {
-  const [data, setData] = useState(editItem);
+const AdminAddStatusGroup = () => {
   const [errors, setErrors] = useState([]);
-  const [statusGroup, setStatusGroup] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
     message: "",
     status: "",
   });
+  const [data, setData] = useState({
+    code: "",
+  });
 
-  const fetchStatusGroup = () => {
-    GetAllStatusGroup().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setStatusGroup(msg);
-      } else {
-        setStatusGroup([]);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchStatusGroup();
-  }, []);
-
-  const handleEdit = (e) => {
+  const handleAdd = (e) => {
     e.preventDefault();
-    UpdateStatus(data).then(({ status, msg }) => {
+    PostAddStatusGroup(data).then(({ status, msg }) => {
       setNotification({
         show: true,
         status: status,
@@ -39,7 +26,7 @@ const AdminEditStatus = ({ editItem }) => {
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, code: editItem.code });
+        setData({ ...data, code: "" });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -54,33 +41,10 @@ const AdminEditStatus = ({ editItem }) => {
           status={notification.status}
         />
       )}
-      <form onSubmit={handleEdit}>
+      <form onSubmit={handleAdd}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Status Group</span>
-            <select
-              value={data.status_group_id}
-              className={`select w-full select-bordered max-w-md ${
-                !data.status_group_id ? `select-error` : ``
-              }`}
-              onChange={(e) =>
-                setData({ ...data, status_group_id: e.target.value })
-              }
-              required
-            >
-              <option disabled={true} value="">
-                Pick A Status Group
-              </option>
-              {statusGroup &&
-                statusGroup.map((sg) => (
-                  <option key={sg.id} value={sg.id}>
-                    {sg.code}
-                  </option>
-                ))}
-            </select>
-          </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Status Code</span>
             <input
               type="text"
               value={data.code}
@@ -104,7 +68,9 @@ const AdminEditStatus = ({ editItem }) => {
               className="btn"
               onClick={() => {
                 setErrors([]);
-                setData(editItem);
+                setData({
+                  code: "",
+                });
               }}
             >
               CANCEL
@@ -116,4 +82,4 @@ const AdminEditStatus = ({ editItem }) => {
   );
 };
 
-export default AdminEditStatus;
+export default AdminAddStatusGroup;

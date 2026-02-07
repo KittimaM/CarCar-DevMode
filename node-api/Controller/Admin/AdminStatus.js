@@ -1,23 +1,26 @@
 const Conn = require("../../db");
 
 const AdminGetAllStatus = (req, res, next) => {
-  Conn.execute("SELECT * FROM status", function (error, results) {
-    if (error) {
-      return res.json({ status: "ERROR", msg: error });
-    }
-    if (results.length === 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
-    } else {
-      return res.json({ status: "SUCCESS", msg: results });
-    }
-  });
+  Conn.execute(
+    "SELECT status.id AS status_id, status.code AS status_code, status_group.id AS status_group_id, status_group.code AS status_group_code FROM status_group LEFT JOIN status ON status.status_group_id = status_group.id",
+    function (error, results) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      }
+      if (results.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: results });
+      }
+    },
+  );
 };
 
 const AdminAddStatus = (req, res, next) => {
-  const { code } = req.body;
+  const { code, status_group_id } = req.body;
   Conn.execute(
-    "INSERT INTO status (code) VALUES (?)",
-    [code],
+    "INSERT INTO status (code, status_group_id) VALUES (?, ?)",
+    [code, status_group_id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
@@ -48,10 +51,10 @@ const AdminDeleteStatus = (req, res, next) => {
 };
 
 const AdminUpdateStatus = (req, res, next) => {
-  const { id, code } = req.body;
+  const { id, code, status_group_id } = req.body;
   Conn.execute(
-    "UPDATE status SET code = ? WHERE id = ?",
-    [code, id],
+    "UPDATE status SET code = ?, status_group_id = ? WHERE id = ?",
+    [code, status_group_id, id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {

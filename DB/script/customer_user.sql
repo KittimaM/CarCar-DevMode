@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS customer_user;
+DROP TABLE IF EXISTS `customer_user`;
 
-CREATE TABLE customer_user (
+CREATE TABLE IF NOT EXISTS `customer_user`  (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `phone` VARCHAR(100) UNIQUE,
   `name` VARCHAR(100),

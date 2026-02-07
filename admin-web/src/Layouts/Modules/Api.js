@@ -343,16 +343,16 @@ export const GetAllStatusGroup = () => {
   return getApi(URLList.AdminStatusGroup);
 };
 
-export const PostAddStatusGroup = (url, jsonData) => {
-  return postApi(url, jsonData);
+export const PostAddStatusGroup = (jsonData) => {
+  return postApi(URLList.AdminStatusGroup, jsonData);
 };
 
-export const UpdateStatusGroup = (url, jsonData) => {
-  return putApi(url, jsonData);
+export const UpdateStatusGroup = (jsonData) => {
+  return putApi(URLList.AdminStatusGroup, jsonData);
 };
 
-export const DeleteStatusGroup = (url, jsonData) => {
-  return deleteApi(url, jsonData);
+export const DeleteStatusGroup = (jsonData) => {
+  return deleteApi(URLList.AdminStatusGroup, jsonData);
 };
 
 export const GetAdminCustomer = () => {

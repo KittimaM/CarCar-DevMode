@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS channel;
+DROP TABLE IF EXISTS `channel`;
 
-CREATE TABLE channel (
+CREATE TABLE IF NOT EXISTS `channel`  (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(30) UNIQUE NOT NULL,
   `max_capacity` INT NOT NULL,
