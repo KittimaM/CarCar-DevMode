@@ -1,5 +1,9 @@
-import { useEffect, useState } from "react";
-import { GetAllModules, GetRolePermissionById, UpdateRole } from "../../Modules/Api";
+import { useCallback, useEffect, useState } from "react";
+import {
+  GetAllModules,
+  GetRolePermissionById,
+  UpdateRole,
+} from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminEditRole = ({ editItem }) => {
@@ -13,7 +17,7 @@ const AdminEditRole = ({ editItem }) => {
     status: "",
   });
 
-  const fetchAllModules = () => {
+  const fetchAllModules = useCallback(() => {
     GetRolePermissionById({ role_id: editItem.id }).then(({ status, msg }) => {
       if (status !== "SUCCESS") return;
 
@@ -36,7 +40,7 @@ const AdminEditRole = ({ editItem }) => {
           const isAllowed = allowedModules.some(
             (am) =>
               am.module_id === row.module_id &&
-              am.permission_id === row.permission_id
+              am.permission_id === row.permission_id,
           );
 
           acc[row.module_id].permissions.push({
@@ -49,16 +53,15 @@ const AdminEditRole = ({ editItem }) => {
           return acc;
         }, {});
 
-        const result = Object.values(grouped);
-        setModules(result);
+        setModules(Object.values(grouped));
         setRoleName(editItem.name);
       });
     });
-  };
+  }, [editItem.id, editItem.name]);
 
   useEffect(() => {
     fetchAllModules();
-  }, []);
+  }, [fetchAllModules]);
 
   const handleAccessConfig = (e) => {
     const { name, value, checked } = e.target;
@@ -81,7 +84,7 @@ const AdminEditRole = ({ editItem }) => {
             permissions: module.permissions.map((p) =>
               p.permission_code === value
                 ? { ...p, is_allowed: checked ? 1 : 0 }
-                : p
+                : p,
             ),
           };
         }
@@ -103,7 +106,7 @@ const AdminEditRole = ({ editItem }) => {
         }
 
         return module;
-      })
+      }),
     );
   };
 
@@ -116,7 +119,7 @@ const AdminEditRole = ({ editItem }) => {
         .map((p) => ({
           module_id: module.module_id,
           permission_id: p.permission_id,
-        }))
+        })),
     );
 
     if (allowedAccess.length === 0) {
@@ -181,11 +184,11 @@ const AdminEditRole = ({ editItem }) => {
           .filter((m) => m.module_parent_id === 0)
           .map((parent) => {
             const parentView = parent.permissions.find(
-              (p) => p.permission_code === "view"
+              (p) => p.permission_code === "view",
             );
 
             const childModules = modules.filter(
-              (m) => m.module_parent_id === parent.module_id
+              (m) => m.module_parent_id === parent.module_id,
             );
 
             return (
@@ -237,7 +240,7 @@ const AdminEditRole = ({ editItem }) => {
                   <div className="ml-6 mt-3 space-y-3">
                     {childModules.map((child) => {
                       const childView = child.permissions.find(
-                        (p) => p.permission_code === "view"
+                        (p) => p.permission_code === "view",
                       );
 
                       return (

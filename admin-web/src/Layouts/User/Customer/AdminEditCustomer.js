@@ -1,8 +1,7 @@
-import { useState } from "react";
-import Notification from "../Notification/Notification";
-import { PostAddCustomer } from "../Modules/Api";
-
-const AdminAddCustomer = () => {
+import React, { useState } from "react";
+import { UpdateAdminCustomer } from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
+const AdminEditCustomer = ({ editItem }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -11,24 +10,24 @@ const AdminAddCustomer = () => {
     status: "",
   });
   const [data, setData] = useState({
-    phone: "",
-    name: "",
+    ...editItem,
     password: "",
+    isChangePassword: false,
   });
 
-  const handleAddUser = (e) => {
+  const handleEditUser = (e) => {
     e.preventDefault();
-    PostAddCustomer(data).then(({ status, msg }) => {
+    UpdateAdminCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
           status: status,
-          message: `Successfully Add ${data.name}`,
+          message: `Successfully Update ${data.name}`,
         });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, phone: "" });
+        setData({ ...data, phone: editItem.phone });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -43,7 +42,7 @@ const AdminAddCustomer = () => {
           status={notification.status}
         />
       )}
-      <form onSubmit={handleAddUser}>
+      <form onSubmit={handleEditUser}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Phone</span>
@@ -80,19 +79,35 @@ const AdminAddCustomer = () => {
               required
             />
           </div>
+
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Password</span>
             <input
-              type="password"
-              value={data.password}
-              className={`input input-bordered w-full max-w-md ${
-                !data.password ? `input-error` : ``
-              }`}
-              onChange={(e) => {
-                setData({ ...data, password: e.target.value });
-              }}
-              required
+              type="checkbox"
+              checked={!data.isChangePassword}
+              className="checkbox checkbox-success"
+              onChange={() =>
+                setData({ ...data, isChangePassword: !data.isChangePassword })
+              }
             />
+
+            {!data.isChangePassword ? (
+              <span>use same password</span>
+            ) : (
+              <>
+                <span className="w-32">Password</span>
+                <input
+                  type="password"
+                  value={data.password}
+                  className={`input input-bordered w-full max-w-md ${
+                    !data.password ? `input-error` : ``
+                  }`}
+                  onChange={(e) => {
+                    setData({ ...data, password: e.target.value });
+                  }}
+                  required
+                />
+              </>
+            )}
           </div>
 
           <div className="flex gap-2 mt-4">
@@ -104,9 +119,9 @@ const AdminAddCustomer = () => {
               className="btn"
               onClick={() => {
                 setData({
-                  phone: "",
-                  name: "",
+                  ...editItem,
                   password: "",
+                  isChangePassword: false,
                 });
                 setErrors([]);
               }}
@@ -120,4 +135,4 @@ const AdminAddCustomer = () => {
   );
 };
 
-export default AdminAddCustomer;
+export default AdminEditCustomer;

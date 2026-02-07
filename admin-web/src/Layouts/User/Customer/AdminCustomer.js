@@ -3,9 +3,9 @@ import {
   DeleteAdminCustomer,
   GetAdminCustomer,
   UpdateAdminUnlockCustomer,
-} from "../Modules/Api";
-import Notification from "../Notification/Notification";
-import lockedIcon from "../../assets/padlock-icon.svg";
+} from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
+import lockedIcon from "../../../assets/padlock-icon.svg";
 import AdminAddCustomer from "./AdminAddCustomer";
 import AdminEditCustomer from "./AdminEditCustomer";
 
@@ -62,11 +62,6 @@ const AdminCustomer = ({ data }) => {
       }
       setNotificationKey((prev) => prev + 1);
     });
-  };
-
-  const handelEditUser = (id, phone, name) => {
-    setEditItem({ id, phone, name });
-    setViewMode("edit");
   };
 
   const handleUnLock = (id, name) => {
@@ -163,7 +158,7 @@ const AdminCustomer = ({ data }) => {
                       onClick={() => handleUnLock(u.id, u.name)}
                     >
                       {u.is_locked === 1 && (
-                        <img height="12" width="12" src={lockedIcon} />
+                        <img alt="" height="12" width="12" src={lockedIcon} />
                       )}
                     </button>
                   </td>
