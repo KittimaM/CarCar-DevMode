@@ -3,14 +3,13 @@ import {
   DeleteStaffUser,
   GetAllStaff,
   UpdateAdminUnlockStaff,
-} from "../Modules/Api";
-import Notification from "../Notification/Notification";
-import lockedIcon from "../../assets/padlock-icon.svg";
+} from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
+import lockedIcon from "../../../assets/padlock-icon.svg";
 import AdminAddStaff from "./AdminAddStaff";
 import AdminEditStaff from "./AdminEditStaff";
 
 const AdminStaff = ({ data }) => {
-  const currentUser = sessionStorage.getItem("username");
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
@@ -163,7 +162,12 @@ const AdminStaff = ({ data }) => {
                           onClick={() => handleUnLock(u.id, u.username)}
                         >
                           {u.is_locked === 1 && (
-                            <img height="12" width="12" src={lockedIcon} />
+                            <img
+                              alt=""
+                              height="12"
+                              width="12"
+                              src={lockedIcon}
+                            />
                           )}
                         </button>
                       </td>

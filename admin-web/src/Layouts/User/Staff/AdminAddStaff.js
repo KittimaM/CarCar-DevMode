@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, PostAddStaffUser } from "../Modules/Api";
-import Notification from "../Notification/Notification";
+import { GetAllAdminRole, PostAddStaffUser } from "../../Modules/Api";
+import Notification from "../../Notification/Notification";
 
 const AdminAddStaff = () => {
   const [roleList, setRoleList] = useState([]);

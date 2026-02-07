@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-import Notification from "../Notification/Notification";
+import Notification from "../../Notification/Notification";
 import {
   GetAdminCustomer,
   GetAllProvince,
   GetAvailableCarSize,
-  PostAddAdminCustomerCar,
-} from "../Modules/Api";
+  UpdateAdminCustomerCar,
+} from "../../Modules/Api";
 
-const AdminAddCustomerCar = () => {
+const AdminEditCustomerCar = ({ editItem }) => {
+  const [data, setData] = useState(editItem);
   const [customer, setCustomer] = useState([]);
   const [size, setSize] = useState([]);
   const [province, setProvince] = useState([]);
@@ -17,15 +18,6 @@ const AdminAddCustomerCar = () => {
     show: false,
     message: "",
     status: "",
-  });
-  const [data, setData] = useState({
-    customer_id: "",
-    plate_no: "",
-    province_id: "",
-    brand: "",
-    model: null,
-    size_id: "",
-    color: "",
   });
 
   useEffect(() => {
@@ -46,9 +38,9 @@ const AdminAddCustomerCar = () => {
     });
   }, []);
 
-  const handleAddCar = (e) => {
+  const handleEditCar = (e) => {
     e.preventDefault();
-    PostAddAdminCustomerCar(data).then(({ status, msg }) => {
+    UpdateAdminCustomerCar(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
@@ -79,7 +71,7 @@ const AdminAddCustomerCar = () => {
           status={notification.status}
         />
       )}
-      <form onSubmit={handleAddCar}>
+      <form onSubmit={handleEditCar}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Customer</span>
@@ -124,13 +116,11 @@ const AdminAddCustomerCar = () => {
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Province</span>
             <select
-              value={data.province_id}
+              value={data.province}
               className={`select w-full select-bordered max-w-md ${
-                !data.province_id ? `select-error` : ``
+                !data.province ? `select-error` : ``
               }`}
-              onChange={(e) =>
-                setData({ ...data, province_id: e.target.value })
-              }
+              onChange={(e) => setData({ ...data, province: e.target.value })}
               required
             >
               <option disabled={true} value="">
@@ -138,7 +128,7 @@ const AdminAddCustomerCar = () => {
               </option>
               {province &&
                 province.map((p) => (
-                  <option key={p.id} value={p.id}>
+                  <option key={p.id} value={p.province}>
                     {p.province}
                   </option>
                 ))}
@@ -183,7 +173,7 @@ const AdminAddCustomerCar = () => {
 
             <input
               type="text"
-              value={data.model}
+              value={data.model || ""}
               className={`input input-bordered w-full max-w-md`}
               onChange={(e) => {
                 setData({ ...data, model: e.target.value });
@@ -222,15 +212,7 @@ const AdminAddCustomerCar = () => {
               className="btn"
               onClick={() => {
                 setErrors([]);
-                setData({
-                  customer_id: "",
-                  plate_no: "",
-                  province_id: "",
-                  brand: "",
-                  model: null,
-                  size_id: "",
-                  color: "",
-                });
+                setData(editItem);
               }}
             >
               CANCEL
@@ -242,4 +224,4 @@ const AdminAddCustomerCar = () => {
   );
 };
 
-export default AdminAddCustomerCar;
+export default AdminEditCustomerCar;

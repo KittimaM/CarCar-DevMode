@@ -192,9 +192,9 @@ const AdminService = ({ data }) => {
                           }
                         >
                           {s.is_available === 1 ? (
-                            <img height="15" width="15" src={checkIcon} />
+                            <img alt="" height="15" width="15" src={checkIcon} />
                           ) : (
-                            <img height="15" width="15" src={unCheckIcon} />
+                            <img alt="" height="15" width="15" src={unCheckIcon} />
                           )}
                         </button>
                       </td>
