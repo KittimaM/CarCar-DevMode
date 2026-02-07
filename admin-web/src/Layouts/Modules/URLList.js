@@ -8,7 +8,6 @@ const URLList = {
   AdminOnLeaveType: "admin/onleave/type",
   AdminPaymentType: "admin/paymenttype",
   AdminStaff: "admin/user",
-  AdminStatusGroup: "admin/status-group",
   AdminStatus: "admin/status",
   AdminRole: "admin/role",
   AdminRoleLabel: "admin/role-label",
