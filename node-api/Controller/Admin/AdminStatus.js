@@ -14,16 +14,19 @@ const AdminGetAllStatus = (req, res, next) => {
 };
 
 const AdminAddStatus = (req, res, next) => {
-  const { code, description, status_group_id } = req.body;
+  const { code } = req.body;
   Conn.execute(
-    "INSERT INTO status (code, description, status_group_id) VALUES (?,?,?)",
-    [code, description, status_group_id],
-    function (error, result) {
+    "INSERT INTO status (code) VALUES (?)",
+    [code],
+    function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({ status: "WARNING", msg: "Already In System" });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
-        const insertId = result.insertId;
-        return res.json({ status: "SUCCESS", msg: insertId });
+        return res.json({ status: "SUCCESS", msg: "Successfully Added" });
       }
     },
   );
@@ -31,29 +34,33 @@ const AdminAddStatus = (req, res, next) => {
 
 const AdminDeleteStatus = (req, res, next) => {
   const { id } = req.body;
-  Conn.execute(
-    "DELETE FROM status WHERE id = ?",
-    [id],
-    function (error, result) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
+  Conn.execute("DELETE FROM status WHERE id = ?", [id], function (error) {
+    if (error) {
+      if (error.code === "ER_ROW_IS_REFERENCED_2") {
+        return res.json({ status: "WARNING", msg: "Currently In Use" });
       } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "ERROR", msg: error });
       }
-    },
-  );
+    } else {
+      return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
+    }
+  });
 };
 
 const AdminUpdateStatus = (req, res, next) => {
-  const { id, code, description, status_group_id } = req.body;
+  const { id, code } = req.body;
   Conn.execute(
-    "UPDATE status SET code = ?, description = ?, status_group_id = ? WHERE id = ?",
-    [code, description, status_group_id, id],
-    function (error, result) {
+    "UPDATE status SET code = ? WHERE id = ?",
+    [code, id],
+    function (error) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({ status: "WARNING", msg: "Already In System" });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       } else {
-        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+        return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
     },
   );

@@ -4,7 +4,6 @@ import Notification from "../../Notification/Notification";
 
 const AdminEditRole = ({ editItem }) => {
   const [modules, setModules] = useState([]);
-  const [initialModules, setInitialModules] = useState([]);
   const [roleName, setRoleName] = useState(editItem.name);
   const [errors, setErrors] = useState("");
   const [notificationKey, setNotificationKey] = useState(0);
@@ -51,7 +50,6 @@ const AdminEditRole = ({ editItem }) => {
         }, {});
 
         const result = Object.values(grouped);
-        setInitialModules(result);
         setModules(result);
         setRoleName(editItem.name);
       });

@@ -53,11 +53,6 @@ const AdminRole = ({ data }) => {
     });
   };
 
-  const handleEdit = (id) => {
-    setEditItem(id);
-    setViewMode("edit");
-  };
-
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
       {notification.show && (
