@@ -2,3 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Apply custom font globally (matches fontFamily.sans in tailwind.config.js) */
+body {
+  font-family: "Inter", system-ui, sans-serif;
+}
+
