@@ -1,10 +1,12 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 require("dotenv").config();
 app.use(cors());
 app.use(bodyParser.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // customer
 const CustomerProfileRoute = require("./Routes/Customer/CustomerProfile");
@@ -94,6 +96,9 @@ app.use("/admin/module", ModulesRoutes);
 
 const RolePermissionRoute = require("./Routes/Admin/Setting/AccessConfig/RolePermission");
 app.use("/admin/role-permission", RolePermissionRoute);
+
+const PaymentAccountRoute = require("./Routes/Admin/MasterData/PaymentAccount/PaymentAccount");
+app.use("/admin/payment-account", PaymentAccountRoute);
 
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);

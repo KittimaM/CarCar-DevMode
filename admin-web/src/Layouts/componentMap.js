@@ -20,7 +20,9 @@ const componentMap = {
   //   onLeaveList: lazy(() => import("./AdminOnLeaveList")),
   status: lazy(() => import("./MasterData/Status/AdminStatus")),
   //   onLeaveType: lazy(() => import("./AdminOnLeaveType")),
-  //   paymentType: lazy(() => import("./AdminPaymentType")),
+  paymentAccount: lazy(
+    () => import("./MasterData/PaymentAccount/PaymentAccount"),
+  ),
   general: lazy(() => import("./Setting/General/AdminGeneral")),
   service: lazy(() => import("./MasterData/Service/AdminService")),
 };
