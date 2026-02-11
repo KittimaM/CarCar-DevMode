@@ -12,6 +12,9 @@ app.use("/customer/profile", CustomerProfileRoute);
 
 const CustomerLoginRoute = require("./Routes/Customer/CustomerLogin");
 app.use("/customer/login", CustomerLoginRoute);
+// LINE Login
+const CustomerLineLoginRoute = require("./Routes/Customer/CustomerLineLogin");
+app.use("/customer/line", CustomerLineLoginRoute);
 
 const CustomerBookingRoute = require("./Routes/Customer/CustomerBooking");
 app.use("/customer/booking", CustomerBookingRoute);
