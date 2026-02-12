@@ -2,6 +2,8 @@ const URLList = {
   // Customer
   CustomerProfile: "customer/profile",
   CustomerLogin: "customer/login",
+  CustomerPasswordForgot: "customer/password/forgot",
+  CustomerPasswordReset: "customer/password/reset",
   // Admin (used by customer for some APIs)
   AdminCustomer: "admin/customer",
   AdminCustomerCar: "admin/customer-car",

@@ -12,6 +12,9 @@ app.use("/customer/profile", CustomerProfileRoute);
 
 const CustomerLoginRoute = require("./Routes/Customer/CustomerLogin");
 app.use("/customer/login", CustomerLoginRoute);
+// Customer Password Reset
+const CustomerPasswordResetRoute = require("./Routes/Customer/CustomerPasswordReset");
+app.use("/customer/password", CustomerPasswordResetRoute);
 // LINE Login
 const CustomerLineLoginRoute = require("./Routes/Customer/CustomerLineLogin");
 app.use("/customer/line", CustomerLineLoginRoute);

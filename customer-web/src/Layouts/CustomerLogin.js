@@ -110,6 +110,16 @@ const CustomerLogin = () => {
               {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
             </label>
 
+            <div className="text-right">
+              <button
+                type="button"
+                className="link link-primary text-sm"
+                onClick={() => navigate("/customer/forgot-password")}
+              >
+                Forgot password?
+              </button>
+            </div>
+
             <div className="mb-4">
               <button className="btn w-full bg-[#0866FF] text-[#F1F5F8] border-none hover:bg-[#647173]" type="submit">
                 LOGIN

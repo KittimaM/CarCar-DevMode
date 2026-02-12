@@ -421,6 +421,14 @@ export const PostCustomerLogin = (jsonData) => {
   return postApi(URLList.CustomerLogin, jsonData);
 };
 
+export const PostForgotPassword = (jsonData) => {
+  return postApi(URLList.CustomerPasswordForgot, jsonData);
+};
+
+export const PostResetPassword = (jsonData) => {
+  return postApi(URLList.CustomerPasswordReset, jsonData);
+};
+
 export const GetAdminGeneral = () => {
   return getApi(URLList.AdminGeneral);
 };

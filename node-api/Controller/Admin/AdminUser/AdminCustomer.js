@@ -16,14 +16,15 @@ const AdminGetAllCustomer = (req, res, next) => {
 };
 
 const AdminAddCustomer = (req, res, next) => {
-  const { phone, name, password } = req.body;
+  const { phone, name, email, password } = req.body;
   bcrypt.hash(password, saltRounds, function (error, hash) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     } else {
+      const emailVal = email && String(email).trim() !== "" ? email.trim() : null;
       Conn.execute(
-        `INSERT INTO customer_user (phone, name, password) VALUES (?,?,?)`,
-        [phone, name, hash],
+        `INSERT INTO customer_user (phone, name, email, password) VALUES (?,?,?,?)`,
+        [phone, name, emailVal, hash],
         function (error, result) {
           if (error) {
             if (error.code === "ER_DUP_ENTRY") {
@@ -44,7 +45,8 @@ const AdminAddCustomer = (req, res, next) => {
 };
 
 const AdminUpdateCustomer = (req, res, next) => {
-  const { id, phone, name, password, isChangePassword } = req.body;
+  const { id, phone, name, email, password, isChangePassword } = req.body;
+  const emailVal = email && String(email).trim() !== "" ? email.trim() : null;
   const handleUpdate = (query, params) => {
     Conn.execute(query, params, function (error) {
       if (error) {
@@ -67,17 +69,16 @@ const AdminUpdateCustomer = (req, res, next) => {
         return res.json({ status: "ERROR", msg: error });
       } else {
         handleUpdate(
-          `UPDATE customer_user SET phone = ? , name = ?, password = ? WHERE id = ?`,
-          [phone, name, hash, id]
+          `UPDATE customer_user SET phone = ? , name = ?, email = ?, password = ? WHERE id = ?`,
+          [phone, name, emailVal, hash, id]
         );
       }
     });
   } else {
-    handleUpdate(`UPDATE customer_user SET phone = ? , name = ? WHERE id = ?`, [
-      phone,
-      name,
-      id,
-    ]);
+    handleUpdate(
+      `UPDATE customer_user SET phone = ? , name = ?, email = ? WHERE id = ?`,
+      [phone, name, emailVal, id]
+    );
   }
 };
 

@@ -12,30 +12,32 @@ const CustomerRegister = () => {
     const jsonData = {
       name: data.get("name"),
       phone: data.get("phone"),
+      email: data.get("email") || null,
       password: data.get("password"),
     };
 
     PostAddCustomer(jsonData).then((data) => {
+      if (!data) return;
       const { status, msg } = data;
       if (status === "SUCCESS") {
-        console.log("success");
         const loginData = {
           phone: jsonData.phone,
           password: jsonData.password,
         };
-        PostCustomerLogin(loginData).then((data) => {
-          const { status, msg } = data;
-          if (status === "SUCCESS") {
-            sessionStorage.setItem("token", msg);
+        PostCustomerLogin(loginData).then((loginRes) => {
+          if (!loginRes) return;
+          const { status: loginStatus, msg: loginMsg } = loginRes;
+          if (loginStatus === "SUCCESS") {
+            sessionStorage.setItem("token", loginMsg);
             navigate("/customer/main");
           } else {
-            console.log(data);
+            setErrors(loginMsg || "Login failed");
           }
         });
-      } else if (status === "ER_DUP_ENTRY") {
-        setErrors(msg);
+      } else if (status === "ER_DUP_ENTRY" || status === "WARNING") {
+        setErrors(msg || "Already In System");
       } else {
-        console.log(data);
+        setErrors(msg || "Registration failed");
       }
     });
   };
@@ -46,7 +48,7 @@ const CustomerRegister = () => {
           onSubmit={handleRegister}
           className="max-w-[800px] w-full mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg "
         >
-          {/* ================== IMAGE: cropped on sm/md; on lg fills same-size grid cell as form ================== */}
+          {/* ================== IMAGE ================== */}
           <div className="block w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0 lg:h-full">
             <div className="w-full h-[200px] lg:flex-1 lg:min-h-0 lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
               <img
@@ -83,6 +85,18 @@ const CustomerRegister = () => {
                 name="name"
                 required
                 placeholder="Type here"
+                className="input input-bordered w-full"
+              />
+            </label>
+
+            <label className="form-control w-full flex flex-col ">
+              <div className="label">
+                <span className="label-text">Email</span>
+              </div>
+              <input
+                type="email"
+                name="email"
+                placeholder="your@email.com"
                 className="input input-bordered w-full"
               />
             </label>

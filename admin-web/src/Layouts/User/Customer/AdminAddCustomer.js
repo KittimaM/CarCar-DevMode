@@ -13,6 +13,7 @@ const AdminAddCustomer = () => {
   const [data, setData] = useState({
     phone: "",
     name: "",
+    email: "",
     password: "",
   });
 
@@ -81,6 +82,15 @@ const AdminAddCustomer = () => {
             />
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Email</span>
+            <input
+              type="email"
+              value={data.email}
+              className="input input-bordered w-full max-w-md"
+              onChange={(e) => setData({ ...data, email: e.target.value })}
+            />
+          </div>
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Password</span>
             <input
               type="password"
@@ -106,6 +116,7 @@ const AdminAddCustomer = () => {
                 setData({
                   phone: "",
                   name: "",
+                  email: "",
                   password: "",
                 });
                 setErrors([]);

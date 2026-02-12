@@ -51,12 +51,12 @@ const CustomerLogin = (req, res, next) => {
                         msg: successLoginError,
                       });
                     } else {
+                      const mins = Number(customer_user_login_mins_limit);
+                      const expiresIn = Number.isFinite(mins) && mins > 0 ? `${mins}m` : "1m";
                       const token = jwt.sign(
                         { id: id, phone: phone, name: name },
                         secret,
-                        {
-                          expiresIn: `${customer_user_login_mins_limit}m`,
-                        },
+                        { expiresIn },
                       );
                       return res.json({ status: "SUCCESS", msg: token });
                     }
