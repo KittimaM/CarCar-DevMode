@@ -42,8 +42,8 @@ const CustomerResetPassword = () => {
 
   if (!token) {
     return (
-      <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full text-center">
+      <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
+        <div className="bg-white p-6 rounded-lg shadow-lg max-w-[400px] w-full text-center">
           <h1 className="text-xl font-bold mb-2">Invalid link</h1>
           <p className="text-gray-600 mb-4">
             This reset link is missing or invalid. Please use "Forgot password?" on the login page to get a new link.
@@ -61,10 +61,10 @@ const CustomerResetPassword = () => {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
-      <div className="max-w-[800px] w-full mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg bg-white">
-        <div className="block w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0 lg:h-full">
-          <div className="w-full h-[200px] lg:flex-1 lg:min-h-0 lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
+    <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-[400px] lg:max-w-[800px] mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg bg-white lg:max-h-[90vh]">
+        <div className="block w-full mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0">
+          <div className="w-full h-[200px] lg:h-full lg:min-h-[280px] lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
             <img
               src={LoginImg}
               alt="Reset password"
@@ -72,7 +72,7 @@ const CustomerResetPassword = () => {
             />
           </div>
         </div>
-        <div className="p-4 shadow-lg rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col justify-center w-full max-w-[400px] mx-auto flex-1 min-h-0 gap-y-2 lg:max-w-[400px] lg:flex-none">
+        <div className="p-6 shadow-lg rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col justify-center w-full gap-y-2">
           <h1 className="text-4xl font-bold text-center py-6">Set new password</h1>
           {success ? (
             <>

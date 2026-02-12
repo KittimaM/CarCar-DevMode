@@ -25,8 +25,8 @@ const CustomerForgotPassword = () => {
 
   return (
     <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center p-4">
-      <div className="max-w-[800px] w-full mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg bg-white lg:max-h-[90vh]">
-        <div className="block w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0">
+      <div className="w-full max-w-[400px] lg:max-w-[800px] mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg bg-white lg:max-h-[90vh]">
+        <div className="block w-full mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0">
           <div className="w-full h-[200px] lg:h-full lg:min-h-[280px] lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
             <img
               src={LoginImg}
@@ -35,7 +35,7 @@ const CustomerForgotPassword = () => {
             />
           </div>
         </div>
-        <div className="p-6 shadow-lg rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col justify-center w-full max-w-[400px] mx-auto gap-y-2 lg:max-w-none">
+        <div className="p-6 shadow-lg rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col justify-center w-full gap-y-2">
           <h1 className="text-4xl font-bold text-center py-6">Forgot password</h1>
           <p className="text-gray-600 text-sm text-center -mt-4">
             Enter your email and we'll send you a link to reset your password.
