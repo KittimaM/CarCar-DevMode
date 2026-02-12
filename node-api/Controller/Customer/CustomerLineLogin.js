@@ -8,7 +8,6 @@ const saltRounds = 10;
 const LINE_AUTH_URL = "https://access.line.me/oauth2/v2.1/authorize";
 const LINE_TOKEN_URL = "https://api.line.me/oauth2/v2.1/token";
 const LINE_PROFILE_URL = "https://api.line.me/v2/profile";
-const LINE_LOGIN_PHONE_PREFIX = "LINE_";
 
 /**
  * Redirect user to LINE authorization page.
@@ -68,30 +67,26 @@ const lineCallback = async (req, res) => {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
     const { userId: lineUserId, displayName } = profileRes.data;
-    const phone = LINE_LOGIN_PHONE_PREFIX + lineUserId;
     const name = displayName || "LINE User";
+    if (!lineUserId) {
+      return res.redirect(`${customerWebUrl}/?error=LINE_USER_ID_MISSING`);
+    }
 
     Conn.execute(
-      "SELECT id, name FROM customer_user WHERE phone = ?",
-      [phone],
+      "SELECT id, name, phone FROM customer_user WHERE line_id = ?",
+      [lineUserId],
       function (err, rows) {
         if (err) {
           return res.redirect(`${customerWebUrl}/?error=${encodeURIComponent(err.message)}`);
         }
-        const customer_user_login_mins_limit = 60; // default; can load from general_setting
+        const customer_user_login_mins_limit = 60;
         const createToken = (id, phone, name) =>
-          jwt.sign({ id, phone, name }, secret, {
+          jwt.sign({ id, phone: phone || null, name }, secret, {
             expiresIn: `${customer_user_login_mins_limit}m`,
           });
 
         if (rows && rows.length > 0) {
-          const { id } = rows[0];
-          // Update line_user_id if column exists (for LINE notifications)
-          Conn.execute(
-            "UPDATE customer_user SET line_user_id = ? WHERE id = ?",
-            [lineUserId, id],
-            function () { /* ignore err if column missing */ }
-          );
+          const { id, phone } = rows[0];
           const token = createToken(id, phone, name);
           return res.redirect(`${customerWebUrl}/?token=${encodeURIComponent(token)}`);
         }
@@ -101,26 +96,14 @@ const lineCallback = async (req, res) => {
             return res.redirect(`${customerWebUrl}/?error=${encodeURIComponent(hashErr.message)}`);
           }
           Conn.execute(
-            "INSERT INTO customer_user (phone, name, password, line_user_id) VALUES (?, ?, ?, ?)",
-            [phone, name, hash, lineUserId],
+            "INSERT INTO customer_user (phone, name, password, line_id) VALUES (?, ?, ?, ?)",
+            [null, name, hash, lineUserId],
             function (insertErr, result) {
               if (insertErr) {
-                Conn.execute(
-                  "INSERT INTO customer_user (phone, name, password) VALUES (?, ?, ?)",
-                  [phone, name, hash],
-                  function (insertErr2, result2) {
-                    if (insertErr2) {
-                      return res.redirect(`${customerWebUrl}/?error=${encodeURIComponent(insertErr2.message)}`);
-                    }
-                    const id = result2.insertId;
-                    const token = createToken(id, phone, name);
-                    return res.redirect(`${customerWebUrl}/?token=${encodeURIComponent(token)}`);
-                  }
-                );
-                return;
+                return res.redirect(`${customerWebUrl}/?error=${encodeURIComponent(insertErr.message)}`);
               }
               const id = result.insertId;
-              const token = createToken(id, phone, name);
+              const token = createToken(id, null, name);
               return res.redirect(`${customerWebUrl}/?token=${encodeURIComponent(token)}`);
             }
           );

@@ -10,9 +10,12 @@ const CustomerLogin = (req, res, next) => {
     customer_failed_login_limit,
     customer_user_login_mins_limit,
   } = req.body;
+  if (!phone || String(phone).trim() === "") {
+    return res.json({ status: "ERROR", msg: "Wrong username or password" });
+  }
   Conn.execute(
     "SELECT * FROM customer_user WHERE phone = ?",
-    [phone],
+    [phone.trim()],
     function (error, result) {
       if (error) {
         return res.json({ status: "ERROR", error });

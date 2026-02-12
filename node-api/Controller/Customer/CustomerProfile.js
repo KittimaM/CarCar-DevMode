@@ -3,7 +3,7 @@ var jwt = require("jsonwebtoken");
 const Conn = require("../../db");
 const secret = process.env.SECRET_WORD;
 
-const CustomerGetProfile = (req, res, next) => {
+const CustomerGetProfile = (req, res,) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, secret);
@@ -28,7 +28,7 @@ const CustomerGetProfile = (req, res, next) => {
   }
 };
 
-const CustomerUpdateProfile = (req, res, next) => {
+const CustomerUpdateProfile = (req, res) => {
   try {
     const token = req.headers.authorization.split(" ")[1];
     const decoded = jwt.verify(token, secret);
@@ -36,15 +36,23 @@ const CustomerUpdateProfile = (req, res, next) => {
     const { phone, name } = req.body;
 
     Conn.execute(
-      `UPDATE customer_user SET phone = ?, name = ? WHERE id = ?`,
-      [phone, name, id],
-      function (error, result) {
-        if (error) {
-          return res.json({ status: error.code, msg: error.sqlMessage });
-        } else {
+      "SELECT line_id FROM customer_user WHERE id = ?",
+      [id],
+      function (err, rows) {
+        if (err) return res.json({ status: "ERROR", msg: err.message });
+        const hasLineId = rows && rows.length > 0 && rows[0].line_id != null;
+        const phoneVal = phone === "" || phone == null ? null : phone;
+        const sql = hasLineId
+          ? "UPDATE customer_user SET name = ? WHERE id = ?"
+          : "UPDATE customer_user SET phone = ?, name = ? WHERE id = ?";
+        const params = hasLineId ? [name, id] : [phoneVal, name, id];
+        Conn.execute(sql, params, function (error, result) {
+          if (error) {
+            return res.json({ status: error.code, msg: error.sqlMessage });
+          }
           return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-        }
-      },
+        });
+      }
     );
   } catch (err) {
     return res.json({ status: "ERROR", msg: "token expired" });

@@ -56,7 +56,7 @@ const CustomerProfile = () => {
             </div>
             <div>
               <p className="text-sm text-base-content/70">Phone</p>
-              <p className="font-medium text-base sm:text-lg">{profile.phone}</p>
+              <p className="font-medium text-base sm:text-lg">{profile.phone || "—"}</p>
             </div>
           </div>
           <button
