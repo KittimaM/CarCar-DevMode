@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import {
-  DeleteChannel,
-  GetChannel,
-  UpdateChannelAvailable,
+  GetAllPaymentAccount,
+  UpdatePaymentAccountAvailable,
+  DeletePaymentAccount,
 } from "../../Modules/Api";
-import AdminAddChannel from "./AdminAddChannel";
-import AdminEditChannel from "./AdminEditChannel";
+import AddPaymentAccount from "./AddPaymentAccount";
+import EditPaymentAccount from "./EditPaymentAccount";
 import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
 import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
-const AdminChannel = ({ data }) => {
+const PaymentAccount = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
-  const [channel, setChannel] = useState([]);
+  const [paymentAccount, setPaymentAccount] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -23,96 +23,47 @@ const AdminChannel = ({ data }) => {
     status: "",
   });
 
-  const fetchChannel = () => {
-    GetChannel().then(({ status, msg }) => {
-      if (status == "SUCCESS") {
-        const grouped = msg.reduce((acc, row) => {
-          if (!acc[row.channel_id]) {
-            acc[row.channel_id] = {
-              id: row.channel_id,
-              name: row.channel_name,
-              max_capacity: row.max_capacity,
-              is_available: row.channel_is_available,
-              services: [],
-              schedule: [],
-            };
-          }
-
-          const isServiceExist = acc[row.channel_id].services.some(
-            (s) => s.service_id === row.service_id
-          );
-
-          if (!isServiceExist) {
-            acc[row.channel_id].services.push({
-              service_id: row.service_id,
-              service_name: row.service_name,
-            });
-          }
-
-          if (row.day_of_week) {
-            const hasDay = acc[row.channel_id].schedule.some(
-              (s) => s.day_of_week === row.day_of_week
-            );
-            if (!hasDay) {
-              const st = row.start_time != null ? String(row.start_time).substring(0, 5) : "";
-              const et = row.end_time != null ? String(row.end_time).substring(0, 5) : "";
-              acc[row.channel_id].schedule.push({
-                day_of_week: row.day_of_week,
-                start_time: st,
-                end_time: et,
-              });
-            }
-          }
-
-          return acc;
-        }, {});
-      
-
-        setChannel(Object.values(grouped));
-      } else if (status == "NO DATA") {
-        setChannel([]);
+  const fetchPaymentAccount = () => {
+    GetAllPaymentAccount().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setPaymentAccount(msg);
+      } else if (status === "NO DATA") {
+        setPaymentAccount([]);
       }
     });
   };
 
   useEffect(() => {
-    fetchChannel();
+    fetchPaymentAccount();
   }, []);
 
   const handleDelete = (id) => {
-    DeleteChannel({ id }).then(({ status, msg }) => {
+    DeletePaymentAccount({ id }).then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        fetchPaymentAccount();
+      }
       setNotification({
         show: true,
         message: msg,
         status: status,
       });
-      if (status === "SUCCESS") {
-        fetchChannel();
-      }
       setNotificationKey((prev) => prev + 1);
     });
   };
 
-  const handleAvailable = (id, name, is_available) => {
-    UpdateChannelAvailable({ id: id, is_available: !is_available }).then(
-      ({ status, msg }) => {
-        if (status === "SUCCESS") {
-          setNotification({
-            show: true,
-            message: name + " " + msg,
-            status: status,
-          });
-          fetchChannel();
-        } else if (status === "ERROR") {
-          setNotification({
-            show: true,
-            message: msg,
-            status: status,
-          });
-        }
-        setNotificationKey((prev) => prev + 1);
-      }
-    );
+  const handleAvailable = (id, label, is_available) => {
+    UpdatePaymentAccountAvailable({
+      id,
+      is_available: is_available ? 0 : 1,
+    }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status,
+        message: status === "SUCCESS" ? `${label || "Account"} ${msg}` : msg,
+      });
+      setNotificationKey((k) => k + 1);
+      if (status === "SUCCESS") fetchPaymentAccount();
+    });
   };
 
   return (
@@ -129,11 +80,15 @@ const AdminChannel = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">CHANNEL LIST</li>}
-            {viewMode === "add" && (
-              <li className="text-xl">CREATE NEW CHANNEL</li>
+            {viewMode === "list" && (
+              <li className="text-xl">PAYMENT TYPE LIST</li>
             )}
-            {viewMode === "edit" && <li className="text-xl">EDIT CHANNEL</li>}
+            {viewMode === "add" && (
+              <li className="text-xl">CREATE PAYMENT TYPE</li>
+            )}
+            {viewMode === "edit" && (
+              <li className="text-xl">EDIT PAYMENT TYPE</li>
+            )}
           </ul>
         </div>
       </div>
@@ -145,10 +100,10 @@ const AdminChannel = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchChannel();
+            fetchPaymentAccount();
           }}
         >
-          Channel List
+          Payment Type List
         </button>
 
         {actions.includes("add") && (
@@ -158,14 +113,14 @@ const AdminChannel = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create New Channel
+            + Create Payment Type
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddChannel />}
+      {viewMode === "add" && <AddPaymentAccount />}
       {viewMode === "edit" && editItem && (
-        <AdminEditChannel editItem={editItem} />
+        <EditPaymentAccount editItem={editItem} />
       )}
 
       {viewMode === "list" && (
@@ -173,42 +128,42 @@ const AdminChannel = ({ data }) => {
           <thead>
             <tr>
               <td>Available Status</td>
-              <td>Channel</td>
-              <td>Service(s)</td>
-              <td>Max Capacity</td>
+              <td>Payment Typs</td>
+              <td>Provider</td>
+              <td>Account Name</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
               )}
             </tr>
           </thead>
           <tbody>
-            {channel &&
-              channel.map((c) => (
-                <tr key={c.id}>
+            {paymentAccount &&
+              paymentAccount.map((p) => (
+                <tr key={p.id}>
                   <td>
                     <button
                       type="button"
                       onClick={() =>
-                        handleAvailable(c.id, c.name, c.is_available)
+                        handleAvailable(p.id, p.account_name, p.is_available)
                       }
                     >
-                      {c.is_available === 1 ? (
+                      {p.is_available === 1 ? (
                         <img alt="" height="15" width="15" src={checkIcon} />
                       ) : (
                         <img alt="" height="15" width="15" src={unCheckIcon} />
                       )}
                     </button>
                   </td>
-                  <td>{c.name}</td>
-                  <td>{c.services.map((s) => s.service_name).join(", ")}</td>
-                  <td>{c.max_capacity}</td>
+                  <td>{p.type}</td>
+                  <td>{p.provider}</td>
+                  <td>{p.account_name}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
                       <div className="flex justify-end gap-2">
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDelete(c.id)}
+                            onClick={() => handleDelete(p.id, p.account_name)}
                           >
                             Delete
                           </button>
@@ -217,8 +172,8 @@ const AdminChannel = ({ data }) => {
                           <button
                             className="btn btn-warning"
                             onClick={() => {
-                              setEditItem(c);
                               setViewMode("edit");
+                              setEditItem(p);
                             }}
                           >
                             Edit
@@ -236,4 +191,4 @@ const AdminChannel = ({ data }) => {
   );
 };
 
-export default AdminChannel;
+export default PaymentAccount;

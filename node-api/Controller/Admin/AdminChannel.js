@@ -47,10 +47,21 @@ const AdminAddChannel = (req, res, next) => {
                 res.json({ status: "ERROR", msg: error });
               });
             }
-            const scheduleRows = Array.isArray(schedule)
-              ? schedule.filter((s) => s.start_time && s.end_time)
-              : [];
-            if (scheduleRows.length === 0) {
+
+            const hasValidSchedule = schedule.some(
+              (s) => s.start_time && s.end_time,
+            );
+
+            if (!hasValidSchedule) {
+              return Conn.rollback(() => {
+                res.json({
+                  status: "ERROR",
+                  msg: "A least one schedule is required",
+                });
+              });
+            }
+
+            if (!Array.isArray(schedule) || schedule.length === 0) {
               return Conn.commit(function (error) {
                 if (error) {
                   return Conn.rollback(() => {
@@ -63,7 +74,7 @@ const AdminAddChannel = (req, res, next) => {
                 });
               });
             }
-            const scheduleValues = scheduleRows.map((s) => [
+            const scheduleValues = schedule.map((s) => [
               channel_id,
               s.day_of_week,
               s.start_time,

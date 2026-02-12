@@ -25,6 +25,7 @@ const URLList = {
   RolePermission: "admin/role-permission",
   Province: "admin/province",
   AdminStatusGroup: "admin/status-group",
+  PaymentAccount: "admin/payment-account",
 };
 
 export default URLList;

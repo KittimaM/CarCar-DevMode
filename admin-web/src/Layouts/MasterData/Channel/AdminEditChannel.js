@@ -58,22 +58,16 @@ const AdminEditChannel = ({ editItem }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateChannel(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.name + " " + msg,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(data.name + " " + msg);
-        setData({ ...data, name: null });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
+        setErrors(msg);
+        setData({ ...data, name: editItem.name });
       }
       setNotificationKey((prev) => prev + 1);
     });

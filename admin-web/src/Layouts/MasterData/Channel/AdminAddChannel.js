@@ -39,7 +39,7 @@ const AdminAddChannel = () => {
         setService(
           msg.map((service) => {
             return { value: service.id, label: service.name };
-          })
+          }),
         );
       }
     });
@@ -48,22 +48,16 @@ const AdminAddChannel = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddChannel(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.name + " " + msg,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, name: "" });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -105,7 +99,7 @@ const AdminAddChannel = () => {
                 options={service}
                 placeholder="Pick Service(s)..."
                 value={service.filter((option) =>
-                  (data.service_ids || []).includes(option.value)
+                  (data.service_ids || []).includes(option.value),
                 )}
                 onChange={(selected) =>
                   setData({
@@ -151,7 +145,7 @@ const AdminAddChannel = () => {
                   className="input input-bordered w-full max-w-xs"
                   onChange={(e) => {
                     const next = data.schedule.map((s, i) =>
-                      i === index ? { ...s, start_time: e.target.value } : s
+                      i === index ? { ...s, start_time: e.target.value } : s,
                     );
                     setData({ ...data, schedule: next });
                   }}
@@ -163,7 +157,7 @@ const AdminAddChannel = () => {
                   className="input input-bordered w-full max-w-xs"
                   onChange={(e) => {
                     const next = data.schedule.map((s, i) =>
-                      i === index ? { ...s, end_time: e.target.value } : s
+                      i === index ? { ...s, end_time: e.target.value } : s,
                     );
                     setData({ ...data, schedule: next });
                   }}

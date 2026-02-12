@@ -3,36 +3,38 @@ import URLList from "./URLList";
 
 const initialUrl = process.env.REACT_APP_NODE_API_URL;
 
-const putApi = async (url, jsonData, isUseToken = false) => {
+const putApi = async (url, data, isUseToken = false) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const headers = {};
+    if (!(data instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
     if (isUseToken) {
       const token = sessionStorage.getItem("token");
       headers.Authorization = `Bearer ${token}`;
     }
-    const response = await axios.put(initialUrl + url, jsonData, { headers });
-    const { status, msg } = response.data;
+    const response = await axios.put(initialUrl + url, data, { headers });
+    const { status, msg, qr_code } = response.data || {};
     if (msg === "token expired") {
       sessionStorage.removeItem("token");
     }
-    return { status: status, msg: msg };
+    return { status, msg, ...(qr_code !== undefined && { qr_code }) };
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
 
-const postApi = async (url, jsonData, isUseToken = false) => {
+const postApi = async (url, data, isUseToken = false) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const headers = {};
+    if (!(data instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
     if (isUseToken) {
       const token = sessionStorage.getItem("token");
       headers.Authorization = `Bearer ${token}`;
     }
-    const response = await axios.post(initialUrl + url, jsonData, { headers });
+    const response = await axios.post(initialUrl + url, data, { headers });
     const { status, msg } = response.data;
     if (msg === "token expired") {
       sessionStorage.removeItem("token");
@@ -481,4 +483,24 @@ export const GetAvailableService = () => {
 
 export const UpdateChannelAvailable = (jsonData) => {
   return putApi(URLList.AdminChannel + "/is-available", jsonData);
+};
+
+export const GetAllPaymentAccount = () => {
+  return getApi(URLList.PaymentAccount);
+};
+
+export const PostAddPaymentAccount = (formData) => {
+  return postApi(URLList.PaymentAccount, formData);
+};
+
+export const UpdatePaymentAccount = (formData) => {
+  return putApi(URLList.PaymentAccount, formData);
+};
+
+export const UpdatePaymentAccountAvailable = (jsonData) => {
+  return putApi(URLList.PaymentAccount + "/is-available", jsonData);
+};
+
+export const DeletePaymentAccount = (jsonData) => {
+  return deleteApi(URLList.PaymentAccount, jsonData);
 };
