@@ -44,14 +44,20 @@ const CustomerRegister = () => {
       <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
         <form
           onSubmit={handleRegister}
-          className="max-w-[800px] w-full mx-auto flex flex-col lg:flex-row rounded-lg overflow-hidden lg:shadow-lg"
+          className="max-w-[800px] w-full mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg "
         >
-          {/* ================== IMAGE: on top for smallest/sm/md; left on lg+ ================== */}
-          <div className="block w-full max-w-[400px] mx-auto flex-1 min-h-0 lg:max-w-[400px] lg:mx-0 lg:flex-none lg:shrink-0">
-            <img src={LoginImg} alt="Register" className="w-full h-full object-cover rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none aspect-square lg:aspect-auto lg:min-h-[320px]" />
+          {/* ================== IMAGE: cropped on sm/md; on lg fills same-size grid cell as form ================== */}
+          <div className="block w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0 lg:h-full">
+            <div className="w-full h-[200px] lg:flex-1 lg:min-h-0 lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
+              <img
+                src={LoginImg}
+                alt="Register"
+                className="w-full h-full object-cover object-center lg:object-cover "
+              />
+            </div>
           </div>
 
-          {/* ================== FORM: same layout as Login ================== */}
+          {/* ================== FORM ================== */}
           <div className="bg-white p-4 shadow-lg rounded-b-lg lg:rounded-r-lg lg:rounded-bl-none flex flex-col justify-center w-full max-w-[400px] mx-auto flex-1 min-h-0 gap-y-2 lg:max-w-[400px] lg:flex-none">
             <h1 className="text-4xl font-bold text-center py-6">Register</h1>
 
