@@ -142,7 +142,7 @@ const EditPaymentAccount = ({ editItem }) => {
           </div>
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32 flex flex-col leading-tight">
-              <span>Qr Code</span>
+              <span>Account No.</span>
               <span className="text-xs">(numbers only)</span>
             </span>
             <input
