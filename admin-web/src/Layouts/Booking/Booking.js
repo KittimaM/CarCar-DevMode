@@ -1,19 +1,11 @@
-import React, { useEffect, useState } from "react";
-import Notification from "../../Notification/Notification";
-import AdminAddService from "./AdminAddService";
-import AdminEditService from "./AdminEditService";
-import {
-  DeleteService,
-  GetAllService,
-  UpdateServiceAvailable,
-} from "../../Modules/Api";
-import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
-import unCheckIcon from "../../../assets/red-x-line-icon.svg";
+import React, { useState, useEffect } from "react";
+import Notification from "../Notification/Notification";
+import AddBooking from "./AddBooking";
+import EditBooking from "./EditBooking";
 
-const AdminService = ({ data }) => {
+const Booking = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
-  const [service, setService] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -23,84 +15,7 @@ const AdminService = ({ data }) => {
     status: "",
   });
 
-  const fetchService = () => {
-    GetAllService().then((data) => {
-      const { status, msg } = data;
-      if (status === "SUCCESS") {
-        const grouped = msg.reduce((acc, row) => {
-          if (!acc[row.service_id]) {
-            acc[row.service_id] = {
-              id: row.service_id,
-              name: row.name,
-              size: row.size,
-              car_size_id: row.car_size_id,
-              duration_minute: row.duration_minute,
-              price: row.price,
-              required_staff: row.required_staff,
-              is_available: row.is_available,
-              staffs: [],
-            };
-          }
-          acc[row.service_id].staffs.push({
-            staff_id: row.staff_id,
-            staff_username: row.username,
-          });
-          return acc;
-        }, {});
-        setService(Object.values(grouped));
-      } else if (status === "NO DATA") {
-        setService([]);
-      } else {
-        console.log(data);
-      }
-    });
-  };
-
-  useEffect(() => {
-    fetchService();
-  }, []);
-
-  const handleDeleteService = (id, service) => {
-    DeleteService({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: service + " " + msg,
-          status: status,
-        });
-        fetchService();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: service + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
-      setNotificationKey((prev) => prev + 1);
-    });
-  };
-
-  const handleAvailable = (id, is_available) => {
-    UpdateServiceAvailable({ id: id, is_available: !is_available }).then(
-      ({ status, msg }) => {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-        setNotificationKey((prev) => prev + 1);
-        if (status === "SUCCESS") {
-          fetchService();
-        }
-      },
-    );
-  };
+  useEffect(() => {}, []);
 
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
@@ -116,11 +31,11 @@ const AdminService = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">SERVICE LIST</li>}
+            {viewMode === "list" && <li className="text-xl">BOOKING LIST</li>}
             {viewMode === "add" && (
-              <li className="text-xl">CREATE NEW SERVICE</li>
+              <li className="text-xl">CREATE NEW BOOKING</li>
             )}
-            {viewMode === "edit" && <li className="text-xl">EDIT SERVICE</li>}
+            {viewMode === "edit" && <li className="text-xl">EDIT BOOKING</li>}
           </ul>
         </div>
       </div>
@@ -132,10 +47,9 @@ const AdminService = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchService();
           }}
         >
-          Service List
+          Booking List
         </button>
 
         {actions.includes("add") && (
@@ -145,15 +59,13 @@ const AdminService = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create New Service
+            + Create New Booking
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddService />}
-      {viewMode === "edit" && editItem && (
-        <AdminEditService editItem={editItem} />
-      )}
+      {viewMode === "add" && <AddBooking />}
+      {viewMode === "edit" && editItem && <EditBooking editItem={editItem} />}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">
@@ -175,13 +87,15 @@ const AdminService = ({ data }) => {
               </thead>
 
               <tbody>
-                {service.length > 0 ? (
+                {/* {service &&
                   service.map((s) => (
                     <tr key={s.service_id}>
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleAvailable(s.id, s.is_available)}
+                          onClick={() =>
+                            handleAvailable(s.id, s.name, s.is_available)
+                          }
                         >
                           {s.is_available === 1 ? (
                             <img
@@ -239,21 +153,7 @@ const AdminService = ({ data }) => {
                         </td>
                       )}
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td
-                      colSpan={
-                        actions.includes("edit") || actions.includes("delete")
-                          ? 8
-                          : 7
-                      }
-                      className="text-center"
-                    >
-                      No Service Available
-                    </td>
-                  </tr>
-                )}
+                  ))} */}
               </tbody>
             </table>
           </div>
@@ -263,4 +163,4 @@ const AdminService = ({ data }) => {
   );
 };
 
-export default AdminService;
+export default Booking;

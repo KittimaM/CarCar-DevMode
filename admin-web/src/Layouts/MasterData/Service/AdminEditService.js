@@ -38,7 +38,7 @@ const AdminEditService = ({ editItem }) => {
         setStaff(
           msg.map((staff) => {
             return { value: staff.id, label: staff.name };
-          })
+          }),
         );
       }
     });
@@ -47,24 +47,22 @@ const AdminEditService = ({ editItem }) => {
   const handleEditService = (e) => {
     e.preventDefault();
     UpdateService(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.name + " " + msg,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(data.name + " " + msg);
-        setData({ ...data, service: null });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
+        setErrors(msg);
+        setData({
+          ...data,
+          name: editItem.name,
+          car_size_id: editItem.car_size_id,
         });
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -79,6 +77,7 @@ const AdminEditService = ({ editItem }) => {
       )}
       <form onSubmit={handleEditService}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
+          {errors && <p className="text-red-500 text-md">{errors}</p>}
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Service</span>
             <input
@@ -93,7 +92,7 @@ const AdminEditService = ({ editItem }) => {
               required
             />
           </div>
-          {errors && <p className="text-red-500 text-md">{errors}</p>}
+
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Car Size</span>
             <select
@@ -175,7 +174,7 @@ const AdminEditService = ({ editItem }) => {
                 options={staff}
                 placeholder="Pick Staff(s)..."
                 value={staff.filter((option) =>
-                  (data.staff_ids || []).includes(option.value)
+                  (data.staff_ids || []).includes(option.value),
                 )}
                 onChange={(selected) =>
                   setData({

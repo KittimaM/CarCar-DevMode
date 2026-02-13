@@ -54,7 +54,7 @@ const PaymentAccount = ({ data }) => {
   const handleAvailable = (id, label, is_available) => {
     UpdatePaymentAccountAvailable({
       id,
-      is_available: is_available ? 0 : 1,
+      is_available: !is_available,
     }).then(({ status, msg }) => {
       setNotification({
         show: true,
@@ -137,7 +137,7 @@ const PaymentAccount = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {paymentAccount &&
+            {paymentAccount.length > 0 ? (
               paymentAccount.map((p) => (
                 <tr key={p.id}>
                   <td>
@@ -183,7 +183,21 @@ const PaymentAccount = ({ data }) => {
                     </td>
                   )}
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={
+                    actions.includes("edit") || actions.includes("delete")
+                      ? 4
+                      : 3
+                  }
+                  className="text-center"
+                >
+                  No Payment Account Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}

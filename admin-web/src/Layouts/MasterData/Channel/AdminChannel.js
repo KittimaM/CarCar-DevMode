@@ -39,7 +39,7 @@ const AdminChannel = ({ data }) => {
           }
 
           const isServiceExist = acc[row.channel_id].services.some(
-            (s) => s.service_id === row.service_id
+            (s) => s.service_id === row.service_id,
           );
 
           if (!isServiceExist) {
@@ -51,11 +51,17 @@ const AdminChannel = ({ data }) => {
 
           if (row.day_of_week) {
             const hasDay = acc[row.channel_id].schedule.some(
-              (s) => s.day_of_week === row.day_of_week
+              (s) => s.day_of_week === row.day_of_week,
             );
             if (!hasDay) {
-              const st = row.start_time != null ? String(row.start_time).substring(0, 5) : "";
-              const et = row.end_time != null ? String(row.end_time).substring(0, 5) : "";
+              const st =
+                row.start_time != null
+                  ? String(row.start_time).substring(0, 5)
+                  : "";
+              const et =
+                row.end_time != null
+                  ? String(row.end_time).substring(0, 5)
+                  : "";
               acc[row.channel_id].schedule.push({
                 day_of_week: row.day_of_week,
                 start_time: st,
@@ -66,7 +72,6 @@ const AdminChannel = ({ data }) => {
 
           return acc;
         }, {});
-      
 
         setChannel(Object.values(grouped));
       } else if (status == "NO DATA") {
@@ -96,22 +101,16 @@ const AdminChannel = ({ data }) => {
   const handleAvailable = (id, name, is_available) => {
     UpdateChannelAvailable({ id: id, is_available: !is_available }).then(
       ({ status, msg }) => {
-        if (status === "SUCCESS") {
-          setNotification({
-            show: true,
-            message: name + " " + msg,
-            status: status,
-          });
-          fetchChannel();
-        } else if (status === "ERROR") {
-          setNotification({
-            show: true,
-            message: msg,
-            status: status,
-          });
-        }
+        setNotification({
+          show: true,
+          message: msg,
+          status: status,
+        });
         setNotificationKey((prev) => prev + 1);
-      }
+        if (status === "SUCCESS") {
+          fetchChannel();
+        }
+      },
     );
   };
 
@@ -182,7 +181,7 @@ const AdminChannel = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {channel &&
+            {channel.length > 0 ? (
               channel.map((c) => (
                 <tr key={c.id}>
                   <td>
@@ -228,7 +227,14 @@ const AdminChannel = ({ data }) => {
                     </td>
                   )}
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={actions.includes("edit") || actions.includes("delete") ? 5 : 4} className="text-center">
+                  No Channel Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}

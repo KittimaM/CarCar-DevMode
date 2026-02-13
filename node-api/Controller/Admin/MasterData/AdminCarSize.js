@@ -1,4 +1,4 @@
-const Conn = require("../../db");
+const Conn = require("../../../db");
 
 const AdminCarSize = (req, res, next) => {
   Conn.execute("SELECT * FROM car_size", function (error, results) {
@@ -28,7 +28,7 @@ const AdminAddCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Added" });
       }
-    }
+    },
   );
 };
 
@@ -62,7 +62,7 @@ const AdminUpdateCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Upated" });
       }
-    }
+    },
   );
 };
 
@@ -77,7 +77,7 @@ const UpdateCarSizeAvailable = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
-    }
+    },
   );
 };
 
@@ -94,7 +94,7 @@ const GetCarSizeById = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: result[0] });
       }
-    }
+    },
   );
 };
 
@@ -110,7 +110,7 @@ const GetAvailableCarSize = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: results });
       }
-    }
+    },
   );
 };
 

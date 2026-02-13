@@ -1,5 +1,5 @@
 var jwt = require("jsonwebtoken");
-const Conn = require("../../db");
+const Conn = require("../../../db");
 const secret = process.env.SECRET_WORD;
 
 const AdminBooking = (req, res, next) => {

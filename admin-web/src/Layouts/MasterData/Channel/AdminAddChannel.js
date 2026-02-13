@@ -38,7 +38,10 @@ const AdminAddChannel = () => {
       if (status === "SUCCESS") {
         setService(
           msg.map((service) => {
-            return { value: service.id, label: service.name };
+            return {
+              value: service.id,
+              label: service.name + " - " + service.size,
+            };
           }),
         );
       }

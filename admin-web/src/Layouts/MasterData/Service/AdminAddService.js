@@ -41,7 +41,7 @@ const AdminAddService = () => {
         setStaff(
           msg.map((staff) => {
             return { value: staff.id, label: staff.name };
-          })
+          }),
         );
       }
     });
@@ -50,12 +50,13 @@ const AdminAddService = () => {
   const handleAddService = (e) => {
     e.preventDefault();
     PostAddService(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.name + " " + msg,
-        });
         setErrors([]);
         setData({
           name: "",
@@ -66,16 +67,9 @@ const AdminAddService = () => {
           staff_ids: [],
         });
       } else if (status === "WARNING") {
-        setErrors(data.name + " " + msg);
-        setData({ ...data, name: "" });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
+        setErrors(msg);
+        setData({ ...data, name: "", car_size_id: "" });
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -90,6 +84,7 @@ const AdminAddService = () => {
       )}
       <form onSubmit={handleAddService}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
+          {errors && <p className="text-red-500 text-md">{errors}</p>}
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Service</span>
             <input
@@ -104,7 +99,7 @@ const AdminAddService = () => {
               required
             />
           </div>
-          {errors && <p className="text-red-500 text-md">{errors}</p>}
+
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Car Size</span>
             <select
@@ -186,7 +181,7 @@ const AdminAddService = () => {
                 options={staff}
                 placeholder="Pick Staff(s)..."
                 value={staff.filter((option) =>
-                  (data.staff_ids || []).includes(option.value)
+                  (data.staff_ids || []).includes(option.value),
                 )}
                 onChange={(selected) =>
                   setData({
