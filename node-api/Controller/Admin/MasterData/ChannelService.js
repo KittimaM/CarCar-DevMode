@@ -12,16 +12,10 @@ const AdminService = (req, res, next) => {
       } else {
         return res.json({ status: "SUCCESS", msg: results });
       }
-    }
+    },
   );
 };
 
-
 module.exports = {
   AdminService,
-  AdminAddService,
-  AdminDeleteService,
-  AdminUpdateService,
-  UpdateServiceAvailable,
-  GetAvailableService,
 };

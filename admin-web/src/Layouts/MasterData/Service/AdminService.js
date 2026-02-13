@@ -60,29 +60,17 @@ const AdminService = ({ data }) => {
     fetchService();
   }, []);
 
-  const handleDeleteService = (id, service) => {
-    DeleteService({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: service + " " + msg,
-          status: status,
-        });
-        fetchService();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: service + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
+  const handleDelete = (id) => {
+    DeleteService({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchService();
+      }
     });
   };
 
@@ -217,9 +205,7 @@ const AdminService = ({ data }) => {
                             {actions.includes("delete") && (
                               <button
                                 className="btn btn-error text-white"
-                                onClick={() =>
-                                  handleDeleteService(s.id, s.name)
-                                }
+                                onClick={() => handleDelete(s.id)}
                               >
                                 Delete
                               </button>

@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `payment_type`;
 
 CREATE TABLE IF NOT EXISTS `payment_type` (
@@ -6,3 +8,5 @@ CREATE TABLE IF NOT EXISTS `payment_type` (
   `name` VARCHAR(50) NOT NULL,
   `is_online` TINYINT(1) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `channel`;
 
 CREATE TABLE IF NOT EXISTS `channel`  (
@@ -6,3 +8,5 @@ CREATE TABLE IF NOT EXISTS `channel`  (
   `max_capacity` INT NOT NULL,
   `is_available` TINYINT DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;
