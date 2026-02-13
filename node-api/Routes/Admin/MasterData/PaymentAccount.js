@@ -5,8 +5,8 @@ const {
   PutUpdatePaymentAccount,
   UpdatePaymentAccountAvailable,
   DeletePaymentAccount,
-} = require("../../../../Controller/Admin/MasterData/PaymentAccount");
-const uploadPaymentQr = require("../../../../Middleware/uploadPaymentQr");
+} = require("../../../Controller/Admin/MasterData/PaymentAccount");
+const uploadPaymentQr = require("../../../Middleware/uploadPaymentQr");
 
 var router = express.Router();
 

@@ -5,7 +5,7 @@ const {
   AdminDeleteChannel,
   AdminUpdateChannel,
   UpdateChannelAvailable,
-} = require("../../Controller/Admin/MasterData/AdminChannel");
+} = require("../../../Controller/Admin/MasterData/AdminChannel");
 var router = express.Router();
 
 router.get("/", AdminGetChannel);

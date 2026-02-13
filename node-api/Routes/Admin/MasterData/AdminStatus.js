@@ -4,7 +4,7 @@ const {
   AdminAddStatus,
   AdminDeleteStatus,
   AdminUpdateStatus,
-} = require("../../Controller/Admin/AdminStatus");
+} = require("../../../Controller/Admin/MasterData/AdminStatus");
 var router = express.Router();
 
 router.get("/", AdminGetAllStatus);
