@@ -46,6 +46,7 @@ const AdminChannel = ({ data }) => {
             acc[row.channel_id].services.push({
               service_id: row.service_id,
               service_name: row.service_name,
+              car_size: row.car_size,
             });
           }
 
@@ -199,7 +200,14 @@ const AdminChannel = ({ data }) => {
                     </button>
                   </td>
                   <td>{c.name}</td>
-                  <td>{c.services.map((s) => s.service_name).join(", ")}</td>
+                  <td>
+                    {c.services.map((s, i) => (
+                      <span key={s.service_id}>
+                        {s.service_name}
+                        <span className="text-gray-500"> ({s.car_size}), </span>
+                      </span>
+                    ))}
+                  </td>
                   <td>{c.max_capacity}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
@@ -230,7 +238,14 @@ const AdminChannel = ({ data }) => {
               ))
             ) : (
               <tr>
-                <td colSpan={actions.includes("edit") || actions.includes("delete") ? 5 : 4} className="text-center">
+                <td
+                  colSpan={
+                    actions.includes("edit") || actions.includes("delete")
+                      ? 5
+                      : 4
+                  }
+                  className="text-center"
+                >
                   No Channel Available
                 </td>
               </tr>
