@@ -1,4 +1,4 @@
-const Conn = require("../../db");
+const Conn = require("../../../db");
 
 const AdminGetAllStatus = (req, res, next) => {
   Conn.execute(

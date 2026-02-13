@@ -1,4 +1,4 @@
-const Conn = require("../../db");
+const Conn = require("../../../db");
 
 const AdminGetAllStatusGroup = (req, res, next) => {
   Conn.execute("SELECT * FROM status_group", function (error, results) {

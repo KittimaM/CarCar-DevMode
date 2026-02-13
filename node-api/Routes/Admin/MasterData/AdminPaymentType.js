@@ -4,7 +4,7 @@ const {
   AdminGetAllPaymentType,
   AdminUpdatePaymentType,
   AdminDeletePaymentType,
-} = require("../../Controller/Admin/AdminPaymentType");
+} = require("../../../Controller/Admin/AdminPaymentType");
 var router = express.Router();
 
 router.post("/", AdminAddPaymentType);

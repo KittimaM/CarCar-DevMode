@@ -4,7 +4,7 @@ const {
   AdminAddStatusGroup,
   AdminDeleteStatusGroup,
   AdminUpdateStatusGroup,
-} = require("../../Controller/Admin/AdminStatusGroup");
+} = require("../../../Controller/Admin/MasterData/AdminStatusGroup");
 var router = express.Router();
 
 router.get("/", AdminGetAllStatusGroup);

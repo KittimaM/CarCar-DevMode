@@ -43,13 +43,13 @@ app.use("/admin/customer-car", AdminCustomerCarRoute);
 const AdminCustomerRoute = require("./Routes/Admin/AdminUser/AdminCustomer");
 app.use("/admin/customer", AdminCustomerRoute);
 
-const AdminStatusRoute = require("./Routes/Admin/AdminStatus");
+const AdminStatusRoute = require("./Routes/Admin/MasterData/AdminStatus");
 app.use("/admin/status", AdminStatusRoute);
 
-const AdminStatusGroupRoute = require("./Routes/Admin/AdminStatusGroup");
+const AdminStatusGroupRoute = require("./Routes/Admin/MasterData/AdminStatusGroup");
 app.use("/admin/status-group", AdminStatusGroupRoute);
 
-const AdminChannelRoute = require("./Routes/Admin/AdminChannel");
+const AdminChannelRoute = require("./Routes/Admin/MasterData/AdminChannel");
 app.use("/admin/channel", AdminChannelRoute);
 
 const AdminProvinceRoute = require("./Routes/Admin/AdminProvince");
@@ -67,10 +67,10 @@ app.use("/admin/onleave", AdminOnLeaveRoute);
 const AdminAccountRoute = require("./Routes/Admin/AdminAccount");
 app.use("/admin/account", AdminAccountRoute);
 
-const AdminPaymentTypeRoute = require("./Routes/Admin/AdminPaymentType");
+const AdminPaymentTypeRoute = require("./Routes/Admin/MasterData/AdminPaymentType");
 app.use("/admin/paymenttype", AdminPaymentTypeRoute);
 
-const AdminCarSizeRoute = require("./Routes/Admin/AdminCarSize");
+const AdminCarSizeRoute = require("./Routes/Admin/MasterData/AdminCarSize");
 app.use("/admin/carsize", AdminCarSizeRoute);
 
 const AdminLoginRoute = require("./Routes/Admin/AdminLogin");
@@ -82,7 +82,7 @@ app.use("/admin/booking", AdminBookingRoute);
 const AdminUserRoute = require("./Routes/Admin/AdminUser/AdminUser");
 app.use("/admin/user", AdminUserRoute);
 
-const AdminServiceRoute = require("./Routes/Admin/AdminService");
+const AdminServiceRoute = require("./Routes/Admin/MasterData/AdminService");
 app.use("/admin/service", AdminServiceRoute);
 
 const AdminPermissionRoute = require("./Routes/Admin/AdminPermission");
@@ -97,7 +97,7 @@ app.use("/admin/module", ModulesRoutes);
 const RolePermissionRoute = require("./Routes/Admin/Setting/AccessConfig/RolePermission");
 app.use("/admin/role-permission", RolePermissionRoute);
 
-const PaymentAccountRoute = require("./Routes/Admin/MasterData/PaymentAccount/PaymentAccount");
+const PaymentAccountRoute = require("./Routes/Admin/MasterData/PaymentAccount");
 app.use("/admin/payment-account", PaymentAccountRoute);
 
 app.listen(process.env.API_PORT, () => {
