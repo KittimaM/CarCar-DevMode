@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `booking`;
 
 CREATE TABLE IF NOT EXISTS `booking` (
@@ -15,3 +17,5 @@ CREATE TABLE IF NOT EXISTS `booking` (
   FOREIGN KEY (service_id) REFERENCES service(id),
   FOREIGN KEY (status_id) REFERENCES status(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

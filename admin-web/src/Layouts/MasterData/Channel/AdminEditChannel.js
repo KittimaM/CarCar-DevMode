@@ -48,8 +48,11 @@ const AdminEditChannel = ({ editItem }) => {
       if (status === "SUCCESS") {
         setService(
           msg.map((service) => {
-            return { value: service.id, label: service.name };
-          })
+            return {
+              value: service.id,
+              label: service.name + " - " + service.size,
+            };
+          }),
         );
       }
     });
@@ -110,7 +113,7 @@ const AdminEditChannel = ({ editItem }) => {
                 options={service}
                 placeholder="Pick Service(s)..."
                 value={service.filter((option) =>
-                  (data.service_ids || []).includes(option.value)
+                  (data.service_ids || []).includes(option.value),
                 )}
                 onChange={(selected) =>
                   setData({
@@ -156,7 +159,7 @@ const AdminEditChannel = ({ editItem }) => {
                   className="input input-bordered w-full max-w-xs"
                   onChange={(e) => {
                     const next = data.schedule.map((s, i) =>
-                      i === index ? { ...s, start_time: e.target.value } : s
+                      i === index ? { ...s, start_time: e.target.value } : s,
                     );
                     setData({ ...data, schedule: next });
                   }}
@@ -168,7 +171,7 @@ const AdminEditChannel = ({ editItem }) => {
                   className="input input-bordered w-full max-w-xs"
                   onChange={(e) => {
                     const next = data.schedule.map((s, i) =>
-                      i === index ? { ...s, end_time: e.target.value } : s
+                      i === index ? { ...s, end_time: e.target.value } : s,
                     );
                     setData({ ...data, schedule: next });
                   }}
@@ -190,7 +193,7 @@ const AdminEditChannel = ({ editItem }) => {
                   max_capacity: editItem.max_capacity,
                   is_available: editItem.is_available,
                   service_ids: (editItem.services || []).map(
-                    (s) => s.service_id
+                    (s) => s.service_id,
                   ),
                   schedule: buildScheduleFromEditItem(editItem),
                 });

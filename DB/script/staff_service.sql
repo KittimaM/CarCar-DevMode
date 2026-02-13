@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `staff_service`;
 
 CREATE TABLE IF NOT EXISTS `staff_service` (
@@ -6,3 +8,5 @@ CREATE TABLE IF NOT EXISTS `staff_service` (
   FOREIGN KEY (staff_id) REFERENCES staff_user(id),
   FOREIGN KEY (service_id) REFERENCES service(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

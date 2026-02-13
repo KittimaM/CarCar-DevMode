@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `customer_user`;
 
 CREATE TABLE IF NOT EXISTS `customer_user`  (
@@ -9,3 +11,5 @@ CREATE TABLE IF NOT EXISTS `customer_user`  (
   `is_locked` TINYINT DEFAULT 0,
   `locked_reason` VARCHAR(255)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

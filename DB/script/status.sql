@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `status`;
 
 CREATE TABLE IF NOT EXISTS `status` (
@@ -7,3 +9,5 @@ CREATE TABLE IF NOT EXISTS `status` (
   UNIQUE KEY `uniq_status_code_group` (`code`, `status_group_id`),
   FOREIGN KEY (`status_group_id`) REFERENCES `status_group`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;

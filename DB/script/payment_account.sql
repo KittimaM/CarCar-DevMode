@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `payment_account`;
 
 CREATE TABLE IF NOT EXISTS `payment_account` (
@@ -10,3 +12,5 @@ CREATE TABLE IF NOT EXISTS `payment_account` (
   `is_available` TINYINT(1) DEFAULT 1,
   FOREIGN KEY (`payment_type_id`) REFERENCES `payment_type`(`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+SET FOREIGN_KEY_CHECKS = 1;
