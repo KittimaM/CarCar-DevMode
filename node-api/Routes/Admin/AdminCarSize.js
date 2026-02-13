@@ -7,7 +7,7 @@ const {
   UpdateCarSizeAvailable,
   GetCarSizeById,
   GetAvailableCarSize,
-} = require("../../Controller/Admin/AdminCarSize");
+} = require("../../Controller/Admin/MasterData/AdminCarSize");
 var router = express.Router();
 
 router.get("/", AdminCarSize);

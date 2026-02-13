@@ -13,7 +13,7 @@ const AdminStaff = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -32,36 +32,22 @@ const AdminStaff = ({ data }) => {
       if (status === "SUCCESS") {
         setUser(msg);
       } else if (status == "NO DATA") {
-        setUser(null);
-      } else {
-        console.log(data);
+        setUser([]);
       }
     });
   };
 
-  const handleDeleteUser = (id, username) => {
-    DeleteStaffUser({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: username + " " + msg,
-          status: status,
-        });
-        fetchStaff();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: username + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
+  const handleDelete = (id) => {
+    DeleteStaffUser({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchStaff();
+      }
     });
   };
 
@@ -153,7 +139,7 @@ const AdminStaff = ({ data }) => {
                 </tr>
               </thead>
               <tbody>
-                {user &&
+                {user.length > 0 ? (
                   user.map((u) => (
                     <tr key={u.id}>
                       <td>
@@ -183,9 +169,7 @@ const AdminStaff = ({ data }) => {
                               sessionStorage.getItem("staff_id") != u.id && (
                                 <button
                                   className="btn btn-error text-white"
-                                  onClick={() =>
-                                    handleDeleteUser(u.id, u.username)
-                                  }
+                                  onClick={() => handleDelete(u.id)}
                                 >
                                   Delete
                                 </button>
@@ -205,7 +189,21 @@ const AdminStaff = ({ data }) => {
                         </td>
                       )}
                     </tr>
-                  ))}
+                  ))
+                ) : (
+                  <tr>
+                    <td
+                      colSpan={
+                        actions.includes("edit") || actions.includes("delete")
+                          ? 6
+                          : 5
+                      }
+                      className="text-center"
+                    >
+                      No Staff Available
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>

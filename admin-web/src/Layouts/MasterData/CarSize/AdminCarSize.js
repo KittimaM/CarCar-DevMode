@@ -14,7 +14,7 @@ const AdminCarSize = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
-  const [size, setSize] = useState("");
+  const [size, setSize] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -28,7 +28,7 @@ const AdminCarSize = ({ data }) => {
       if (status === "SUCCESS") {
         setSize(msg);
       } else if (status == "NO DATA") {
-        setSize();
+        setSize([]);
       }
     });
   };
@@ -55,33 +55,21 @@ const AdminCarSize = ({ data }) => {
           });
         }
         setNotificationKey((prev) => prev + 1);
-      }
+      },
     );
   };
 
-  const handleDelete = (id, size) => {
-    DeleteCarSize({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: `${size} is successfully deleted`,
-          status: status,
-        });
-        fetchCarSize();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
+  const handleDelete = (id) => {
+    DeleteCarSize({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchCarSize();
+      }
     });
   };
 
@@ -150,7 +138,7 @@ const AdminCarSize = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {size &&
+            {size.length > 0 ? (
               size.map((c) => (
                 <tr key={c.id}>
                   <td>
@@ -174,7 +162,7 @@ const AdminCarSize = ({ data }) => {
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDelete(c.id, c.size)}
+                            onClick={() => handleDelete(c.id)}
                           >
                             Delete
                           </button>
@@ -194,7 +182,21 @@ const AdminCarSize = ({ data }) => {
                     </td>
                   )}
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={
+                    actions.includes("edit") || actions.includes("delete")
+                      ? 3
+                      : 2
+                  }
+                  className="text-center"
+                >
+                  No Car Size Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}

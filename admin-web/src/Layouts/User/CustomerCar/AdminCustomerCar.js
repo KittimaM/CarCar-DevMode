@@ -8,8 +8,8 @@ const AdminCustomerCar = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
-  const [customerCarList, setCustomerCarList] = useState();
-  const [editItem, setEditItem] = useState(null);
+  const [customerCarList, setCustomerCarList] = useState([]);
+  const [editItem, setEditItem] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
@@ -22,7 +22,7 @@ const AdminCustomerCar = ({ data }) => {
       if (status === "SUCCESS") {
         setCustomerCarList(msg);
       } else if (status === "NO DATA") {
-        setCustomerCarList(null);
+        setCustomerCarList([]);
       }
     });
   };
@@ -31,29 +31,17 @@ const AdminCustomerCar = ({ data }) => {
     fetchCustomerCar();
   }, []);
 
-  const handleDeleteCustomerCar = (id, plate_no) => {
-    DeleteAdminCustomerCar({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: plate_no + " " + msg,
-          status: status,
-        });
-        fetchCustomerCar();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: plate_no + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
+  const handleDelete = (id) => {
+    DeleteAdminCustomerCar({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchCustomerCar();
+      }
     });
   };
 
@@ -126,7 +114,7 @@ const AdminCustomerCar = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {customerCarList &&
+            {customerCarList.length > 0 ? (
               customerCarList.map((c) => (
                 <tr key={c.id}>
                   <td>{c.phone}</td>
@@ -143,9 +131,7 @@ const AdminCustomerCar = ({ data }) => {
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() =>
-                              handleDeleteCustomerCar(c.car_id, c.plate_no)
-                            }
+                            onClick={() => handleDelete(c.id)}
                           >
                             Delete
                           </button>
@@ -165,7 +151,14 @@ const AdminCustomerCar = ({ data }) => {
                     </td>
                   )}
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={actions.includes("edit") || actions.includes("delete") ? 9 : 8} className="text-center">
+                  No Car Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}

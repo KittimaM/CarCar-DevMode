@@ -6,7 +6,7 @@ const {
   AdminUpdateService,
   UpdateServiceAvailable,
   GetAvailableService,
-} = require("../../Controller/Admin/AdminService");
+} = require("../../Controller/Admin/MasterData/AdminService");
 var router = express.Router();
 
 router.get("/", AdminService);

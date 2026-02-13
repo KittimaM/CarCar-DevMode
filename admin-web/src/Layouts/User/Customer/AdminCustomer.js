@@ -13,7 +13,7 @@ const AdminCustomer = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
   const [viewMode, setViewMode] = useState("list");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState([]);
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -27,7 +27,7 @@ const AdminCustomer = ({ data }) => {
       if (status === "SUCCESS") {
         setUser(msg);
       } else if (status == "NO DATA") {
-        setUser(null);
+        setUser([]);
       } else {
         console.log(data);
       }
@@ -38,48 +38,30 @@ const AdminCustomer = ({ data }) => {
     fetchCustomer();
   }, []);
 
-  const handleDeleteUser = (id, name) => {
-    DeleteAdminCustomer({ id: id }).then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: name + " " + msg,
-          status: status,
-        });
-        fetchCustomer();
-      } else if (status === "WARNING") {
-        setNotification({
-          show: true,
-          message: name + " " + msg,
-          status: status,
-        });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-      }
+  const handleDelete = (id) => {
+    DeleteAdminCustomer({ id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchCustomer();
+      }
     });
   };
 
-  const handleUnLock = (id, name) => {
-    UpdateAdminUnlockCustomer({ id: id }).then((data) => {
-      const { status, msg } = data;
+  const handleUnLock = (id) => {
+    UpdateAdminUnlockCustomer({ id: id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
+      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: name + " " + msg,
-          status: status,
-        });
         fetchCustomer();
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
       }
     });
   };
@@ -149,14 +131,11 @@ const AdminCustomer = ({ data }) => {
             </tr>
           </thead>
           <tbody>
-            {user &&
+            {user.length > 0 ? (
               user.map((u) => (
                 <tr key={u.id}>
                   <td>
-                    <button
-                      type="button"
-                      onClick={() => handleUnLock(u.id, u.name)}
-                    >
+                    <button type="button" onClick={() => handleUnLock(u.id)}>
                       {u.is_locked === 1 && (
                         <img alt="" height="12" width="12" src={lockedIcon} />
                       )}
@@ -171,7 +150,7 @@ const AdminCustomer = ({ data }) => {
                         {actions.includes("delete") && (
                           <button
                             className="btn btn-error text-white"
-                            onClick={() => handleDeleteUser(u.id, u.name)}
+                            onClick={() => handleDelete(u.id)}
                           >
                             Delete
                           </button>
@@ -191,7 +170,14 @@ const AdminCustomer = ({ data }) => {
                     </td>
                   )}
                 </tr>
-              ))}
+              ))
+            ) : (
+              <tr>
+                <td colSpan={actions.includes("edit") || actions.includes("delete") ? 5 : 4} className="text-center">
+                  No Customer Available
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       )}
