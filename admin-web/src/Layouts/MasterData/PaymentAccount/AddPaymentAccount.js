@@ -58,15 +58,6 @@ const AddPaymentAccount = () => {
     PostAddPaymentAccount(formData).then(({ status, msg }) => {
       setNotification({ show: true, status, message: msg });
       setNotificationKey((k) => k + 1);
-      if (status === "SUCCESS") {
-        setData({
-          payment_type_id: "",
-          provider: "",
-          account_no: "",
-          account_name: "",
-        });
-        setQrCodeFile(null);
-      }
     });
   };
 

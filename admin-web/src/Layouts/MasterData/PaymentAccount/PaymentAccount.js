@@ -143,6 +143,7 @@ const PaymentAccount = ({ data }) => {
                   <td>
                     <button
                       type="button"
+                      disabled={!actions.includes("edit")}
                       onClick={() =>
                         handleAvailable(p.id, p.account_name, p.is_available)
                       }

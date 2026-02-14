@@ -1,88 +1,35 @@
 const Conn = require("../../../db");
 
 const AdminService = (req, res, next) => {
-  Conn.execute(
-    "SELECT ss.service_id, ss.staff_id, s.name, s.car_size_id, cs.size, s.duration_minute, s.price, s.required_staff, s.is_available, su.username FROM service s JOIN staff_service ss ON ss.service_id = s.id JOIN staff_user su ON su.id = ss.staff_id JOIN car_size cs ON cs.id = s.car_size_id",
-    function (error, results) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      }
-      if (results.length === 0) {
-        return res.json({ status: "NO DATA", msg: "NO DATA" });
-      } else {
-        return res.json({ status: "SUCCESS", msg: results });
-      }
-    },
-  );
+  Conn.execute("SELECT * FROM service", function (error, results) {
+    if (error) {
+      return res.json({ status: "ERROR", msg: error });
+    }
+    if (results.length === 0) {
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
+    }
+    return res.json({ status: "SUCCESS", msg: results });
+  });
 };
 
 const AdminAddService = (req, res, next) => {
-  const {
-    name,
-    car_size_id,
-    duration_minute,
-    price,
-    required_staff,
-    staff_ids,
-  } = req.body;
-  Conn.getConnection(function (err, connection) {
-    if (err) {
-      return res.json({ status: "ERROR", msg: err });
-    }
-    connection.beginTransaction(function (error) {
+  const { name } = req.body;
+  Conn.execute(
+    "INSERT INTO service (name) VALUES (?)",
+    [name],
+    function (error) {
       if (error) {
-        connection.release();
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "This Service Already Exists",
+          });
+        }
         return res.json({ status: "ERROR", msg: error });
       }
-      connection.execute(
-        "INSERT INTO service (name, car_size_id, duration_minute, price, required_staff) VALUES (?,?,?,?,?)",
-        [name, car_size_id, duration_minute, price, required_staff],
-        function (error, result) {
-          if (error) {
-            return connection.rollback(() => {
-              connection.release();
-              if (error.code === "ER_DUP_ENTRY") {
-                res.json({
-                  status: "WARNING",
-                  msg: "This Service Already Exists",
-                });
-              } else {
-                res.json({ status: "ERROR", msg: error });
-              }
-            });
-          }
-          const service_id = result.insertId;
-          const values = staff_ids.map((staff) => [service_id, staff]);
-
-          connection.query(
-            "INSERT INTO staff_service (service_id, staff_id) VALUES ?",
-            [values],
-            function (error) {
-              if (error) {
-                return connection.rollback(() => {
-                  connection.release();
-                  res.json({ status: "ERROR", msg: error });
-                });
-              }
-              connection.commit(function (error) {
-                if (error) {
-                  return connection.rollback(() => {
-                    connection.release();
-                    res.json({ status: "ERROR", msg: error });
-                  });
-                }
-                connection.release();
-                res.json({
-                  status: "SUCCESS",
-                  msg: "Successfully Added",
-                });
-              });
-            },
-          );
-        },
-      );
-    });
-  });
+      return res.json({ status: "SUCCESS", msg: "Successfully Added" });
+    },
+  );
 };
 
 const AdminDeleteService = (req, res, next) => {
@@ -106,6 +53,18 @@ const AdminDeleteService = (req, res, next) => {
               res.json({ status: "ERROR", msg: error });
             });
           }
+          connection.execute(
+            "DELETE FROM service_car_size WHERE service_id = ?",
+            [id],
+            function (error) {
+              if (error) {
+                return connection.rollback(() => {
+                  connection.release();
+                  res.json({ status: "ERROR", msg: error });
+                });
+              }
+            },
+          );
           connection.execute(
             "DELETE FROM service WHERE id = ?",
             [id],
@@ -142,83 +101,24 @@ const AdminDeleteService = (req, res, next) => {
 };
 
 const AdminUpdateService = (req, res, next) => {
-  const {
-    id,
-    name,
-    car_size_id,
-    duration_minute,
-    price,
-    required_staff,
-    staff_ids,
-  } = req.body;
-  Conn.getConnection(function (err, connection) {
-    if (err) {
-      return res.json({ status: "ERROR", msg: err });
-    }
-    connection.beginTransaction(function (error) {
+  const { id, name } = req.body;
+  Conn.execute(
+    "UPDATE service SET name = ? WHERE id = ?",
+    [name, id],
+    function (error) {
       if (error) {
-        connection.release();
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "This Service Already Exists",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
       }
-      connection.execute(
-        "UPDATE service SET name = ? , car_size_id = ?, duration_minute = ?, price = ?,  required_staff = ? WHERE id = ?",
-        [name, car_size_id, duration_minute, price, required_staff, id],
-        function (error) {
-          if (error) {
-            return connection.rollback(() => {
-              connection.release();
-              if (error.code === "ER_DUP_ENTRY") {
-                res.json({
-                  status: "WARNING",
-                  msg: "This Service Already Exists",
-                });
-              } else {
-                res.json({ status: "ERROR", msg: error });
-              }
-            });
-          }
-          connection.execute(
-            "DELETE FROM staff_service WHERE service_id = ?",
-            [id],
-            function (error) {
-              if (error) {
-                return connection.rollback(() => {
-                  connection.release();
-                  res.json({ status: "ERROR", msg: error });
-                });
-              }
-              const values = staff_ids.map((staff) => [staff, id]);
-              connection.query(
-                "INSERT INTO staff_service (staff_id, service_id) VALUES ?",
-                [values],
-                function (error) {
-                  if (error) {
-                    return connection.rollback(() => {
-                      connection.release();
-                      res.json({ status: "ERROR", msg: error });
-                    });
-                  }
-                  connection.commit(function (error) {
-                    if (error) {
-                      return connection.rollback(() => {
-                        connection.release();
-                        res.json({ status: "ERROR", msg: error });
-                      });
-                    }
-                    connection.release();
-                    res.json({
-                      status: "SUCCESS",
-                      msg: "Successfully Updated",
-                    });
-                  });
-                },
-              );
-            },
-          );
-        },
-      );
-    });
-  });
+      return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
+    },
+  );
 };
 
 const UpdateServiceAvailable = (req, res, next) => {
@@ -227,27 +127,26 @@ const UpdateServiceAvailable = (req, res, next) => {
     "UPDATE service SET is_available = ? WHERE id = ? ",
     [is_available, id],
     function (error) {
+      connection.release();
       if (error) {
         return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
+      return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
     },
   );
 };
 
 const GetAvailableService = (req, res, next) => {
   Conn.execute(
-    "SELECT s.*, cs.size FROM service s JOIN car_size cs ON s.car_size_id = cs.id WHERE s.is_available = 1",
+    "SELECT * FROM service WHERE is_available = 1",
     function (error, results) {
       if (error) {
         return res.json({ status: "ERROR", msg: error });
       }
       if (results.length === 0) {
         return res.json({ status: "NO DATA", msg: "No Service Available" });
-      } else {
-        return res.json({ status: "SUCCESS", msg: results });
       }
+      return res.json({ status: "SUCCESS", msg: results });
     },
   );
 };

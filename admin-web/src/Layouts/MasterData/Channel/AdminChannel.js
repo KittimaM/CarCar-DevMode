@@ -26,55 +26,7 @@ const AdminChannel = ({ data }) => {
   const fetchChannel = () => {
     GetChannel().then(({ status, msg }) => {
       if (status == "SUCCESS") {
-        const grouped = msg.reduce((acc, row) => {
-          if (!acc[row.channel_id]) {
-            acc[row.channel_id] = {
-              id: row.channel_id,
-              name: row.channel_name,
-              max_capacity: row.max_capacity,
-              is_available: row.channel_is_available,
-              services: [],
-              schedule: [],
-            };
-          }
-
-          const isServiceExist = acc[row.channel_id].services.some(
-            (s) => s.service_id === row.service_id,
-          );
-
-          if (!isServiceExist) {
-            acc[row.channel_id].services.push({
-              service_id: row.service_id,
-              service_name: row.service_name,
-              car_size: row.car_size,
-            });
-          }
-
-          if (row.day_of_week) {
-            const hasDay = acc[row.channel_id].schedule.some(
-              (s) => s.day_of_week === row.day_of_week,
-            );
-            if (!hasDay) {
-              const st =
-                row.start_time != null
-                  ? String(row.start_time).substring(0, 5)
-                  : "";
-              const et =
-                row.end_time != null
-                  ? String(row.end_time).substring(0, 5)
-                  : "";
-              acc[row.channel_id].schedule.push({
-                day_of_week: row.day_of_week,
-                start_time: st,
-                end_time: et,
-              });
-            }
-          }
-
-          return acc;
-        }, {});
-
-        setChannel(Object.values(grouped));
+        setChannel(msg);
       } else if (status == "NO DATA") {
         setChannel([]);
       }
@@ -92,14 +44,14 @@ const AdminChannel = ({ data }) => {
         message: msg,
         status: status,
       });
+      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         fetchChannel();
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
-  const handleAvailable = (id, name, is_available) => {
+  const handleAvailable = (id, is_available) => {
     UpdateChannelAvailable({ id: id, is_available: !is_available }).then(
       ({ status, msg }) => {
         setNotification({
@@ -173,8 +125,8 @@ const AdminChannel = ({ data }) => {
           <thead>
             <tr>
               <td>Available Status</td>
+              <td>Branch</td>
               <td>Channel</td>
-              <td>Service(s)</td>
               <td>Max Capacity</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
@@ -188,9 +140,8 @@ const AdminChannel = ({ data }) => {
                   <td>
                     <button
                       type="button"
-                      onClick={() =>
-                        handleAvailable(c.id, c.name, c.is_available)
-                      }
+                      disabled={!actions.includes("edit")}
+                      onClick={() => handleAvailable(c.id, c.is_available)}
                     >
                       {c.is_available === 1 ? (
                         <img alt="" height="15" width="15" src={checkIcon} />
@@ -199,15 +150,8 @@ const AdminChannel = ({ data }) => {
                       )}
                     </button>
                   </td>
+                  <td>{c.branch_name}</td>
                   <td>{c.name}</td>
-                  <td>
-                    {c.services.map((s, i) => (
-                      <span key={s.service_id}>
-                        {s.service_name}
-                        <span className="text-gray-500"> ({s.car_size}), </span>
-                      </span>
-                    ))}
-                  </td>
                   <td>{c.max_capacity}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">

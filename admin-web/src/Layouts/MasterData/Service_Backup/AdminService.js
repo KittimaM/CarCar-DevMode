@@ -1,14 +1,19 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import AddBranch from "./AddBranch";
-import EditBranch from "./EditBranch";
-import { GetAllBranch, DeleteBranch, UpdateBranchAvailable } from "../../Modules/Api";
+import AdminAddService from "./AdminAddService";
+import AdminEditService from "./AdminEditService";
+import {
+  DeleteService,
+  GetAllService,
+  UpdateServiceAvailable,
+} from "../../Modules/Api";
 import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
 import unCheckIcon from "../../../assets/red-x-line-icon.svg";
-const Branch = ({ data }) => {
+
+const AdminService = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
-  const [branch, setBranch] = useState([]);
+  const [service, setService] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -18,47 +23,72 @@ const Branch = ({ data }) => {
     status: "",
   });
 
-  const fetchBranch = () => {
-    GetAllBranch().then(({ status, msg }) => {
+  const fetchService = () => {
+    GetAllService().then((data) => {
+      const { status, msg } = data;
       if (status === "SUCCESS") {
-        setBranch(msg);
+        const grouped = msg.reduce((acc, row) => {
+          if (!acc[row.service_id]) {
+            acc[row.service_id] = {
+              id: row.service_id,
+              name: row.name,
+              size: row.size,
+              car_size_id: row.car_size_id,
+              duration_minute: row.duration_minute,
+              price: row.price,
+              required_staff: row.required_staff,
+              is_available: row.is_available,
+              staffs: [],
+            };
+          }
+          acc[row.service_id].staffs.push({
+            staff_id: row.staff_id,
+            staff_username: row.username,
+          });
+          return acc;
+        }, {});
+        setService(Object.values(grouped));
       } else if (status === "NO DATA") {
-        setBranch([]);
+        setService([]);
+      } else {
+        console.log(data);
       }
     });
-  }
+  };
 
   useEffect(() => {
-    fetchBranch();
+    fetchService();
   }, []);
 
   const handleDelete = (id) => {
-    DeleteBranch({id}).then(({ status, msg }) => {
+    DeleteService({ id }).then(({ status, msg }) => {
       setNotification({
         show: true,
-        status: status,
         message: msg,
+        status: status,
       });
       setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        fetchBranch();
+        fetchService();
       }
     });
   };
 
   const handleAvailable = (id, is_available) => {
-    UpdateBranchAvailable({id: id, is_available: !is_available}).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
-      if (status === "SUCCESS") {
-        fetchBranch();
-      }
-    });
-  }
+    UpdateServiceAvailable({ id: id, is_available: !is_available }).then(
+      ({ status, msg }) => {
+        setNotification({
+          show: true,
+          message: msg,
+          status: status,
+        });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "SUCCESS") {
+          fetchService();
+        }
+      },
+    );
+  };
 
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
@@ -74,11 +104,11 @@ const Branch = ({ data }) => {
         <div className="breadcrumbs">
           <ul>
             <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">BRANCH LIST</li>}
+            {viewMode === "list" && <li className="text-xl">SERVICE LIST</li>}
             {viewMode === "add" && (
-              <li className="text-xl">CREATE NEW BRANCH</li>
+              <li className="text-xl">CREATE NEW SERVICE</li>
             )}
-            {viewMode === "edit" && <li className="text-xl">EDIT BRANCH</li>}
+            {viewMode === "edit" && <li className="text-xl">EDIT SERVICE</li>}
           </ul>
         </div>
       </div>
@@ -90,10 +120,10 @@ const Branch = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
-            fetchBranch();
+            fetchService();
           }}
         >
-          Branch List
+          Service List
         </button>
 
         {actions.includes("add") && (
@@ -103,14 +133,14 @@ const Branch = ({ data }) => {
             }`}
             onClick={() => setViewMode("add")}
           >
-            + Create New Branch
+            + Create New Service
           </button>
         )}
       </div>
 
-      {viewMode === "add" && <AddBranch />}
+      {viewMode === "add" && <AdminAddService />}
       {viewMode === "edit" && editItem && (
-        <EditBranch editItem={editItem} />
+        <AdminEditService editItem={editItem} />
       )}
 
       {viewMode === "list" && (
@@ -119,10 +149,13 @@ const Branch = ({ data }) => {
             <table className="table table-lg table-pin-rows">
               <thead>
                 <tr>
-                  <th>Availabel Status</th>
+                  <th>Available Status</th>
                   <th>Name</th>
-                  <th>Address</th>
-                  <th>Phone</th>
+                  <th>Car Size</th>
+                  <th>Duration (Mins)</th>
+                  <th>Price</th>
+                  <th>Required Staff</th>
+                  <th>Staff</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -130,16 +163,15 @@ const Branch = ({ data }) => {
               </thead>
 
               <tbody>
-                    {branch.length > 0 ? (
-                  branch.map((b) => (
-                    <tr key={b.branch_id}>
+                {service.length > 0 ? (
+                  service.map((s) => (
+                    <tr key={s.service_id}>
                       <td>
                         <button
                           type="button"
-                          disabled={!actions.includes("edit")}
-                          onClick={() => handleAvailable(b.id, b.is_available)}
+                          onClick={() => handleAvailable(s.id, s.is_available)}
                         >
-                          {b.is_available === 1 ? (
+                          {s.is_available === 1 ? (
                             <img
                               alt=""
                               height="15"
@@ -147,13 +179,25 @@ const Branch = ({ data }) => {
                               src={checkIcon}
                             />
                           ) : (
-                            <img alt="" height="15" width="15" src={unCheckIcon} />
+                            <img
+                              alt=""
+                              height="15"
+                              width="15"
+                              src={unCheckIcon}
+                            />
                           )}
                         </button>
                       </td>
-                      <td>{b.name}</td>
-                      <td>{b.address}</td>
-                      <td>{b.phone}</td>
+                      <td>{s.name}</td>
+                      <td>{s.size}</td>
+                      <td>{s.duration_minute}</td>
+                      <td>{s.price}</td>
+                      <td>{s.required_staff}</td>
+                      <td>
+                        {s.staffs
+                          .map((staff) => staff.staff_username)
+                          .join(", ")}
+                      </td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
@@ -161,7 +205,7 @@ const Branch = ({ data }) => {
                             {actions.includes("delete") && (
                               <button
                                 className="btn btn-error text-white"
-                                onClick={() => handleDelete(b.id)}
+                                onClick={() => handleDelete(s.id)}
                               >
                                 Delete
                               </button>
@@ -170,7 +214,7 @@ const Branch = ({ data }) => {
                               <button
                                 className="btn btn-warning"
                                 onClick={() => {
-                                    setEditItem(b);
+                                  setEditItem(s);
                                   setViewMode("edit");
                                 }}
                               >
@@ -187,12 +231,12 @@ const Branch = ({ data }) => {
                     <td
                       colSpan={
                         actions.includes("edit") || actions.includes("delete")
-                          ? 5
-                          : 4
+                          ? 8
+                          : 7
                       }
                       className="text-center"
                     >
-                      No Branch Available
+                      No Service Available
                     </td>
                   </tr>
                 )}
@@ -205,4 +249,4 @@ const Branch = ({ data }) => {
   );
 };
 
-export default Branch;
+export default AdminService;

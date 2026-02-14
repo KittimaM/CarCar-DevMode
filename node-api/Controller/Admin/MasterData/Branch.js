@@ -77,7 +77,7 @@ const GetAvailableBranch = (req, res, next) => {
       return res.json({ status: "ERROR", msg: error });
     }
     if (results.length === 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "No Branch Available" });
     } else {
       return res.json({ status: "SUCCESS", msg: results });
     }

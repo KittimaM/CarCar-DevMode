@@ -10,22 +10,23 @@ const componentMap = {
   customerCar: lazy(() => import("./User/CustomerCar/AdminCustomerCar")),
   //   onLeavePersonal: lazy(() => import("./AdminOnLeavePersonal")),
   //   dayOffList: lazy(() => import("./AdminDayOff")),
-  carSize: lazy(() => import("./MasterData/CarSize/AdminCarSize")),
+  md_car_size: lazy(() => import("./MasterData/CarSize/AdminCarSize")),
   //   service: lazy(() => import("./AdminService")),
-  channel: lazy(() => import("./MasterData/Channel/AdminChannel")),
+  md_channel: lazy(() => import("./MasterData/Channel/AdminChannel")),
   //   template: lazy(() => import("./AdminTemplate")),
   //   search: lazy(() => import("./AdminSearch")),
   role: lazy(() => import("./Setting/AccessConfig/AdminRole")),
   //   account: lazy(() => import("./AdminAccount")),
   //   onLeaveList: lazy(() => import("./AdminOnLeaveList")),
-  status: lazy(() => import("./MasterData/Status/AdminStatus")),
+  md_status: lazy(() => import("./MasterData/Status/AdminStatus")),
   //   onLeaveType: lazy(() => import("./AdminOnLeaveType")),
-  paymentAccount: lazy(
+  md_payment_account: lazy(
     () => import("./MasterData/PaymentAccount/PaymentAccount"),
   ),
   general: lazy(() => import("./Setting/General/AdminGeneral")),
-  service: lazy(() => import("./MasterData/Service/AdminService")),
-  branch: lazy(() => import("./MasterData/Branch/Branch")),
+  md_service: lazy(() => import("./MasterData/Service/AdminService")),
+  md_branch: lazy(() => import("./MasterData/Branch/Branch")),
+  manage_service: lazy(() => import("./Management/ServiceRates/ServiceRates")),
 };
 
 export default componentMap;

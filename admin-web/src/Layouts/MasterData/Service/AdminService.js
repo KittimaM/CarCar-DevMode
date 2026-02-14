@@ -27,31 +27,9 @@ const AdminService = ({ data }) => {
     GetAllService().then((data) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
-        const grouped = msg.reduce((acc, row) => {
-          if (!acc[row.service_id]) {
-            acc[row.service_id] = {
-              id: row.service_id,
-              name: row.name,
-              size: row.size,
-              car_size_id: row.car_size_id,
-              duration_minute: row.duration_minute,
-              price: row.price,
-              required_staff: row.required_staff,
-              is_available: row.is_available,
-              staffs: [],
-            };
-          }
-          acc[row.service_id].staffs.push({
-            staff_id: row.staff_id,
-            staff_username: row.username,
-          });
-          return acc;
-        }, {});
-        setService(Object.values(grouped));
+        setService(msg);
       } else if (status === "NO DATA") {
         setService([]);
-      } else {
-        console.log(data);
       }
     });
   };
@@ -151,11 +129,6 @@ const AdminService = ({ data }) => {
                 <tr>
                   <th>Available Status</th>
                   <th>Name</th>
-                  <th>Car Size</th>
-                  <th>Duration (Mins)</th>
-                  <th>Price</th>
-                  <th>Required Staff</th>
-                  <th>Staff</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -165,10 +138,11 @@ const AdminService = ({ data }) => {
               <tbody>
                 {service.length > 0 ? (
                   service.map((s) => (
-                    <tr key={s.service_id}>
+                    <tr key={s.id}>
                       <td>
                         <button
                           type="button"
+                          disabled={!actions.includes("edit")}
                           onClick={() => handleAvailable(s.id, s.is_available)}
                         >
                           {s.is_available === 1 ? (
@@ -189,15 +163,6 @@ const AdminService = ({ data }) => {
                         </button>
                       </td>
                       <td>{s.name}</td>
-                      <td>{s.size}</td>
-                      <td>{s.duration_minute}</td>
-                      <td>{s.price}</td>
-                      <td>{s.required_staff}</td>
-                      <td>
-                        {s.staffs
-                          .map((staff) => staff.staff_username)
-                          .join(", ")}
-                      </td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
@@ -231,8 +196,8 @@ const AdminService = ({ data }) => {
                     <td
                       colSpan={
                         actions.includes("edit") || actions.includes("delete")
-                          ? 8
-                          : 7
+                          ? 3
+                          : 2
                       }
                       className="text-center"
                     >
