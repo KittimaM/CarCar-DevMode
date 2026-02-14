@@ -100,6 +100,9 @@ app.use("/admin/role-permission", RolePermissionRoute);
 const PaymentAccountRoute = require("./Routes/Admin/MasterData/PaymentAccount");
 app.use("/admin/payment-account", PaymentAccountRoute);
 
+const BranchRoute = require("./Routes/Admin/MasterData/Branch");
+app.use("/admin/branch", BranchRoute);
+
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);
 });

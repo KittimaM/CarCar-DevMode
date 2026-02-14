@@ -19,14 +19,14 @@ const AdminUser = (req, res, next) => {
 };
 
 const AdminAddStaffUser = (req, res, next) => {
-  const { username, name, password, role_id } = req.body;
+  const { username, name, password, role_id, branch_id} = req.body;
   bcrypt.hash(password, saltRounds, function (error, hash) {
     if (error) {
       return res.json({ status: "ERROR", msg: error });
     } else {
       Conn.execute(
-        `INSERT INTO staff_user (username, name , password, role_id) VALUES (?,?,?,?)`,
-        [username, name, hash, role_id],
+        `INSERT INTO staff_user (username, name , password, role_id, branch_id) VALUES (?,?,?,?,?)`,
+        [username, name, hash, role_id, branch_id],
         function (error) {
           if (error) {
             if (error.code === "ER_DUP_ENTRY") {

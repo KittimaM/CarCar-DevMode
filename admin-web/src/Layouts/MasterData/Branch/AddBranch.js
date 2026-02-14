@@ -1,9 +1,7 @@
 import React, { useState } from "react";
 import Notification from "../../Notification/Notification";
-import Select from "react-select";
-
+import { PostAddBranch } from "../../Modules/Api";
 const AddBranch = () => {
-  const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
@@ -18,28 +16,21 @@ const AddBranch = () => {
 
   const handleAddService = (e) => {
     e.preventDefault();
-    // PostAddService(data).then(({ status, msg }) => {
-    //   setNotification({
-    //     show: true,
-    //     status: status,
-    //     message: msg,
-    //   });
-    //   setNotificationKey((prev) => prev + 1);
-    //   if (status === "SUCCESS") {
-    //     setErrors([]);
-    //     setData({
-    //       name: "",
-    //       car_size_id: "",
-    //       duration_minute: "",
-    //       price: "",
-    //       required_staff: "",
-    //       staff_ids: [],
-    //     });
-    //   } else if (status === "WARNING") {
-    //     setErrors(msg);
-    //     setData({ ...data, name: "", car_size_id: "" });
-    //   }
-    // });
+    PostAddBranch(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        setData({
+          name: "",
+          address: "",
+          phone: "",
+        });
+      }
+    });
   };
 
   return (
@@ -53,7 +44,6 @@ const AddBranch = () => {
       )}
       <form onSubmit={handleAddService}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
-          {errors && <p className="text-red-500 text-md">{errors}</p>}
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Branch Name</span>
             <input
@@ -111,13 +101,9 @@ const AddBranch = () => {
               onClick={() => {
                 setData({
                   name: "",
-                  car_size_id: "",
-                  duration_minute: "",
-                  price: "",
-                  required_staff: "",
-                  staff_ids: [],
+                  address: "",
+                  phone: "",
                 });
-                setErrors([]);
               }}
             >
               CANCEL

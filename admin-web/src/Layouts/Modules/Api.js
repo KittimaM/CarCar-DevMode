@@ -504,3 +504,27 @@ export const UpdatePaymentAccountAvailable = (jsonData) => {
 export const DeletePaymentAccount = (jsonData) => {
   return deleteApi(URLList.PaymentAccount, jsonData);
 };
+
+export const GetAllBranch = () => {
+  return getApi(URLList.Branch);
+};
+
+export const PostAddBranch = (jsonData) => {
+  return postApi(URLList.Branch, jsonData);
+};
+
+export const DeleteBranch = (jsonData) => {
+  return deleteApi(URLList.Branch, jsonData);
+};
+
+export const UpdateBranchAvailable = (jsonData) => {
+  return putApi(URLList.Branch + "/is-available", jsonData);
+};
+
+export const UpdateBranch = (jsonData) => {
+  return putApi(URLList.Branch, jsonData);
+};
+
+export const GetAvailableBranch = () => {
+  return getApi(URLList.Branch + "/is-available");
+};

@@ -51,21 +51,15 @@ const AdminStaff = ({ data }) => {
     });
   };
 
-  const handleUnLock = (id, username) => {
+  const handleUnLock = (id) => {
     UpdateAdminUnlockStaff({ id: id }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          message: `${username} is successfully unlock`,
-          status: status,
-        });
         fetchStaff();
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -145,7 +139,7 @@ const AdminStaff = ({ data }) => {
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleUnLock(u.id, u.username)}
+                          onClick={() => handleUnLock(u.id)}
                         >
                           {u.is_locked === 1 && (
                             <img
@@ -166,7 +160,7 @@ const AdminStaff = ({ data }) => {
                         <td className="text-right">
                           <div className="flex justify-end gap-2">
                             {actions.includes("delete") &&
-                              sessionStorage.getItem("staff_id") != u.id && (
+                              sessionStorage.getItem("staff_id") != u.id && u.is_system_id === 0 && (
                                 <button
                                   className="btn btn-error text-white"
                                   onClick={() => handleDelete(u.id)}

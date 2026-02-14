@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, PostAddStaffUser } from "../../Modules/Api";
+import { GetAllAdminRole, PostAddStaffUser, GetAvailableBranch } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminAddStaff = () => {
   const [roleList, setRoleList] = useState([]);
+  const [branch, setBranch] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -16,6 +17,7 @@ const AdminAddStaff = () => {
     name: "",
     password: "",
     role_id: "",
+    branch_id: "",
   });
 
   useEffect(() => {
@@ -24,28 +26,27 @@ const AdminAddStaff = () => {
         setRoleList(msg);
       }
     });
+    GetAvailableBranch().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setBranch(msg);
+      }
+    });
   }, []);
 
   const handleAddUser = (e) => {
     e.preventDefault();
     PostAddStaffUser(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });      
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.username + " " + msg,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(data.username + " " + msg);
+        setErrors(msg);
         setData({ ...data, username: "" });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
-      }
+      } 
       setNotificationKey((prev) => prev + 1);
     });
   };
@@ -128,6 +129,28 @@ const AdminAddStaff = () => {
             </select>
           </div>
 
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Branch</span>
+            <select
+              value={data.branch_id}
+              className={`select w-full select-bordered max-w-md ${
+                !data.branch_id ? `select-error` : ``
+              }`}
+              onChange={(e) => setData({ ...data, branch_id: e.target.value })}
+              required
+            >
+              <option disabled={true} value="">
+                Pick A Branch
+              </option>
+              {branch &&
+                branch.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
               SUBMIT
@@ -141,6 +164,7 @@ const AdminAddStaff = () => {
                   name: "",
                   password: "",
                   role_id: "",
+                  branch_id: "",
                 });
                 setErrors([]);
               }}

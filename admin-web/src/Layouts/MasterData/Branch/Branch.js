@@ -2,11 +2,13 @@ import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import AddBranch from "./AddBranch";
 import EditBranch from "./EditBranch";
-
+import { GetAllBranch, DeleteBranch, UpdateBranchAvailable } from "../../Modules/Api";
+import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
+import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 const Branch = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
-  const [service, setService] = useState([]);
+  const [branch, setBranch] = useState([]);
   const [viewMode, setViewMode] = useState("list");
   const [editItem, setEditItem] = useState(null);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -16,13 +18,47 @@ const Branch = ({ data }) => {
     status: "",
   });
 
-  useEffect(() => {
+  const fetchBranch = () => {
+    GetAllBranch().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setBranch(msg);
+      } else if (status === "NO DATA") {
+        setBranch([]);
+      }
+    });
+  }
 
+  useEffect(() => {
+    fetchBranch();
   }, []);
 
-  const handleDelete = (id) => {};
+  const handleDelete = (id) => {
+    DeleteBranch({id}).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchBranch();
+      }
+    });
+  };
 
-  const handleAvailable = (id, is_available) => {};
+  const handleAvailable = (id, is_available) => {
+    UpdateBranchAvailable({id: id, is_available: !is_available}).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchBranch();
+      }
+    });
+  }
 
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
@@ -54,6 +90,7 @@ const Branch = ({ data }) => {
           }`}
           onClick={() => {
             setViewMode("list");
+            fetchBranch();
           }}
         >
           Branch List
@@ -82,13 +119,10 @@ const Branch = ({ data }) => {
             <table className="table table-lg table-pin-rows">
               <thead>
                 <tr>
-                  <th>Available Status</th>
+                  <th>Availabel Status</th>
                   <th>Name</th>
-                  <th>Car Size</th>
-                  <th>Duration (Mins)</th>
-                  <th>Price</th>
-                  <th>Required Staff</th>
-                  <th>Staff</th>
+                  <th>Address</th>
+                  <th>Phone</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -96,20 +130,29 @@ const Branch = ({ data }) => {
               </thead>
 
               <tbody>
-                {service.length > 0 ? (
-                  service.map((s) => (
-                    <tr key={s.service_id}>
-                
-                      <td>{s.name}</td>
-                      <td>{s.size}</td>
-                      <td>{s.duration_minute}</td>
-                      <td>{s.price}</td>
-                      <td>{s.required_staff}</td>
+                    {branch.length > 0 ? (
+                  branch.map((b) => (
+                    <tr key={b.branch_id}>
                       <td>
-                        {s.staffs
-                          .map((staff) => staff.staff_username)
-                          .join(", ")}
+                        <button
+                          type="button"
+                          onClick={() => handleAvailable(b.id, b.is_available)}
+                        >
+                          {b.is_available === 1 ? (
+                            <img
+                              alt=""
+                              height="15"
+                              width="15"
+                              src={checkIcon}
+                            />
+                          ) : (
+                            <img alt="" height="15" width="15" src={unCheckIcon} />
+                          )}
+                        </button>
                       </td>
+                      <td>{b.name}</td>
+                      <td>{b.address}</td>
+                      <td>{b.phone}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
@@ -117,7 +160,7 @@ const Branch = ({ data }) => {
                             {actions.includes("delete") && (
                               <button
                                 className="btn btn-error text-white"
-                                onClick={() => handleDelete(s.id)}
+                                onClick={() => handleDelete(b.id)}
                               >
                                 Delete
                               </button>
@@ -126,7 +169,7 @@ const Branch = ({ data }) => {
                               <button
                                 className="btn btn-warning"
                                 onClick={() => {
-                                  setEditItem(s);
+                                    setEditItem(b);
                                   setViewMode("edit");
                                 }}
                               >
@@ -143,12 +186,12 @@ const Branch = ({ data }) => {
                     <td
                       colSpan={
                         actions.includes("edit") || actions.includes("delete")
-                          ? 8
-                          : 7
+                          ? 5
+                          : 4
                       }
                       className="text-center"
                     >
-                      No Service Available
+                      No Branch Available
                     </td>
                   </tr>
                 )}

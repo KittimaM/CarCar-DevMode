@@ -11,7 +11,7 @@ const AdminLogin = (req, res, next) => {
     staff_user_login_mins_limit,
   } = req.body;
   Conn.execute(
-    `SELECT id, username, password, role_id, failed_login_count, is_locked FROM staff_user WHERE username = ? LIMIT 1`,
+    `SELECT id, username, password, role_id, failed_login_count, is_locked, is_system_id FROM staff_user WHERE username = ? LIMIT 1`,
     [userName],
     function (error, result) {
       if (error) {
@@ -26,7 +26,7 @@ const AdminLogin = (req, res, next) => {
           role_id,
           failed_login_count,
           is_locked,
-          role_name,
+          is_system_id,
         } = result[0];
         if (is_locked === 1) {
           return res.json({
@@ -42,7 +42,7 @@ const AdminLogin = (req, res, next) => {
                 Conn.execute(
                   `UPDATE staff_user SET failed_login_count = 0, is_locked = 0, locked_reason = NULL WHERE id = ?`,
                   [id],
-                  function (successLoginError, successLoginResult) {
+                  function (successLoginError) {
                     if (successLoginError) {
                       return res.json({
                         status: "ERROR",
@@ -60,6 +60,7 @@ const AdminLogin = (req, res, next) => {
                           token: token,
                           staff_id: id,
                           username: username,
+                          is_system_id: is_system_id,
                         },
                       });
                     }
@@ -70,7 +71,7 @@ const AdminLogin = (req, res, next) => {
                 Conn.execute(
                   `UPDATE staff_user SET failed_login_count = ? WHERE id = ?`,
                   [count, id],
-                  function (failLoginError, failLoginResult) {
+                  function (failLoginError) {
                     if (failLoginError) {
                       return res.json({ status: "ERROR", msg: error });
                     } else {
@@ -83,7 +84,7 @@ const AdminLogin = (req, res, next) => {
                         Conn.execute(
                           `UPDATE staff_user SET is_locked = 1, locked_reason = 'This user locked due to failed login more than ${staff_failed_login_limit} times' WHERE id = ?`,
                           [id],
-                          function (lockedError, lockedResult) {
+                          function (lockedError) {
                             if (lockedError) {
                               return res.json({
                                 status: "ERROR",

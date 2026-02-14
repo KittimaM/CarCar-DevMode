@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, UpdateStaffUser } from "../../Modules/Api";
+import { GetAllAdminRole, UpdateStaffUser, GetAvailableBranch } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminEditStaff = ({ editItem }) => {
+  const [branch, setBranch] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -23,20 +24,25 @@ const AdminEditStaff = ({ editItem }) => {
         setRoleList(msg);
       }
     });
+    GetAvailableBranch().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setBranch(msg);
+      }
+    });
   }, []);
 
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateStaffUser(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: `Successfully Update ${data.username}`,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
-        setErrors(data.username + " " + msg);
+        setErrors(msg);
         setData({ ...data, username: editItem.username });
       }
       setNotificationKey((prev) => prev + 1);
@@ -131,6 +137,28 @@ const AdminEditStaff = ({ editItem }) => {
                 roleList.map((r) => (
                   <option key={r.id} value={r.id}>
                     {r.name}
+                  </option>
+                ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
+            <span className="w-32">Branch</span>
+            <select
+              value={data.branch_id}
+              className={`select w-full select-bordered max-w-md ${
+                !data.branch_id ? `select-error` : ``
+              }`}
+              onChange={(e) => setData({ ...data, branch_id: e.target.value })}
+              required
+            >
+              <option disabled={true} value="">
+                Pick A Branch
+              </option>
+              {branch &&
+                branch.map((b) => (
+                  <option key={b.id} value={b.id}>
+                    {b.name}
                   </option>
                 ))}
             </select>
