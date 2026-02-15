@@ -1,14 +1,8 @@
-import { useEffect, useState } from "react";
-import {
-  GetAllAdminRole,
-  PostAddStaffUser,
-  GetAllBranch,
-} from "../../Modules/Api";
+import { useState } from "react";
 import Notification from "../../Notification/Notification";
+import { PostAddCustomer } from "../../Modules/Api";
 
-const StaffAddPage = () => {
-  const [roleList, setRoleList] = useState([]);
-  const [branch, setBranch] = useState([]);
+const CustomerAddPage = () => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -17,39 +11,24 @@ const StaffAddPage = () => {
     status: "",
   });
   const [data, setData] = useState({
-    username: "",
+    phone: "",
     name: "",
     password: "",
-    role_id: "",
-    branch_id: "",
   });
-
-  useEffect(() => {
-    GetAllAdminRole().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setRoleList(msg);
-      }
-    });
-    GetAllBranch().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setBranch(msg);
-      }
-    });
-  }, []);
 
   const handleAddUser = (e) => {
     e.preventDefault();
-    PostAddStaffUser(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
+    PostAddCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
+        setNotification({
+          show: true,
+          status: status,
+          message: `Successfully Add ${data.name}`,
+        });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, username: "" });
+        setData({ ...data, phone: "" });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -67,15 +46,20 @@ const StaffAddPage = () => {
       <form onSubmit={handleAddUser}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Username</span>
+            <span className="w-32">Phone</span>
             <input
-              type="text"
-              value={data.username}
-              className={`input input-bordered w-full max-w-md ${
-                !data.username ? `input-error` : ``
+              type="tel"
+              inputMode="numeric"
+              value={data.phone}
+              className={`input validator tabular-nums input-bordered w-full max-w-md ${
+                !data.phone ? `input-error` : ``
               }`}
               onChange={(e) => {
-                setData({ ...data, username: e.target.value });
+                let value = e.target.value.replace(/[^0-9]/g, "");
+                if (value.length > 10) {
+                  value = value.slice(0, 10);
+                }
+                setData({ ...data, phone: value });
               }}
               required
             />
@@ -96,7 +80,6 @@ const StaffAddPage = () => {
               required
             />
           </div>
-
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Password</span>
             <input
@@ -111,49 +94,6 @@ const StaffAddPage = () => {
               required
             />
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Role</span>
-            <select
-              value={data.role_id}
-              className={`select w-full select-bordered max-w-md ${
-                !data.role_id ? `select-error` : ``
-              }`}
-              onChange={(e) => setData({ ...data, role_id: e.target.value })}
-              required
-            >
-              <option disabled={true} value="">
-                Pick A Role
-              </option>
-              {roleList &&
-                roleList.map((r) => (
-                  <option key={r.id} value={r.id}>
-                    {r.name}
-                  </option>
-                ))}
-            </select>
-          </div>
-
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Branch</span>
-            <select
-              value={data.branch_id}
-              className={`select w-full select-bordered max-w-md ${
-                !data.branch_id ? `select-error` : ``
-              }`}
-              onChange={(e) => setData({ ...data, branch_id: e.target.value })}
-              required
-            >
-              <option disabled={true} value="">
-                Pick A Branch
-              </option>
-              {branch &&
-                branch.map((b) => (
-                  <option key={b.id} value={b.id}>
-                    {b.name}
-                  </option>
-                ))}
-            </select>
-          </div>
 
           <div className="flex gap-2 mt-4">
             <button type="submit" className="btn btn-success text-white">
@@ -164,11 +104,9 @@ const StaffAddPage = () => {
               className="btn"
               onClick={() => {
                 setData({
-                  username: "",
+                  phone: "",
                   name: "",
                   password: "",
-                  role_id: "",
-                  branch_id: "",
                 });
                 setErrors([]);
               }}
@@ -182,4 +120,4 @@ const StaffAddPage = () => {
   );
 };
 
-export default StaffAddPage;
+export default CustomerAddPage;
