@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { DeleteChannel, GetChannel } from "../../Modules/Api";
+import { DeleteChannel, GetAllChannel } from "../../Modules/Api";
 import AdminAddChannel from "./ChannelAddPage";
 import AdminEditChannel from "./ChannelEditPage";
 
@@ -18,7 +18,7 @@ const ChannelPage = ({ data }) => {
   });
 
   const fetchChannel = () => {
-    GetChannel().then(({ status, msg }) => {
+    GetAllChannel().then(({ status, msg }) => {
       if (status == "SUCCESS") {
         setChannel(msg);
       } else if (status == "NO DATA") {

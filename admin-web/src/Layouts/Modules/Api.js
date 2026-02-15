@@ -309,7 +309,7 @@ export const UpdateCustomerProfile = (jsonData) => {
   return putApi(URLList.CustomerProfile, jsonData, isUseToken);
 };
 
-export const GetChannel = () => {
+export const GetAllChannel = () => {
   return getApi(URLList.AdminChannel);
 };
 
@@ -515,4 +515,8 @@ export const PostDeleteServiceRates = (jsonData) => {
 
 export const PutUpdateServiceRates = (jsonData) => {
   return putApi(URLList.ServiceRates, jsonData);
+};
+
+export const GetAllChannelMatching = () => {
+  return getApi(URLList.ChannelMatching);
 };

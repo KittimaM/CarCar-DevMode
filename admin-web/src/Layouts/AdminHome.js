@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { GetChannel } from "./Modules/Api";
+import { GetAllChannel } from "./Modules/Api";
 
 const AdminHome = () => {
   const [channel, setChannel] = useState();
   useEffect(() => {
-    GetChannel().then((data) => {
+    GetAllChannel().then((data) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setChannel(msg);
