@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import {
   GetAllAdminRole,
-  PostAddStaffUser,
+  UpdateStaffUser,
   GetAllBranch,
 } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const StaffAddPage = () => {
-  const [roleList, setRoleList] = useState([]);
+const StaffEditPage = ({ editItem }) => {
   const [branch, setBranch] = useState([]);
+  const [roleList, setRoleList] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -17,11 +17,9 @@ const StaffAddPage = () => {
     status: "",
   });
   const [data, setData] = useState({
-    username: "",
-    name: "",
+    ...editItem,
     password: "",
-    role_id: "",
-    branch_id: "",
+    isChangePassword: false,
   });
 
   useEffect(() => {
@@ -37,9 +35,9 @@ const StaffAddPage = () => {
     });
   }, []);
 
-  const handleAddUser = (e) => {
+  const handleEdit = (e) => {
     e.preventDefault();
-    PostAddStaffUser(data).then(({ status, msg }) => {
+    UpdateStaffUser(data).then(({ status, msg }) => {
       setNotification({
         show: true,
         status: status,
@@ -49,7 +47,7 @@ const StaffAddPage = () => {
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, username: "" });
+        setData({ ...data, username: editItem.username });
       }
       setNotificationKey((prev) => prev + 1);
     });
@@ -64,7 +62,7 @@ const StaffAddPage = () => {
           status={notification.status}
         />
       )}
-      <form onSubmit={handleAddUser}>
+      <form onSubmit={handleEdit}>
         <div className="border p-4 bg-base-100 space-y-4 items-center">
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Username</span>
@@ -90,27 +88,42 @@ const StaffAddPage = () => {
                 !data.name ? `input-error` : ``
               }`}
               onChange={(e) => {
-                const onlyLetters = e.target.value.replace(/[^A-Za-z ]/g, "");
-                setData({ ...data, name: onlyLetters });
+                setData({ ...data, name: e.target.value });
               }}
               required
             />
           </div>
 
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Password</span>
             <input
-              type="password"
-              value={data.password}
-              className={`input input-bordered w-full max-w-md ${
-                !data.password ? `input-error` : ``
-              }`}
-              onChange={(e) => {
-                setData({ ...data, password: e.target.value });
-              }}
-              required
+              type="checkbox"
+              checked={!data.isChangePassword}
+              className="checkbox checkbox-success"
+              onChange={(e) =>
+                setData({ ...data, isChangePassword: !data.isChangePassword })
+              }
             />
+
+            {!data.isChangePassword ? (
+              <span>use same password</span>
+            ) : (
+              <>
+                <span className="w-32">Password</span>
+                <input
+                  type="password"
+                  value={data.password}
+                  className={`input input-bordered w-full max-w-md ${
+                    !data.password ? `input-error` : ``
+                  }`}
+                  onChange={(e) => {
+                    setData({ ...data, password: e.target.value });
+                  }}
+                  required
+                />
+              </>
+            )}
           </div>
+
           <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
             <span className="w-32">Role</span>
             <select
@@ -164,11 +177,9 @@ const StaffAddPage = () => {
               className="btn"
               onClick={() => {
                 setData({
-                  username: "",
-                  name: "",
+                  ...editItem,
                   password: "",
-                  role_id: "",
-                  branch_id: "",
+                  isChangePassword: false,
                 });
                 setErrors([]);
               }}
@@ -182,4 +193,4 @@ const StaffAddPage = () => {
   );
 };
 
-export default StaffAddPage;
+export default StaffEditPage;

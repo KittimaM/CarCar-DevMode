@@ -9,7 +9,7 @@ const URLList = {
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
   AdminOnLeaveType: "admin/onleave/type",
-  AdminPaymentType: "admin/paymenttype",
+  AdminPaymentType: "admin/payment-acount",
   AdminStaff: "admin/user",
   AdminStatusGroup: "admin/status-group",
   AdminStatus: "admin/status",
