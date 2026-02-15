@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import {
-  DeleteCarSize,
-  GetAllCarSize,
-  UpdateCarSizeAvailable,
-} from "../../Modules/Api";
+import { DeleteCarSize, GetAllCarSize } from "../../Modules/Api";
 import AdminAddCarSize from "./AdminAddCarSize";
 import AdminEditCarSize from "./AdminEditCarSize";
-import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
-import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
 const AdminCarSize = ({ data }) => {
   const { labelValue, permission, code } = data;
@@ -36,22 +30,6 @@ const AdminCarSize = ({ data }) => {
   useEffect(() => {
     fetchCarSize();
   }, []);
-
-  const handleAvailable = (id, is_available) => {
-    UpdateCarSizeAvailable({ id: id, is_available: !is_available }).then(
-      ({ status, msg }) => {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-        setNotificationKey((prev) => prev + 1);
-        if (status === "SUCCESS") {
-          fetchCarSize();
-        }
-      },
-    );
-  };
 
   const handleDelete = (id) => {
     DeleteCarSize({ id }).then(({ status, msg }) => {
@@ -124,7 +102,6 @@ const AdminCarSize = ({ data }) => {
         <table className="table table-lg">
           <thead>
             <tr>
-              <td>Status</td>
               <td>Size</td>
               {(actions.includes("edit") || actions.includes("delete")) && (
                 <th className="text-right">Actions</th>
@@ -135,19 +112,6 @@ const AdminCarSize = ({ data }) => {
             {size.length > 0 ? (
               size.map((c) => (
                 <tr key={c.id}>
-                  <td>
-                    <button
-                      type="button"
-                      disabled={!actions.includes("edit")}
-                      onClick={() => handleAvailable(c.id, c.is_available)}
-                    >
-                      {c.is_available === 1 ? (
-                        <img height="15" width="15" src={checkIcon} />
-                      ) : (
-                        <img height="15" width="15" src={unCheckIcon} />
-                      )}
-                    </button>
-                  </td>
                   <td>{c.size}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <td className="text-right">
@@ -181,10 +145,10 @@ const AdminCarSize = ({ data }) => {
                 <td
                   colSpan={
                     actions.includes("edit") || actions.includes("delete")
-                      ? 3
-                      : 2
+                      ? 2
+                      : 1
                   }
-                  className="text-center"
+                  className="text-center text-gray-400"
                 >
                   No Car Size Available
                 </td>

@@ -17,24 +17,18 @@ const AdminAddCarSize = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddCarSize(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.size + " " + msg,
-        });
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, size: "" });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
+        setData({ size: "" });
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 

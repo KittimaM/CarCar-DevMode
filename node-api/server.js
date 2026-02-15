@@ -103,6 +103,9 @@ app.use("/admin/payment-account", PaymentAccountRoute);
 const BranchRoute = require("./Routes/Admin/MasterData/Branch");
 app.use("/admin/branch", BranchRoute);
 
+const ServiceRatesRoute = require("./Routes/Admin/Management/ServiceRates");
+app.use("/admin/service-rates", ServiceRatesRoute);
+
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);
 });

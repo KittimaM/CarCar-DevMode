@@ -193,7 +193,7 @@ const PaymentAccount = ({ data }) => {
                       ? 4
                       : 3
                   }
-                  className="text-center"
+                  className="text-center text-gray-400"
                 >
                   No Payment Account Available
                 </td>

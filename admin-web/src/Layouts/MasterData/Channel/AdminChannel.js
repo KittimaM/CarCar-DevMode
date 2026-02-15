@@ -1,14 +1,8 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import {
-  DeleteChannel,
-  GetChannel,
-  UpdateChannelAvailable,
-} from "../../Modules/Api";
+import { DeleteChannel, GetChannel } from "../../Modules/Api";
 import AdminAddChannel from "./AdminAddChannel";
 import AdminEditChannel from "./AdminEditChannel";
-import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
-import unCheckIcon from "../../../assets/red-x-line-icon.svg";
 
 const AdminChannel = ({ data }) => {
   const { labelValue, permission, code } = data;
@@ -49,22 +43,6 @@ const AdminChannel = ({ data }) => {
         fetchChannel();
       }
     });
-  };
-
-  const handleAvailable = (id, is_available) => {
-    UpdateChannelAvailable({ id: id, is_available: !is_available }).then(
-      ({ status, msg }) => {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-        setNotificationKey((prev) => prev + 1);
-        if (status === "SUCCESS") {
-          fetchChannel();
-        }
-      },
-    );
   };
 
   return (
@@ -124,7 +102,6 @@ const AdminChannel = ({ data }) => {
         <table className="table table-lg">
           <thead>
             <tr>
-              <td>Available Status</td>
               <td>Branch</td>
               <td>Channel</td>
               <td>Max Capacity</td>
@@ -137,19 +114,6 @@ const AdminChannel = ({ data }) => {
             {channel.length > 0 ? (
               channel.map((c) => (
                 <tr key={c.id}>
-                  <td>
-                    <button
-                      type="button"
-                      disabled={!actions.includes("edit")}
-                      onClick={() => handleAvailable(c.id, c.is_available)}
-                    >
-                      {c.is_available === 1 ? (
-                        <img alt="" height="15" width="15" src={checkIcon} />
-                      ) : (
-                        <img alt="" height="15" width="15" src={unCheckIcon} />
-                      )}
-                    </button>
-                  </td>
                   <td>{c.branch_name}</td>
                   <td>{c.name}</td>
                   <td>{c.max_capacity}</td>
@@ -185,10 +149,10 @@ const AdminChannel = ({ data }) => {
                 <td
                   colSpan={
                     actions.includes("edit") || actions.includes("delete")
-                      ? 5
-                      : 4
+                      ? 4
+                      : 3
                   }
-                  className="text-center"
+                  className="text-center text-gray-400"
                 >
                   No Channel Available
                 </td>

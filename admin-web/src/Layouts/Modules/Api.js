@@ -465,26 +465,6 @@ export const GetRolePermissionById = (jsonData) => {
   return postApi(URLList.RolePermission + "/id", jsonData);
 };
 
-export const UpdateCarSizeAvailable = (jsonData) => {
-  return putApi(URLList.AdminCarSize + "/is-available", jsonData);
-};
-
-export const UpdateServiceAvailable = (jsonData) => {
-  return putApi(URLList.AdminService + "/is-available", jsonData);
-};
-
-export const GetAvailableCarSize = () => {
-  return getApi(URLList.AdminCarSize + "/is-available");
-};
-
-export const GetAvailableService = () => {
-  return getApi(URLList.AdminService + "/is-available");
-};
-
-export const UpdateChannelAvailable = (jsonData) => {
-  return putApi(URLList.AdminChannel + "/is-available", jsonData);
-};
-
 export const GetAllPaymentAccount = () => {
   return getApi(URLList.PaymentAccount);
 };
@@ -517,14 +497,22 @@ export const DeleteBranch = (jsonData) => {
   return deleteApi(URLList.Branch, jsonData);
 };
 
-export const UpdateBranchAvailable = (jsonData) => {
-  return putApi(URLList.Branch + "/is-available", jsonData);
-};
-
 export const UpdateBranch = (jsonData) => {
   return putApi(URLList.Branch, jsonData);
 };
 
-export const GetAvailableBranch = () => {
-  return getApi(URLList.Branch + "/is-available");
+export const GetAllServiceRates = () => {
+  return getApi(URLList.ServiceRates);
+};
+
+export const PostAddServiceRates = (jsonData) => {
+  return postApi(URLList.ServiceRates, jsonData);
+};
+
+export const PostDeleteServiceRates = (jsonData) => {
+  return deleteApi(URLList.ServiceRates, jsonData);
+};
+
+export const PutUpdateServiceRates = (jsonData) => {
+  return putApi(URLList.ServiceRates, jsonData);
 };

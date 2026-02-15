@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { GetAvailableBranch, PostAddChannel } from "../../Modules/Api";
+import { GetAllBranch, PostAddChannel } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminAddChannel = () => {
@@ -18,12 +18,11 @@ const AdminAddChannel = () => {
   });
 
   useEffect(() => {
-    GetAvailableBranch().then(({ status, msg }) => {
+    GetAllBranch().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setBranch(msg);
       } else if (status === "NO DATA") {
         setBranch([]);
-        setErrors(msg);
       }
     });
   }, []);
@@ -57,9 +56,9 @@ const AdminAddChannel = () => {
       )}
 
       <form onSubmit={handleAdd}>
-        {errors && <p className="text-red-500 text-md">{errors}</p>}
-        {branch.length != 0 && (
+        {branch.length != 0 ? (
           <div className="border p-4 bg-base-100 space-y-4 items-center">
+            {errors && <p className="text-red-500 text-md">{errors}</p>}
             <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
               <span className="w-32">Branch</span>
               <select
@@ -135,6 +134,8 @@ const AdminAddChannel = () => {
               </button>
             </div>
           </div>
+        ) : (
+          <p className="text-red-500 text-md">No Branch Available</p>
         )}
       </form>
     </div>

@@ -27,7 +27,7 @@ const AdminAddService = () => {
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
-        setData({ ...data, name: "" });
+        setData({ name: "" });
       }
     });
   };

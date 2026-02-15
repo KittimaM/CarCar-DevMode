@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, PostAddStaffUser, GetAvailableBranch } from "../../Modules/Api";
+import {
+  GetAllAdminRole,
+  PostAddStaffUser,
+  GetAllBranch,
+} from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminAddStaff = () => {
@@ -26,7 +30,7 @@ const AdminAddStaff = () => {
         setRoleList(msg);
       }
     });
-    GetAvailableBranch().then(({ status, msg }) => {
+    GetAllBranch().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setBranch(msg);
       }
@@ -40,13 +44,13 @@ const AdminAddStaff = () => {
         show: true,
         status: status,
         message: msg,
-      });      
+      });
       if (status === "SUCCESS") {
         setErrors([]);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, username: "" });
-      } 
+      }
       setNotificationKey((prev) => prev + 1);
     });
   };

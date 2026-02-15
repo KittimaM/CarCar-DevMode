@@ -6,7 +6,7 @@ const AdminCarSize = (req, res, next) => {
       return res.json({ status: "ERROR", msg: error });
     }
     if (results.length === 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "No Car Size Available" });
     } else {
       return res.json({ status: "SUCCESS", msg: results });
     }
@@ -21,7 +21,10 @@ const AdminAddCarSize = (req, res, next) => {
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
-          return res.json({ status: "WARNING", msg: "Already In System" });
+          return res.json({
+            status: "WARNING",
+            msg: "This Car Size Already In System",
+          });
         } else {
           return res.json({ status: "ERROR", msg: error });
         }
@@ -55,27 +58,15 @@ const AdminUpdateCarSize = (req, res, next) => {
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
-          return res.json({ status: "WARNING", msg: "Already In System" });
+          return res.json({
+            status: "WARNING",
+            msg: "This Car Size Already In System",
+          });
         } else {
           return res.json({ status: "ERROR", msg: error });
         }
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Upated" });
-      }
-    },
-  );
-};
-
-const UpdateCarSizeAvailable = (req, res, next) => {
-  const { id, is_available } = req.body;
-  Conn.execute(
-    "UPDATE car_size SET is_available = ? WHERE id = ? ",
-    [is_available, id],
-    function (error) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
       }
     },
   );
@@ -98,28 +89,10 @@ const GetCarSizeById = (req, res, next) => {
   );
 };
 
-const GetAvailableCarSize = (req, res, next) => {
-  Conn.execute(
-    "SELECT * FROM car_size WHERE is_available = 1",
-    function (error, results) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      }
-      if (results.length === 0) {
-        return res.json({ status: "NO DATA", msg: "NO DATA" });
-      } else {
-        return res.json({ status: "SUCCESS", msg: results });
-      }
-    },
-  );
-};
-
 module.exports = {
   AdminCarSize,
   AdminAddCarSize,
   AdminDeleteCarSize,
   AdminUpdateCarSize,
-  UpdateCarSizeAvailable,
   GetCarSizeById,
-  GetAvailableCarSize,
 };

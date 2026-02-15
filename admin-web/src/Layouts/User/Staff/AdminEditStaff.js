@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { GetAllAdminRole, UpdateStaffUser, GetAvailableBranch } from "../../Modules/Api";
+import {
+  GetAllAdminRole,
+  UpdateStaffUser,
+  GetAllBranch,
+} from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
 const AdminEditStaff = ({ editItem }) => {
@@ -24,7 +28,7 @@ const AdminEditStaff = ({ editItem }) => {
         setRoleList(msg);
       }
     });
-    GetAvailableBranch().then(({ status, msg }) => {
+    GetAllBranch().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setBranch(msg);
       }

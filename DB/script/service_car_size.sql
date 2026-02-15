@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `service_car_size` (
   `duration_minute` INT NOT NULL,
   `price` DECIMAL(10,2) NOT NULL,
   `required_staff` INT NOT NULL,
-  `is_available` TINYINT(1) DEFAULT 1,
+  UNIQUE KEY `unique_service_car_size` (`service_id`, `car_size_id`),
   FOREIGN KEY (service_id) REFERENCES service(id),
   FOREIGN KEY (car_size_id) REFERENCES car_size(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

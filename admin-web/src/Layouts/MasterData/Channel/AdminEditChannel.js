@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { GetAvailableBranch, UpdateChannel } from "../../Modules/Api";
+import { GetAllBranch, UpdateChannel } from "../../Modules/Api";
 
 const AdminEditChannel = ({ editItem }) => {
   const [data, setData] = useState({ ...editItem });
@@ -14,7 +14,7 @@ const AdminEditChannel = ({ editItem }) => {
   });
 
   useEffect(() => {
-    GetAvailableBranch().then(({ status, msg }) => {
+    GetAllBranch().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setBranch(msg);
       } else if (status === "NO DATA") {
@@ -53,9 +53,9 @@ const AdminEditChannel = ({ editItem }) => {
       )}
 
       <form onSubmit={handleEdit}>
-        {errors && <p className="text-red-500 text-md">{errors}</p>}
         {branch.length != 0 && (
           <div className="border p-4 bg-base-100 space-y-4 items-center">
+            {errors && <p className="text-red-500 text-md">{errors}</p>}
             <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
               <span className="w-32">Branch</span>
               <select

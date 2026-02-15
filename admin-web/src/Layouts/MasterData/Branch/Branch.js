@@ -2,9 +2,12 @@ import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import AddBranch from "./AddBranch";
 import EditBranch from "./EditBranch";
-import { GetAllBranch, DeleteBranch, UpdateBranchAvailable } from "../../Modules/Api";
-import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
-import unCheckIcon from "../../../assets/red-x-line-icon.svg";
+import {
+  GetAllBranch,
+  DeleteBranch,
+  UpdateBranchAvailable,
+} from "../../Modules/Api";
+
 const Branch = ({ data }) => {
   const { labelValue, permission, code } = data;
   const actions = permission.find((p) => p.code === code).permission_actions;
@@ -26,14 +29,14 @@ const Branch = ({ data }) => {
         setBranch([]);
       }
     });
-  }
+  };
 
   useEffect(() => {
     fetchBranch();
   }, []);
 
   const handleDelete = (id) => {
-    DeleteBranch({id}).then(({ status, msg }) => {
+    DeleteBranch({ id }).then(({ status, msg }) => {
       setNotification({
         show: true,
         status: status,
@@ -45,20 +48,6 @@ const Branch = ({ data }) => {
       }
     });
   };
-
-  const handleAvailable = (id, is_available) => {
-    UpdateBranchAvailable({id: id, is_available: !is_available}).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
-      if (status === "SUCCESS") {
-        fetchBranch();
-      }
-    });
-  }
 
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
@@ -109,9 +98,7 @@ const Branch = ({ data }) => {
       </div>
 
       {viewMode === "add" && <AddBranch />}
-      {viewMode === "edit" && editItem && (
-        <EditBranch editItem={editItem} />
-      )}
+      {viewMode === "edit" && editItem && <EditBranch editItem={editItem} />}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">
@@ -119,7 +106,6 @@ const Branch = ({ data }) => {
             <table className="table table-lg table-pin-rows">
               <thead>
                 <tr>
-                  <th>Availabel Status</th>
                   <th>Name</th>
                   <th>Address</th>
                   <th>Phone</th>
@@ -130,27 +116,9 @@ const Branch = ({ data }) => {
               </thead>
 
               <tbody>
-                    {branch.length > 0 ? (
+                {branch.length > 0 ? (
                   branch.map((b) => (
                     <tr key={b.branch_id}>
-                      <td>
-                        <button
-                          type="button"
-                          disabled={!actions.includes("edit")}
-                          onClick={() => handleAvailable(b.id, b.is_available)}
-                        >
-                          {b.is_available === 1 ? (
-                            <img
-                              alt=""
-                              height="15"
-                              width="15"
-                              src={checkIcon}
-                            />
-                          ) : (
-                            <img alt="" height="15" width="15" src={unCheckIcon} />
-                          )}
-                        </button>
-                      </td>
                       <td>{b.name}</td>
                       <td>{b.address}</td>
                       <td>{b.phone}</td>
@@ -170,7 +138,7 @@ const Branch = ({ data }) => {
                               <button
                                 className="btn btn-warning"
                                 onClick={() => {
-                                    setEditItem(b);
+                                  setEditItem(b);
                                   setViewMode("edit");
                                 }}
                               >
@@ -190,7 +158,7 @@ const Branch = ({ data }) => {
                           ? 5
                           : 4
                       }
-                      className="text-center"
+                      className="text-center text-gray-400"
                     >
                       No Branch Available
                     </td>

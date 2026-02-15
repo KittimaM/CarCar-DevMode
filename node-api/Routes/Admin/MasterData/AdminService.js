@@ -4,8 +4,6 @@ const {
   AdminAddService,
   AdminDeleteService,
   AdminUpdateService,
-  UpdateServiceAvailable,
-  GetAvailableService,
 } = require("../../../Controller/Admin/MasterData/AdminService");
 var router = express.Router();
 
@@ -13,7 +11,5 @@ router.get("/", AdminService);
 router.post("/", AdminAddService);
 router.delete("/", AdminDeleteService);
 router.put("/", AdminUpdateService);
-router.put("/is-available", UpdateServiceAvailable);
-router.get("/is-available", GetAvailableService);
 
 module.exports = router;

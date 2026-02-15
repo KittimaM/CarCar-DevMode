@@ -129,25 +129,9 @@ const AdminUpdateChannel = (req, res, next) => {
   );
 };
 
-const UpdateChannelAvailable = (req, res, next) => {
-  const { id, is_available } = req.body;
-  Conn.execute(
-    "UPDATE channel SET is_available = ? WHERE id = ? ",
-    [is_available, id],
-    function (error) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      } else {
-        return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
-      }
-    },
-  );
-};
-
 module.exports = {
   AdminGetChannel,
   AdminAddChannel,
   AdminDeleteChannel,
   AdminUpdateChannel,
-  UpdateChannelAvailable,
 };

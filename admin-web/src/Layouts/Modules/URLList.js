@@ -27,6 +27,7 @@ const URLList = {
   AdminStatusGroup: "admin/status-group",
   PaymentAccount: "admin/payment-account",
   Branch: "admin/branch",
+  ServiceRates: "admin/service-rates",
 };
 
 export default URLList;

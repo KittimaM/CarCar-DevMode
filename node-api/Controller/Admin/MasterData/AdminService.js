@@ -6,7 +6,7 @@ const AdminService = (req, res, next) => {
       return res.json({ status: "ERROR", msg: error });
     }
     if (results.length === 0) {
-      return res.json({ status: "NO DATA", msg: "NO DATA" });
+      return res.json({ status: "NO DATA", msg: "No Service Available" });
     }
     return res.json({ status: "SUCCESS", msg: results });
   });
@@ -121,41 +121,9 @@ const AdminUpdateService = (req, res, next) => {
   );
 };
 
-const UpdateServiceAvailable = (req, res, next) => {
-  const { id, is_available } = req.body;
-  Conn.execute(
-    "UPDATE service SET is_available = ? WHERE id = ? ",
-    [is_available, id],
-    function (error) {
-      connection.release();
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      }
-      return res.json({ status: "SUCCESS", msg: "Successfully Updated" });
-    },
-  );
-};
-
-const GetAvailableService = (req, res, next) => {
-  Conn.execute(
-    "SELECT * FROM service WHERE is_available = 1",
-    function (error, results) {
-      if (error) {
-        return res.json({ status: "ERROR", msg: error });
-      }
-      if (results.length === 0) {
-        return res.json({ status: "NO DATA", msg: "No Service Available" });
-      }
-      return res.json({ status: "SUCCESS", msg: results });
-    },
-  );
-};
-
 module.exports = {
   AdminService,
   AdminAddService,
   AdminDeleteService,
   AdminUpdateService,
-  UpdateServiceAvailable,
-  GetAvailableService,
 };

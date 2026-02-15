@@ -2,13 +2,7 @@ import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import AdminAddService from "./AdminAddService";
 import AdminEditService from "./AdminEditService";
-import {
-  DeleteService,
-  GetAllService,
-  UpdateServiceAvailable,
-} from "../../Modules/Api";
-import checkIcon from "../../../assets/green-checkmark-line-icon.svg";
-import unCheckIcon from "../../../assets/red-x-line-icon.svg";
+import { DeleteService, GetAllService } from "../../Modules/Api";
 
 const AdminService = ({ data }) => {
   const { labelValue, permission, code } = data;
@@ -50,22 +44,6 @@ const AdminService = ({ data }) => {
         fetchService();
       }
     });
-  };
-
-  const handleAvailable = (id, is_available) => {
-    UpdateServiceAvailable({ id: id, is_available: !is_available }).then(
-      ({ status, msg }) => {
-        setNotification({
-          show: true,
-          message: msg,
-          status: status,
-        });
-        setNotificationKey((prev) => prev + 1);
-        if (status === "SUCCESS") {
-          fetchService();
-        }
-      },
-    );
   };
 
   return (
@@ -127,7 +105,6 @@ const AdminService = ({ data }) => {
             <table className="table table-lg table-pin-rows">
               <thead>
                 <tr>
-                  <th>Available Status</th>
                   <th>Name</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
@@ -139,29 +116,6 @@ const AdminService = ({ data }) => {
                 {service.length > 0 ? (
                   service.map((s) => (
                     <tr key={s.id}>
-                      <td>
-                        <button
-                          type="button"
-                          disabled={!actions.includes("edit")}
-                          onClick={() => handleAvailable(s.id, s.is_available)}
-                        >
-                          {s.is_available === 1 ? (
-                            <img
-                              alt=""
-                              height="15"
-                              width="15"
-                              src={checkIcon}
-                            />
-                          ) : (
-                            <img
-                              alt=""
-                              height="15"
-                              width="15"
-                              src={unCheckIcon}
-                            />
-                          )}
-                        </button>
-                      </td>
                       <td>{s.name}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
@@ -196,10 +150,10 @@ const AdminService = ({ data }) => {
                     <td
                       colSpan={
                         actions.includes("edit") || actions.includes("delete")
-                          ? 3
-                          : 2
+                          ? 2
+                          : 1
                       }
-                      className="text-center"
+                      className="text-center text-gray-400"
                     >
                       No Service Available
                     </td>
