@@ -1,6 +1,25 @@
 import React, { useState, useEffect } from "react";
 import Notification from "../../Notification/Notification";
-import { GetAllChannel, GetAllServiceRates } from "../../Modules/Api";
+import {
+  GetAllChannel,
+  GetAllServiceRates,
+  PostAddChannelMatching,
+} from "../../Modules/Api";
+
+const DAYS = [
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+  "Sunday",
+];
+
+const initialSchedule = DAYS.reduce(
+  (acc, day) => ({ ...acc, [day]: { start_time: "", end_time: "" } }),
+  {},
+);
 
 const ChannelMatchingAddPage = () => {
   const [service, setService] = useState([]);
@@ -15,6 +34,7 @@ const ChannelMatchingAddPage = () => {
   const [data, setData] = useState({
     channel_id: "",
     service_ids: [],
+    schedule: initialSchedule,
   });
 
   useEffect(() => {
@@ -31,7 +51,17 @@ const ChannelMatchingAddPage = () => {
     });
   }, []);
 
-  const handleServiceToggle = (id) => {
+  const handleScheduleChange = (day, field, value) => {
+    setData((prev) => ({
+      ...prev,
+      schedule: {
+        ...prev.schedule,
+        [day]: { ...prev.schedule[day], [field]: value },
+      },
+    }));
+  };
+
+  const handleSelectService = (id) => {
     const idStr = String(id);
     setData((prev) => ({
       ...prev,
@@ -43,12 +73,19 @@ const ChannelMatchingAddPage = () => {
 
   const handleAdd = (e) => {
     e.preventDefault();
-    if (data.service_ids.length === 0) {
-      setErrors("Please select at least one service.");
-      return;
-    }
-    setErrors("");
-    console.log(data);
+    PostAddChannelMatching(data).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        status: status,
+        message: msg,
+      });
+      if (status === "SUCCESS") {
+        setErrors("");
+      } else {
+        setErrors(msg);
+      }
+      setNotificationKey(notificationKey + 1);
+    });
   };
 
   return (
@@ -108,7 +145,7 @@ const ChannelMatchingAddPage = () => {
                           type="checkbox"
                           className="checkbox checkbox-sm checkbox-primary"
                           checked={data.service_ids.includes(String(s.id))}
-                          // onChange={() => handleServiceToggle(s.id)}
+                          onChange={() => handleSelectService(s.id)}
                         />
                         <span className="font-normal">
                           {s.service_name} : {s.size}
@@ -123,6 +160,56 @@ const ChannelMatchingAddPage = () => {
                 )}
               </div>
 
+              <div className="flex flex-col gap-2 font-semibold">
+                <span className="w-32">Schedule</span>
+                <div className="border rounded-lg overflow-hidden max-w-2xl">
+                  <table className="table table-sm">
+                    <thead>
+                      <tr>
+                        <th>Day</th>
+                        <th>Start time</th>
+                        <th>End time</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {DAYS.map((day) => (
+                        <tr key={day}>
+                          <td className="font-normal">{day}</td>
+                          <td>
+                            <input
+                              type="time"
+                              className="input input-bordered input-sm w-full max-w-[8rem]"
+                              value={data.schedule[day].start_time}
+                              onChange={(e) =>
+                                handleScheduleChange(
+                                  day,
+                                  "start_time",
+                                  e.target.value,
+                                )
+                              }
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="time"
+                              className="input input-bordered input-sm w-full max-w-[8rem]"
+                              value={data.schedule[day].end_time}
+                              onChange={(e) =>
+                                handleScheduleChange(
+                                  day,
+                                  "end_time",
+                                  e.target.value,
+                                )
+                              }
+                            />
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
               <div className="flex gap-2 mt-4">
                 <button type="submit" className="btn btn-success text-white">
                   SUBMIT
@@ -134,6 +221,7 @@ const ChannelMatchingAddPage = () => {
                     setData({
                       service_ids: [],
                       channel_id: "",
+                      schedule: initialSchedule,
                     });
                     setErrors("");
                   }}

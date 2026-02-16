@@ -520,3 +520,7 @@ export const PutUpdateServiceRates = (jsonData) => {
 export const GetAllChannelMatching = () => {
   return getApi(URLList.ChannelMatching);
 };
+
+export const PostAddChannelMatching = (jsonData) => {
+  return postApi(URLList.ChannelMatching, jsonData);
+};
