@@ -93,9 +93,29 @@ const CarSizePage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <CarSizeAddPage />}
+      {viewMode === "add" && (
+        <CarSizeAddPage
+          onBack={() => { setViewMode("list"); fetchCarSize(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchCarSize();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <CarSizeEditPage editItem={editItem} />
+        <CarSizeEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchCarSize(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchCarSize();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

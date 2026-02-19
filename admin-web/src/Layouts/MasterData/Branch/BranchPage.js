@@ -96,8 +96,45 @@ const BranchPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <BranchAddPage />}
-      {viewMode === "edit" && editItem && <BranchEditPage editItem={editItem} />}
+      {viewMode === "add" && (
+        <BranchAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchBranch();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchBranch();
+          }}
+        />
+      )}
+      {viewMode === "edit" && editItem && (
+        <BranchEditPage
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchBranch();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchBranch();
+          }}
+        />
+      )}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">

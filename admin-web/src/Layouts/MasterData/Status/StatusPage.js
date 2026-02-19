@@ -141,13 +141,53 @@ const StatusPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <StatusAddPage />}
-      {viewMode === "edit" && editItem && (
-        <StatusEditPage editItem={editItem} />
+      {viewMode === "add" && (
+        <StatusAddPage
+          onBack={() => { setViewMode("list"); fetchStatus(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((p) => p + 1);
+            setViewMode("list");
+            fetchStatus();
+          }}
+        />
       )}
-      {viewMode === "add_group" && <StatusGroupAddPage />}
+      {viewMode === "edit" && editItem && (
+        <StatusEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchStatus(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((p) => p + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchStatus();
+          }}
+        />
+      )}
+      {viewMode === "add_group" && (
+        <StatusGroupAddPage
+          onBack={() => { setViewMode("list"); fetchStatus(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((p) => p + 1);
+            setViewMode("list");
+            fetchStatus();
+          }}
+        />
+      )}
       {viewMode === "edit_group" && editItem && (
-        <StatusGroupEditPage editItem={editItem} />
+        <StatusGroupEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchStatus(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((p) => p + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchStatus();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

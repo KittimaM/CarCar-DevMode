@@ -6,7 +6,7 @@ import {
 } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const StaffEditPage = ({ editItem }) => {
+const StaffEditPage = ({ editItem, onBack, onSuccess }) => {
   const [branch, setBranch] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -38,18 +38,18 @@ const StaffEditPage = ({ editItem }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateStaffUser(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
       if (status === "SUCCESS") {
         setErrors([]);
+        onSuccess?.(msg);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, username: editItem.username });
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -175,14 +175,7 @@ const StaffEditPage = ({ editItem }) => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({
-                  ...editItem,
-                  password: "",
-                  isChangePassword: false,
-                });
-                setErrors([]);
-              }}
+              onClick={() => onBack?.()}
             >
               CANCEL
             </button>

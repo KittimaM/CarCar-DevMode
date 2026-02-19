@@ -94,9 +94,44 @@ const ServiceRatesPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <ServiceRatesAddPage />}
+      {viewMode === "add" && (
+        <ServiceRatesAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchServiceRates();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchServiceRates();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <ServiceRatesEditPage editItem={editItem} />
+        <ServiceRatesEditPage
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchServiceRates();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchServiceRates();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

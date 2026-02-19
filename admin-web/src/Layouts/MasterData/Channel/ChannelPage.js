@@ -93,9 +93,44 @@ const ChannelPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddChannel />}
+      {viewMode === "add" && (
+        <AdminAddChannel
+          onBack={() => {
+            setViewMode("list");
+            fetchChannel();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchChannel();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <AdminEditChannel editItem={editItem} />
+        <AdminEditChannel
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannel();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannel();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

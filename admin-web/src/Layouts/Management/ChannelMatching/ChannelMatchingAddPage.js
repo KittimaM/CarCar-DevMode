@@ -21,7 +21,7 @@ const initialSchedule = DAYS.reduce(
   {},
 );
 
-const ChannelMatchingAddPage = () => {
+const ChannelMatchingAddPage = ({ onSuccess, onBack }) => {
   const [service, setService] = useState([]);
   const [channel, setChannel] = useState([]);
   const [errors, setErrors] = useState("");
@@ -74,23 +74,29 @@ const ChannelMatchingAddPage = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddChannelMatching(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
       if (status === "SUCCESS") {
         setErrors("");
+        onSuccess?.(msg);
       } else {
         setErrors(msg);
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
+        });
+        setNotificationKey((prev) => prev + 1);
+        setData({
+          service_ids: [],
+          channel_id: "",
+          schedule: initialSchedule,
+        });
       }
-      setNotificationKey(notificationKey + 1);
     });
   };
 
   return (
     <div className="space-y-4">
-      {notification.show === true && (
+      {notification.show && (
         <Notification
           key={notificationKey}
           message={notification.message}
@@ -224,6 +230,7 @@ const ChannelMatchingAddPage = () => {
                       schedule: initialSchedule,
                     });
                     setErrors("");
+                    onBack?.();
                   }}
                 >
                   CANCEL

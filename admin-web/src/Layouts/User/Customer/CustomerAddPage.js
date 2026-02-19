@@ -2,7 +2,7 @@ import { useState } from "react";
 import Notification from "../../Notification/Notification";
 import { PostAddCustomer } from "../../Modules/Api";
 
-const CustomerAddPage = () => {
+const CustomerAddPage = ({ onBack, onSuccess }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -20,17 +20,17 @@ const CustomerAddPage = () => {
     e.preventDefault();
     PostAddCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: `Successfully Add ${data.name}`,
-        });
         setErrors([]);
+        onSuccess?.(msg);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, phone: "" });
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -102,14 +102,7 @@ const CustomerAddPage = () => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({
-                  phone: "",
-                  name: "",
-                  password: "",
-                });
-                setErrors([]);
-              }}
+              onClick={() => onBack?.()}
             >
               CANCEL
             </button>

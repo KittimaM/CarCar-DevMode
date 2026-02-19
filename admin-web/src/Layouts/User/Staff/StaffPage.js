@@ -7,7 +7,7 @@ import {
 import Notification from "../../Notification/Notification";
 import lockedIcon from "../../../assets/padlock-icon.svg";
 import StaffEditPage from "./StaffEditPage";
-import StaffAddPage from "./AdminAddStaff";
+import StaffAddPage from "./StaffAddPage";
 
 const StaffPage = ({ data }) => {
   const { labelValue, permission, code } = data;
@@ -111,8 +111,45 @@ const StaffPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <StaffAddPage />}
-      {viewMode === "edit" && editItem && <StaffEditPage editItem={editItem} />}
+      {viewMode === "add" && (
+        <StaffAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchStaff();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setViewMode("list");
+            fetchStaff();
+          }}
+        />
+      )}
+      {viewMode === "edit" && editItem && (
+        <StaffEditPage
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchStaff();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchStaff();
+          }}
+        />
+      )}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">

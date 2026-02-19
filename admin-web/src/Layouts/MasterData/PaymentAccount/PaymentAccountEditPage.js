@@ -6,7 +6,7 @@ import Notification, {
 
 const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
 
-  const PaymentAccountEditPage = ({ editItem }) => {
+  const PaymentAccountEditPage = ({ editItem, onBack, onSuccess }) => {
   const [paymentType, setPaymentType] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -77,13 +77,15 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
       formData.append("existing_qr_code", data.qr_code);
     }
     UpdatePaymentAccount(formData).then(({ status, msg, qr_code }) => {
-      setNotification({ show: true, status, message: msg });
-      setNotificationKey((k) => k + 1);
       if (status === "SUCCESS") {
         setQrCodeFile(null);
         if (qr_code !== undefined) {
           setData((prev) => ({ ...prev, qr_code }));
         }
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((k) => k + 1);
       }
     });
   };
@@ -243,6 +245,7 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
                   qr_code: editItem.qr_code,
                 });
                 setQrCodeFile(null);
+                onBack?.();
               }}
             >
               CANCEL

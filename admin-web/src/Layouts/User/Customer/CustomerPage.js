@@ -112,9 +112,44 @@ const AdminCustomer = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <CustomerAddPage />}
+      {viewMode === "add" && (
+        <CustomerAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchCustomer();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setViewMode("list");
+            fetchCustomer();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <CustomerEditPage editItem={editItem} />
+        <CustomerEditPage
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchCustomer();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchCustomer();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

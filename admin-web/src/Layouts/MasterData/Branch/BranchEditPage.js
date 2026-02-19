@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Notification from "../../Notification/Notification";
 import { UpdateBranch } from "../../Modules/Api";
 
-const BranchEditPage = ({ editItem }) => {
+const BranchEditPage = ({ editItem, onBack, onSuccess }) => {
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
@@ -19,19 +19,14 @@ const BranchEditPage = ({ editItem }) => {
   const handleEditBranch = (e) => {
     e.preventDefault();
     UpdateBranch(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
-      if (status === 'ERROR') {
-        setData({
-          id: editItem.id,
-          name: editItem.name,
-          address: editItem.address,
-          phone: editItem.phone,
-        })
+      if (status === "SUCCESS") {
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "ERROR") {
+          setData({ id: editItem.id, name: editItem.name, address: editItem.address, phone: editItem.phone });
+        }
       }
     });
   };
@@ -102,12 +97,8 @@ const BranchEditPage = ({ editItem }) => {
               type="button"
               className="btn"
               onClick={() => {
-                setData({
-                  id: editItem.id,
-                  name: editItem.name,
-                  address: editItem.address,
-                  phone: editItem.phone,
-                });
+                setData({ id: editItem.id, name: editItem.name, address: editItem.address, phone: editItem.phone });
+                onBack?.();
               }}
             >
               CANCEL

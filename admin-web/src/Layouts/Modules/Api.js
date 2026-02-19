@@ -524,3 +524,15 @@ export const GetAllChannelMatching = () => {
 export const PostAddChannelMatching = (jsonData) => {
   return postApi(URLList.ChannelMatching, jsonData);
 };
+
+export const PostDeleteChannelMatching = (jsonData) => {
+  return deleteApi(URLList.ChannelMatching, jsonData);
+};
+
+export const PutUpdateChannelMatching = (jsonData) => {
+  return putApi(URLList.ChannelMatching, jsonData);
+};
+
+export const PutUpdateChannelMatchingAvailable = (jsonData) => {
+  return putApi(URLList.ChannelMatching + "/available", jsonData);
+};

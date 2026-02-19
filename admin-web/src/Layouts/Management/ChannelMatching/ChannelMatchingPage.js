@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import {
-  PostDeleteServiceRates,
+  PostDeleteChannelMatching,
   GetAllChannelMatching,
+  PutUpdateChannelMatchingAvailable,
 } from "../../Modules/Api";
 import ChannelMatchingAddPage from "./ChannelMatchingAddPage";
 import ChannelMatchingEditPage from "./ChannelMatchingEditPage";
@@ -37,8 +38,8 @@ const ChannelMatchingPage = ({ data }) => {
     fetchChannelMatching();
   }, []);
 
-  const handleDelete = (id) => {
-    PostDeleteServiceRates({ id }).then(({ status, msg }) => {
+  const handleDelete = (channel_id, service_car_size_id) => {
+    PostDeleteChannelMatching({ channel_id, service_car_size_id }).then(({ status, msg }) => {
       setNotification({
         show: true,
         message: msg,
@@ -51,7 +52,24 @@ const ChannelMatchingPage = ({ data }) => {
     });
   };
 
-  const handleAvailable = (id) => {};
+  const handleAvailable = (channel_id, service_car_size_id, is_available) => {
+    const newAvailable = is_available === 1 ? 0 : 1;
+    PutUpdateChannelMatchingAvailable({
+      channel_id,
+      service_car_size_id,
+      is_available: newAvailable,
+    }).then(({ status, msg }) => {
+      setNotification({
+        show: true,
+        message: msg,
+        status: status,
+      });
+      setNotificationKey((prev) => prev + 1);
+      if (status === "SUCCESS") {
+        fetchChannelMatching();
+      }
+    });
+  };
 
   return (
     <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
@@ -101,9 +119,45 @@ const ChannelMatchingPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <ChannelMatchingAddPage />}
+      {viewMode === "add" && (
+        <ChannelMatchingAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchChannelMatching();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchChannelMatching();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <ChannelMatchingEditPage editItem={editItem} />
+        <ChannelMatchingEditPage
+          editItem={editItem}
+          channelList={channel}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannelMatching();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannelMatching();
+          }}
+        />
       )}
 
       {viewMode === "list" && (
@@ -113,11 +167,17 @@ const ChannelMatchingPage = ({ data }) => {
               <thead>
                 <tr>
                   <th>Available Status</th>
+                  <th>Channel</th>
+                  <th>Branch</th>
                   <th>Service</th>
                   <th>Car Size</th>
-                  <th>Duration</th>
-                  <th>Price</th>
-                  <th>Required Staff</th>
+                  <th>Monday</th>
+                  <th>Tuesday</th>
+                  <th>Wednesday</th>
+                  <th>Thursday</th>
+                  <th>Friday</th>
+                  <th>Saturday</th>
+                  <th>Sunday</th>
                   {(actions.includes("edit") || actions.includes("delete")) && (
                     <th className="text-right">Actions</th>
                   )}
@@ -127,12 +187,12 @@ const ChannelMatchingPage = ({ data }) => {
               <tbody>
                 {channel.length > 0 ? (
                   channel.map((c) => (
-                    <tr key={c.id}>
+                    <tr key={`${c.channel_id}-${c.service_car_size_id}`}>
                       <td>
                         <button
                           type="button"
                           disabled={!actions.includes("edit")}
-                          onClick={() => handleAvailable(c.id, c.is_available)}
+                          onClick={() => handleAvailable(c.channel_id, c.service_car_size_id, c.is_available)}
                         >
                           {c.is_available === 1 ? (
                             <img
@@ -154,6 +214,14 @@ const ChannelMatchingPage = ({ data }) => {
                       <td>{c.channel_name}</td>
                       <td>{c.branch_name}</td>
                       <td>{c.service_name}</td>
+                      <td>{c.car_size ?? "-"}</td>
+                      <td>{c.Monday ?? "-"}</td>
+                      <td>{c.Tuesday ?? "-"}</td>
+                      <td>{c.Wednesday ?? "-"}</td>
+                      <td>{c.Thursday ?? "-"}</td>
+                      <td>{c.Friday ?? "-"}</td>
+                      <td>{c.Saturday ?? "-"}</td>
+                      <td>{c.Sunday ?? "-"}</td>
                       {(actions.includes("edit") ||
                         actions.includes("delete")) && (
                         <td className="text-right">
@@ -161,7 +229,7 @@ const ChannelMatchingPage = ({ data }) => {
                             {actions.includes("delete") && (
                               <button
                                 className="btn btn-error text-white"
-                                onClick={() => handleDelete(c.id)}
+                                onClick={() => handleDelete(c.channel_id, c.service_car_size_id)}
                               >
                                 Delete
                               </button>
@@ -185,11 +253,11 @@ const ChannelMatchingPage = ({ data }) => {
                 ) : (
                   <tr>
                     <td
-                      colSpan={
-                        actions.includes("edit") || actions.includes("delete")
-                          ? 7
-                          : 6
-                      }
+                        colSpan={
+                          actions.includes("edit") || actions.includes("delete")
+                            ? 13
+                            : 12
+                        }
                       className="text-center text-gray-400"
                     >
                       No Channel Available

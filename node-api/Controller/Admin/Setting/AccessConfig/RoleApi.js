@@ -21,7 +21,10 @@ const PostAddRole = (req, res, next) => {
     [role_name],
     function (error, result) {
       if (error) {
-        return res.json({ status: "ERROR", msg: error });
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({ status: "WARNING", msg: "Role name already exists" });
+        }
+        return res.json({ status: "ERROR", msg: error.message || error });
       }
 
       const role_id = result.insertId;
@@ -42,7 +45,7 @@ const PostAddRole = (req, res, next) => {
 
           return res.json({
             status: "SUCCESS",
-            msg: "SUCCESS",
+            msg: "Successfully Added",
           });
         }
       );
@@ -76,7 +79,7 @@ const DeleteRole = (req, res, next) => {
                   if (error) {
                     return res.json({ status: "ERROR", msg: error });
                   } else {
-                    return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+                    return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
                   }
                 }
               );
@@ -121,7 +124,7 @@ const PutUpdateRole = (req, res, next) => {
               } else {
                 return res.json({
                   status: "SUCCESS",
-                  msg: "SUCCESS",
+                  msg: "Successfully Updated",
                 });
               }
             }

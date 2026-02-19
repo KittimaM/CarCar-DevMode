@@ -6,7 +6,7 @@ import {
   PostAddServiceRates,
 } from "../../Modules/Api";
 
-const ServiceRatesAddPage = () => {
+const ServiceRatesAddPage = ({ onSuccess, onBack }) => {
   const [service, setService] = useState([]);
   const [carSize, setCarSize] = useState([]);
   const [errors, setErrors] = useState("");
@@ -47,25 +47,28 @@ const ServiceRatesAddPage = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddServiceRates(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({
-          service_id: "",
-          car_size_id: "",
-          duration_minute: "",
-          price: "",
-          required_staff: "",
+        onSuccess?.(msg);
+      } else {
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
         });
-      } else if (status === "ERROR") {
-        setErrors(msg);
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") {
+          setErrors(msg);
+          setData({
+            service_id: "",
+            car_size_id: "",
+            duration_minute: "",
+            price: "",
+            required_staff: "",
+          });
+        } else if (status === "ERROR") {
+          setErrors(msg);
+        }
       }
     });
   };
@@ -192,6 +195,7 @@ const ServiceRatesAddPage = () => {
                       required_staff: "",
                     });
                     setErrors("");
+                    onBack?.();
                   }}
                 >
                   CANCEL

@@ -118,9 +118,29 @@ const PaymentAccountPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <PaymentAccountAddPage />}
+      {viewMode === "add" && (
+        <PaymentAccountAddPage
+          onBack={() => { setViewMode("list"); fetchPaymentAccount(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchPaymentAccount();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <PaymentAccountEditPage editItem={editItem} />
+        <PaymentAccountEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchPaymentAccount(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchPaymentAccount();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

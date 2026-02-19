@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Notification from "../../../Notification/Notification";
 import { PostAddStatusGroup } from "../../../Modules/Api";
 
-const StatusGroupAddPage = () => {
+const StatusGroupAddPage = ({ onSuccess, onBack }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -17,18 +17,14 @@ const StatusGroupAddPage = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddStatusGroup(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...data, code: "" });
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData({ ...data, code: "" }); }
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -66,12 +62,7 @@ const StatusGroupAddPage = () => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setErrors([]);
-                setData({
-                  code: "",
-                });
-              }}
+              onClick={() => { setErrors([]); setData({ code: "" }); onBack?.(); }}
             >
               CANCEL
             </button>
