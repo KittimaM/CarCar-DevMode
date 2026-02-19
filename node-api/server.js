@@ -4,7 +4,20 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 require("dotenv").config();
-app.use(cors());
+const allowedOrigins = process.env.CLIENT_URLS
+  ? process.env.CLIENT_URLS.split(",")
+  : [];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  }
+}));
+
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
@@ -109,14 +122,8 @@ app.use("/admin/payment-type", PaymentTypeRoute);
 const ChannelMatchingRoute = require("./Routes/Admin/Management/ChannelMatchingRoute");
 app.use("/admin/channel-matching", ChannelMatchingRoute);
 
-app.listen(process.env.API_PORT, () => {
-  console.log(`Server is running on port ${process.env.API_PORT}`);
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
-
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../admin-web/build")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../admin-web/build/index.html"));
-  });
-}
