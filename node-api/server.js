@@ -122,6 +122,15 @@ app.use("/admin/payment-type", PaymentTypeRoute);
 const ChannelMatchingRoute = require("./Routes/Admin/Management/ChannelMatchingRoute");
 app.use("/admin/channel-matching", ChannelMatchingRoute);
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    uptime: process.uptime(),
+    timestamp: new Date()
+  });
+});
+
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
