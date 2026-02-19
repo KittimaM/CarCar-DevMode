@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import Notification from "../../Notification/Notification";
 import {
   GetAllChannel,
@@ -49,10 +49,13 @@ const ChannelMatchingEditPage = ({ editItem, channelList = [], onBack, onSuccess
     () => initialScheduleFromEditItem(editItem),
     [editItem]
   );
-  const getServicesForChannel = (chId) =>
-    (channelList || [])
-      .filter((c) => String(c.channel_id) === String(chId))
-      .map((c) => String(c.service_car_size_id));
+  const getServicesForChannel = useCallback(
+    (chId) =>
+      (channelList || [])
+        .filter((c) => String(c.channel_id) === String(chId))
+        .map((c) => String(c.service_car_size_id)),
+    [channelList]
+  );
 
   const [data, setData] = useState({
     old_channel_id: editItem?.channel_id ?? "",
@@ -86,7 +89,7 @@ const ChannelMatchingEditPage = ({ editItem, channelList = [], onBack, onSuccess
         schedule: initialScheduleFromEditItem(editItem),
       });
     }
-  }, [editItem, channelList]);
+  }, [editItem, channelList, getServicesForChannel]);
 
   const handleScheduleChange = (day, field, value) => {
     setData((prev) => ({
