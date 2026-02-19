@@ -26,6 +26,7 @@ const CustomerProfile = () => {
     const jsonData = {
       name: data.get("name"),
       phone: data.get("phone"),
+      email: data.get("email") || null,
     };
     UpdateCustomerProfile(jsonData).then((data) => {
       const { status, msg } = data;
@@ -56,7 +57,11 @@ const CustomerProfile = () => {
             </div>
             <div>
               <p className="text-sm text-base-content/70">Phone</p>
-              <p className="font-medium text-base sm:text-lg">{profile.phone}</p>
+              <p className="font-medium text-base sm:text-lg">{profile.phone || "—"}</p>
+            </div>
+            <div>
+              <p className="text-sm text-base-content/70">Email</p>
+              <p className="font-medium text-base sm:text-lg">{profile.email || "—"}</p>
             </div>
           </div>
           <button
@@ -84,6 +89,16 @@ const CustomerProfile = () => {
               name="phone"
               defaultValue={profile.phone}
               className="input input-bordered w-full"
+            />
+          </label>
+          <label className="form-control w-full">
+            <span className="label-text">Email</span>
+            <input
+              type="email"
+              name="email"
+              defaultValue={profile.email}
+              className="input input-bordered w-full"
+              placeholder="your@email.com"
             />
           </label>
           <div className="flex flex-col-reverse sm:flex-row gap-2 pt-2">
