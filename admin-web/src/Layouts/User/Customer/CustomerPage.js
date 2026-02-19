@@ -26,7 +26,7 @@ const AdminCustomer = ({ data }) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setUser(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setUser([]);
       } else {
         console.log(data);
@@ -176,7 +176,7 @@ const AdminCustomer = ({ data }) => {
                       )}
                     </button>
                   </td>
-                  <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
+                  <td>{u.locked_reason !== null ? u.locked_reason : "-"}</td>
                   <td>{u.phone}</td>
                   <td>{u.name}</td>
                   {(actions.includes("edit") || actions.includes("delete")) && (

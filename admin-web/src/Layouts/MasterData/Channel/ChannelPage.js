@@ -19,9 +19,9 @@ const ChannelPage = ({ data }) => {
 
   const fetchChannel = () => {
     GetAllChannel().then(({ status, msg }) => {
-      if (status == "SUCCESS") {
+      if (status === "SUCCESS") {
         setChannel(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setChannel([]);
       }
     });

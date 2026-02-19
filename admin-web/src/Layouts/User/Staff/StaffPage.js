@@ -31,7 +31,7 @@ const StaffPage = ({ data }) => {
       const { status, msg } = data;
       if (status === "SUCCESS") {
         setUser(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setUser([]);
       }
     });
@@ -186,7 +186,7 @@ const StaffPage = ({ data }) => {
                           )}
                         </button>
                       </td>
-                      <td>{u.locked_reason != null ? u.locked_reason : "-"}</td>
+                      <td>{u.locked_reason !== null ? u.locked_reason : "-"}</td>
                       <td>{u.username}</td>
                       <td>{u.name}</td>
                       <td>{u.role_name}</td>
@@ -195,7 +195,7 @@ const StaffPage = ({ data }) => {
                         <td className="text-right">
                           <div className="flex justify-end gap-2">
                             {actions.includes("delete") &&
-                              sessionStorage.getItem("staff_id") != u.id &&
+                              sessionStorage.getItem("staff_id") !== String(u.id) &&
                               u.is_system_id === 0 && (
                                 <button
                                   className="btn btn-error text-white"

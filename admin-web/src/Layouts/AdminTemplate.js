@@ -92,7 +92,7 @@ const AdminTemplate = ({ data }) => {
 
   const handleAddTemplate = (event) => {
     event.preventDefault();
-    if (template != undefined) {
+    if (template !== undefined) {
       const data = new FormData(event.currentTarget);
       const jsonData = {
         name: data.get("name"),

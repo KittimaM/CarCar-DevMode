@@ -59,7 +59,7 @@ const ChannelAddPage = ({ onSuccess, onBack }) => {
       )}
 
       <form onSubmit={handleAdd}>
-        {branch.length != 0 ? (
+        {branch.length !== 0 ? (
           <div className="border p-4 bg-base-100 space-y-4 items-center">
             {errors && <p className="text-red-500 text-md">{errors}</p>}
             <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">

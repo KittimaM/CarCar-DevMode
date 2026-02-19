@@ -21,7 +21,7 @@ const RolePage = ({ data }) => {
     GetAllAdminRole().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setRoleList(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setRoleList([]);
       }
     });

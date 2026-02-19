@@ -21,7 +21,7 @@ const CarSizePage = ({ data }) => {
     GetAllCarSize().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setSize(msg);
-      } else if (status == "NO DATA") {
+      } else if (status === "NO DATA") {
         setSize([]);
       }
     });
