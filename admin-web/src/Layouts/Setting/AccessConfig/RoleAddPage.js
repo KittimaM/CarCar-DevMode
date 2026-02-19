@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { GetAllModules, PostAdminAddRole } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const RoleAddPage = () => {
+const RoleAddPage = ({ onSuccess, onBack }) => {
   const [modules, setModules] = useState([]);
   const [roleName, setRoleName] = useState("");
   const [errors, setErrors] = useState([]);
@@ -116,20 +116,18 @@ const RoleAddPage = () => {
     };
 
     PostAdminAddRole(jsonData).then(({ status, msg }) => {
-      if (status === "ERROR") {
-        if (msg.code === "ER_DUP_ENTRY") {
-          setErrors("Role name duplicated");
-        }
-      } else if (status === "SUCCESS") {
+      if (status === "SUCCESS") {
         setRoleName("");
         setErrors([]);
+        onSuccess?.(msg);
+      } else if (status === "WARNING" || status === "ERROR") {
+        setErrors(typeof msg === "string" ? msg : msg?.message || "An error occurred");
         setNotification({
           show: true,
-          status: status,
-          message: `SUCCESSFULLY ADD ROLE : ${roleName}`,
+          status,
+          message: typeof msg === "string" ? msg : msg?.message || "An error occurred",
         });
         setNotificationKey((prev) => prev + 1);
-        fetchAllModules();
       }
     });
   };
@@ -285,6 +283,7 @@ const RoleAddPage = () => {
               setRoleName("");
               setErrors([]);
               fetchAllModules();
+              onBack?.();
             }}
           >
             CANCEL

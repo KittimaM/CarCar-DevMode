@@ -6,7 +6,7 @@ import {
 } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const StaffAddPage = () => {
+const StaffAddPage = ({ onBack, onSuccess }) => {
   const [roleList, setRoleList] = useState([]);
   const [branch, setBranch] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -40,18 +40,18 @@ const StaffAddPage = () => {
   const handleAddUser = (e) => {
     e.preventDefault();
     PostAddStaffUser(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
       if (status === "SUCCESS") {
         setErrors([]);
+        onSuccess?.(msg);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, username: "" });
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -162,16 +162,7 @@ const StaffAddPage = () => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({
-                  username: "",
-                  name: "",
-                  password: "",
-                  role_id: "",
-                  branch_id: "",
-                });
-                setErrors([]);
-              }}
+              onClick={() => onBack?.()}
             >
               CANCEL
             </button>

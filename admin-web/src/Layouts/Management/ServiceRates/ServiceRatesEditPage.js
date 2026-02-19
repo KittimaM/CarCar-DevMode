@@ -6,7 +6,7 @@ import {
   PutUpdateServiceRates,
 } from "../../Modules/Api";
 
-const ServiceRatesEditPage = ({ editItem }) => {
+const ServiceRatesEditPage = ({ editItem, onBack, onSuccess }) => {
   const [data, setData] = useState({ ...editItem });
   const [service, setService] = useState([]);
   const [carSize, setCarSize] = useState([]);
@@ -41,19 +41,22 @@ const ServiceRatesEditPage = ({ editItem }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     PutUpdateServiceRates(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...editItem });
-      } else if (status === "ERROR") {
-        setErrors(msg);
+        onSuccess?.(msg);
+      } else {
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
+        });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") {
+          setErrors(msg);
+          setData({ ...editItem });
+        } else if (status === "ERROR") {
+          setErrors(msg);
+        }
       }
     });
   };
@@ -172,14 +175,9 @@ const ServiceRatesEditPage = ({ editItem }) => {
                   type="button"
                   className="btn"
                   onClick={() => {
-                    setData({
-                      service_id: "",
-                      car_size_id: "",
-                      duration_minute: "",
-                      price: "",
-                      required_staff: "",
-                    });
+                    setData({ ...editItem });
                     setErrors("");
+                    onBack?.();
                   }}
                 >
                   CANCEL

@@ -106,6 +106,9 @@ app.use("/admin/service-rates", ServiceRatesRoute);
 const PaymentTypeRoute = require("./Routes/Admin/MasterData/PaymentTypeRoute");
 app.use("/admin/payment-type", PaymentTypeRoute);
 
+const ChannelMatchingRoute = require("./Routes/Admin/Management/ChannelMatchingRoute");
+app.use("/admin/channel-matching", ChannelMatchingRoute);
+
 app.listen(process.env.API_PORT, () => {
   console.log(`Server is running on port ${process.env.API_PORT}`);
 });

@@ -36,7 +36,7 @@ const RolePage = ({ data }) => {
       if (status === "SUCCESS") {
         setNotification({
           show: true,
-          message: `${name} is successfully deleted`,
+          message: msg,
           status: status,
         });
         fetchAllRole();
@@ -99,8 +99,30 @@ const RolePage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <RoleAddPage />}
-      {viewMode === "edit" && editItem && <RoleEditPage editItem={editItem} />}
+      {viewMode === "add" && (
+        <RoleAddPage
+          onBack={() => { setViewMode("list"); fetchAllRole(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchAllRole();
+          }}
+        />
+      )}
+      {viewMode === "edit" && editItem && (
+        <RoleEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchAllRole(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchAllRole();
+          }}
+        />
+      )}
 
       {viewMode === "list" && (
         <div className="h-screen overflow-y-auto">

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { PostAddService } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const ServiceAddPage = () => {
+const ServiceAddPage = ({ onSuccess, onBack }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -17,17 +17,13 @@ const ServiceAddPage = () => {
   const handleAddService = (e) => {
     e.preventDefault();
     PostAddService(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ name: "" });
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData({ name: "" }); }
       }
     });
   };
@@ -65,12 +61,7 @@ const ServiceAddPage = () => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({
-                  name: "",
-                });
-                setErrors([]);
-              }}
+              onClick={() => { setData({ name: "" }); setErrors([]); onBack?.(); }}
             >
               CANCEL
             </button>

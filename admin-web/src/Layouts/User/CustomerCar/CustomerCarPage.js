@@ -91,9 +91,44 @@ const CustomerCarPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <CustomerCarAddPage />}
+      {viewMode === "add" && (
+        <CustomerCarAddPage
+          onBack={() => {
+            setViewMode("list");
+            fetchCustomerCar();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setViewMode("list");
+            fetchCustomerCar();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <CustomerCarEditPage editItem={editItem} />
+        <CustomerCarEditPage
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchCustomerCar();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((k) => k + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchCustomerCar();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

@@ -28,6 +28,7 @@ const URLList = {
   PaymentAccount: "admin/payment-account",
   Branch: "admin/branch",
   ServiceRates: "admin/service-rates",
+  ChannelMatching: "admin/channel-matching",
 };
 
 export default URLList;

@@ -2,7 +2,7 @@ import { useState } from "react";
 import Notification from "../../Notification/Notification";
 import { PostAddCarSize } from "../../Modules/Api";
 
-const CarSizeAddPage = () => {
+const CarSizeAddPage = ({ onSuccess, onBack }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -17,17 +17,13 @@ const CarSizeAddPage = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddCarSize(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ size: "" });
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData({ size: "" }); }
       }
     });
   };
@@ -65,10 +61,7 @@ const CarSizeAddPage = () => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({ size: "" });
-                setErrors("");
-              }}
+              onClick={() => { setData({ size: "" }); setErrors(""); onBack?.(); }}
             >
               CANCEL
             </button>

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Notification from "../../Notification/Notification";
 import { PostAddBranch } from "../../Modules/Api";
 
-const BranchAddPage = () => {
+const BranchAddPage = ({ onSuccess, onBack }) => {
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
@@ -18,18 +18,12 @@ const BranchAddPage = () => {
   const handleAddService = (e) => {
     e.preventDefault();
     PostAddBranch(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
-        setData({
-          name: "",
-          address: "",
-          phone: "",
-        });
+        setData({ name: "", address: "", phone: "" });
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
       }
     });
   };
@@ -100,11 +94,8 @@ const BranchAddPage = () => {
               type="button"
               className="btn"
               onClick={() => {
-                setData({
-                  name: "",
-                  address: "",
-                  phone: "",
-                });
+                setData({ name: "", address: "", phone: "" });
+                onBack?.();
               }}
             >
               CANCEL

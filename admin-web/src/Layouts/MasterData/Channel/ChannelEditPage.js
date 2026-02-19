@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
 import { GetAllBranch, UpdateChannel } from "../../Modules/Api";
 
-const ChannelEditPage = ({ editItem }) => {
+const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
   const [data, setData] = useState({ ...editItem });
   const [branch, setBranch] = useState([]);
   const [errors, setErrors] = useState([]);
@@ -27,17 +27,20 @@ const ChannelEditPage = ({ editItem }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateChannel(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...editItem });
+        onSuccess?.(msg);
+      } else {
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
+        });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") {
+          setErrors(msg);
+          setData({ ...editItem });
+        }
       }
     });
   };
@@ -121,6 +124,7 @@ const ChannelEditPage = ({ editItem }) => {
                 onClick={() => {
                   setData({ ...editItem });
                   setErrors([]);
+                  onBack?.();
                 }}
               >
                 CANCEL

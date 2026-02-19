@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Notification from "../../../Notification/Notification";
 import { UpdateStatusGroup } from "../../../Modules/Api";
 
-const StatusGroupEditPage = ({ editItem }) => {
+const StatusGroupEditPage = ({ editItem, onBack, onSuccess }) => {
   const [data, setData] = useState(editItem);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -15,18 +15,14 @@ const StatusGroupEditPage = ({ editItem }) => {
   const handleEdit = (e) => {
     e.preventDefault();
     UpdateStatusGroup(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: data.code + " " + msg,
-      });
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData(editItem);
+        onSuccess?.(data.code + " " + msg);
+      } else {
+        setNotification({ show: true, status, message: data.code + " " + msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData(editItem); }
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -64,10 +60,7 @@ const StatusGroupEditPage = ({ editItem }) => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData(editItem);
-                setErrors([]);
-              }}
+              onClick={() => { setData(editItem); setErrors([]); onBack?.(); }}
             >
               CANCEL
             </button>

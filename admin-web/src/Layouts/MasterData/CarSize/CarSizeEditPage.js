@@ -2,7 +2,7 @@ import { useState } from "react";
 import { UpdateCarSize } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const CarSizeEditPage = ({ editItem }) => {
+const CarSizeEditPage = ({ editItem, onBack, onSuccess }) => {
   const [data, setData] = useState(editItem);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -16,23 +16,13 @@ const CarSizeEditPage = ({ editItem }) => {
     e.preventDefault();
     UpdateCarSize(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: data.size + " " + msg,
-        });
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...data, size: editItem.size });
-      } else if (status === "ERROR") {
-        setNotification({
-          show: true,
-          status: status,
-          message: msg,
-        });
+        onSuccess?.(data.size + " " + msg);
+      } else {
+        setNotification({ show: true, status, message: status === "ERROR" ? msg : data.size + " " + msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData({ ...data, size: editItem.size }); }
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -69,10 +59,7 @@ const CarSizeEditPage = ({ editItem }) => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData(editItem);
-                setErrors([]);
-              }}
+              onClick={() => { setData(editItem); setErrors([]); onBack?.(); }}
             >
               CANCEL
             </button>

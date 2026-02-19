@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { UpdateAdminCustomer } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const CustomerEditPage = ({ editItem }) => {
+const CustomerEditPage = ({ editItem, onBack, onSuccess }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -20,17 +20,17 @@ const CustomerEditPage = ({ editItem }) => {
     e.preventDefault();
     UpdateAdminCustomer(data).then(({ status, msg }) => {
       if (status === "SUCCESS") {
-        setNotification({
-          show: true,
-          status: status,
-          message: `Successfully Update ${data.name}`,
-        });
         setErrors([]);
+        onSuccess?.(msg);
       } else if (status === "WARNING") {
         setErrors(msg);
         setData({ ...data, phone: editItem.phone });
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -118,14 +118,7 @@ const CustomerEditPage = ({ editItem }) => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData({
-                  ...editItem,
-                  password: "",
-                  isChangePassword: false,
-                });
-                setErrors([]);
-              }}
+              onClick={() => onBack?.()}
             >
               CANCEL
             </button>

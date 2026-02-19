@@ -26,7 +26,12 @@ const componentMap = {
   general: lazy(() => import("./Setting/General/GeneralPage")),
   md_service: lazy(() => import("./MasterData/Service/ServicePage")),
   md_branch: lazy(() => import("./MasterData/Branch/BranchPage")),
-  manage_service: lazy(() => import("./Management/ServiceRates/ServiceRatesPage")),
+  manage_service: lazy(
+    () => import("./Management/ServiceRates/ServiceRatesPage"),
+  ),
+  manage_channel: lazy(
+    () => import("./Management/ChannelMatching/ChannelMatchingPage"),
+  ),
 };
 
 export default componentMap;

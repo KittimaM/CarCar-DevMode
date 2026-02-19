@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Notification from "../../Notification/Notification";
 import { UpdateService } from "../../Modules/Api";
 
-const ServiceEditPage = ({ editItem }) => {
+const ServiceEditPage = ({ editItem, onBack, onSuccess }) => {
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -15,17 +15,13 @@ const ServiceEditPage = ({ editItem }) => {
   const handleEditService = (e) => {
     e.preventDefault();
     UpdateService(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
-      setNotificationKey((prev) => prev + 1);
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...editItem });
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") { setErrors(msg); setData({ ...editItem }); }
       }
     });
   };
@@ -63,10 +59,7 @@ const ServiceEditPage = ({ editItem }) => {
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                setData(editItem);
-                setErrors([]);
-              }}
+              onClick={() => { setData(editItem); setErrors([]); onBack?.(); }}
             >
               CANCEL
             </button>

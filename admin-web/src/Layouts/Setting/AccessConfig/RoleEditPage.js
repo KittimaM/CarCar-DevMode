@@ -6,7 +6,7 @@ import {
 } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const RoleEditPage = ({ editItem }) => {
+const RoleEditPage = ({ editItem, onBack, onSuccess }) => {
   const [modules, setModules] = useState([]);
   const [roleName, setRoleName] = useState(editItem.name);
   const [errors, setErrors] = useState("");
@@ -134,19 +134,15 @@ const RoleEditPage = ({ editItem }) => {
     };
 
     UpdateRole(jsonData).then(({ status, msg }) => {
-      if (status === "ERROR") {
+      if (status === "SUCCESS") {
+        setErrors([]);
+        onSuccess?.(`SUCCESSFULLY UPDATE ROLE : ${roleName}`);
+      } else if (status === "ERROR") {
         if (msg?.code === "ER_DUP_ENTRY") {
           setErrors("Role name duplicated");
         }
-      } else if (status === "SUCCESS") {
-        setErrors([]);
-        setNotification({
-          show: true,
-          status: status,
-          message: `SUCCESSFULLY UPDATE ROLE : ${roleName}`,
-        });
+        setNotification({ show: true, status, message: msg });
         setNotificationKey((prev) => prev + 1);
-        fetchAllModules();
       }
     });
   };
@@ -305,6 +301,7 @@ const RoleEditPage = ({ editItem }) => {
               setRoleName(editItem.name);
               setErrors([]);
               fetchAllModules();
+              onBack?.();
             }}
           >
             CANCEL

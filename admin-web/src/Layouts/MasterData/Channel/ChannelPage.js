@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Notification from "../../Notification/Notification";
-import { DeleteChannel, GetChannel } from "../../Modules/Api";
+import { DeleteChannel, GetAllChannel } from "../../Modules/Api";
 import AdminAddChannel from "./ChannelAddPage";
 import AdminEditChannel from "./ChannelEditPage";
 
@@ -18,7 +18,7 @@ const ChannelPage = ({ data }) => {
   });
 
   const fetchChannel = () => {
-    GetChannel().then(({ status, msg }) => {
+    GetAllChannel().then(({ status, msg }) => {
       if (status == "SUCCESS") {
         setChannel(msg);
       } else if (status == "NO DATA") {
@@ -93,9 +93,44 @@ const ChannelPage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <AdminAddChannel />}
+      {viewMode === "add" && (
+        <AdminAddChannel
+          onBack={() => {
+            setViewMode("list");
+            fetchChannel();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchChannel();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <AdminEditChannel editItem={editItem} />
+        <AdminEditChannel
+          editItem={editItem}
+          onBack={() => {
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannel();
+          }}
+          onSuccess={(msg) => {
+            setNotification({
+              show: true,
+              message: msg,
+              status: "SUCCESS",
+            });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchChannel();
+          }}
+        />
       )}
 
       {viewMode === "list" && (

@@ -4,7 +4,7 @@ import Notification, {
   isValidImageFile,
 } from "../../Notification/Notification";
 
-const PaymentAccountAddPage = () => {
+const PaymentAccountAddPage = ({ onSuccess, onBack }) => {
   const [paymentType, setPaymentType] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -56,8 +56,12 @@ const PaymentAccountAddPage = () => {
       formData.append("qr_code", qrCodeFile);
     }
     PostAddPaymentAccount(formData).then(({ status, msg }) => {
-      setNotification({ show: true, status, message: msg });
-      setNotificationKey((k) => k + 1);
+      if (status === "SUCCESS") {
+        onSuccess?.(msg);
+      } else {
+        setNotification({ show: true, status, message: msg });
+        setNotificationKey((k) => k + 1);
+      }
     });
   };
 
@@ -190,13 +194,9 @@ const PaymentAccountAddPage = () => {
               type="button"
               className="btn"
               onClick={() => {
-                setData({
-                  payment_type_id: "",
-                  provider: "",
-                  account_no: "",
-                  account_name: "",
-                });
+                setData({ payment_type_id: "", provider: "", account_no: "", account_name: "" });
                 setQrCodeFile(null);
+                onBack?.();
               }}
             >
               CANCEL

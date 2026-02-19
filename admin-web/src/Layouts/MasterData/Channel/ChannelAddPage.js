@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { GetAllBranch, PostAddChannel } from "../../Modules/Api";
 import Notification from "../../Notification/Notification";
 
-const ChannelAddPage = () => {
+const ChannelAddPage = ({ onSuccess, onBack }) => {
   const [branch, setBranch] = useState([]);
   const [errors, setErrors] = useState([]);
   const [notificationKey, setNotificationKey] = useState(0);
@@ -30,18 +30,21 @@ const ChannelAddPage = () => {
   const handleAdd = (e) => {
     e.preventDefault();
     PostAddChannel(data).then(({ status, msg }) => {
-      setNotification({
-        show: true,
-        status: status,
-        message: msg,
-      });
       if (status === "SUCCESS") {
         setErrors([]);
-      } else if (status === "WARNING") {
-        setErrors(msg);
-        setData({ ...data, name: "", branch_id: "" });
+        onSuccess?.(msg);
+      } else {
+        setNotification({
+          show: true,
+          status: status,
+          message: msg,
+        });
+        setNotificationKey((prev) => prev + 1);
+        if (status === "WARNING") {
+          setErrors(msg);
+          setData({ ...data, name: "", branch_id: "" });
+        }
       }
-      setNotificationKey((prev) => prev + 1);
     });
   };
 
@@ -128,6 +131,7 @@ const ChannelAddPage = () => {
                     branch_id: "",
                   });
                   setErrors([]);
+                  onBack?.();
                 }}
               >
                 CANCEL

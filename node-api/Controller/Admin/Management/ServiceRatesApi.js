@@ -55,6 +55,12 @@ const PostDeleteServiceRates = (req, res, next) => {
     [id],
     function (error) {
       if (error) {
+        if (error.code === "ER_ROW_IS_REFERENCED_2") {
+          return res.json({
+            status: "WARNING",
+            msg: "Cannot delete: This service rate is being used by channel matching",
+          });
+        }
         return res.json({ status: "ERROR", msg: error });
       } else {
         return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });

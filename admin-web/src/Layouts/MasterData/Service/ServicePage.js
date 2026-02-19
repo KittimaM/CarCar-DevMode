@@ -94,9 +94,29 @@ const ServicePage = ({ data }) => {
         )}
       </div>
 
-      {viewMode === "add" && <ServiceAddPage />}
+      {viewMode === "add" && (
+        <ServiceAddPage
+          onBack={() => { setViewMode("list"); fetchService(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setViewMode("list");
+            fetchService();
+          }}
+        />
+      )}
       {viewMode === "edit" && editItem && (
-        <ServiceEditPage editItem={editItem} />
+        <ServiceEditPage
+          editItem={editItem}
+          onBack={() => { setEditItem(null); setViewMode("list"); fetchService(); }}
+          onSuccess={(msg) => {
+            setNotification({ show: true, message: msg, status: "SUCCESS" });
+            setNotificationKey((prev) => prev + 1);
+            setEditItem(null);
+            setViewMode("list");
+            fetchService();
+          }}
+        />
       )}
 
       {viewMode === "list" && (
