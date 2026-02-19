@@ -4,19 +4,8 @@ const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 require("dotenv").config();
-const allowedOrigins = process.env.CLIENT_URLS
-  ? process.env.CLIENT_URLS.split(",")
-  : [];
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS"));
-    }
-  }
-}));
+app.use(cors());
 
 app.use(bodyParser.json());
 app.use("/uploads", express.static(path.join(__dirname, "uploads")));
