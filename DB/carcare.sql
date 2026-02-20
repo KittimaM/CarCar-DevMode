@@ -176,7 +176,8 @@ INSERT INTO `customer_car` (`id`, `customer_id`, `plate_no`, `province_id`, `bra
 
 CREATE TABLE `customer_user` (
   `id` int(11) NOT NULL,
-  `phone` varchar(20) NOT NULL,
+  `phone` varchar(20) DEFAULT NULL,
+  `line_id` varchar(50) DEFAULT NULL,
   `name` varchar(50) NOT NULL,
   `password` varchar(150) NOT NULL,
   `failed_login_count` tinyint(4) NOT NULL DEFAULT 0,
