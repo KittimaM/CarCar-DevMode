@@ -1,10 +1,14 @@
 const express = require("express");
+const path = require("path");
 const cors = require("cors");
 const app = express();
 const bodyParser = require("body-parser");
 require("dotenv").config();
+
 app.use(cors());
+
 app.use(bodyParser.json());
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // customer
 const CustomerProfileRoute = require("./Routes/Customer/CustomerProfile");
@@ -25,12 +29,12 @@ app.use("/customer/booking", CustomerBookingRoute);
 const CustomerIndexRoute = require("./Routes/Customer/CustomerIndex");
 app.use("/customer/index", CustomerIndexRoute);
 
-const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
-app.use("/customer/car", CustomerCarRoute);
+// const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
+// app.use("/customer/car", CustomerCarRoute);
 
 //admin
-const AdminGeneralRoute = require("./Routes/Admin/Setting/AdminGeneral");
-app.use("/admin/general", AdminGeneralRoute);
+const GeneralRoute = require("./Routes/Admin/Setting/GeneralRoute");
+app.use("/admin/general", GeneralRoute);
 
 const AdminSearchRoute = require("./Routes/Admin/AdminSearch");
 app.use("/admin/search", AdminSearchRoute);
@@ -41,20 +45,20 @@ app.use("/admin/template", AdminTemplateRoute);
 const AdminOnLeaveDetailRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeaveDetail");
 app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
 
-const AdminCustomerCarRoute = require("./Routes/Admin/AdminUser/AdminCustomerCar");
-app.use("/admin/customer-car", AdminCustomerCarRoute);
+const CustomerCarRoute = require("./Routes/Admin/User/CustomerCarRoute");
+app.use("/admin/customer-car", CustomerCarRoute);
 
-const AdminCustomerRoute = require("./Routes/Admin/AdminUser/AdminCustomer");
-app.use("/admin/customer", AdminCustomerRoute);
+const CustomerUserRoute = require("./Routes/Admin/User/CustomerUserRoute");
+app.use("/admin/customer", CustomerUserRoute);
 
-const AdminStatusRoute = require("./Routes/Admin/AdminStatus");
-app.use("/admin/status", AdminStatusRoute);
+const StatusRoute = require("./Routes/Admin/MasterData/StatusRoute");
+app.use("/admin/status", StatusRoute);
 
-const AdminStatusGroupRoute = require("./Routes/Admin/AdminStatusGroup");
-app.use("/admin/status-group", AdminStatusGroupRoute);
+const StatusGroupRoute = require("./Routes/Admin/MasterData/StatusGroupRoute");
+app.use("/admin/status-group", StatusGroupRoute);
 
-const AdminChannelRoute = require("./Routes/Admin/AdminChannel");
-app.use("/admin/channel", AdminChannelRoute);
+const ChannelRoute = require("./Routes/Admin/MasterData/ChannelRoute");
+app.use("/admin/channel", ChannelRoute);
 
 const AdminProvinceRoute = require("./Routes/Admin/AdminProvince");
 app.use("/admin/province", AdminProvinceRoute);
@@ -71,36 +75,59 @@ app.use("/admin/onleave", AdminOnLeaveRoute);
 const AdminAccountRoute = require("./Routes/Admin/AdminAccount");
 app.use("/admin/account", AdminAccountRoute);
 
-const AdminPaymentTypeRoute = require("./Routes/Admin/AdminPaymentType");
-app.use("/admin/paymenttype", AdminPaymentTypeRoute);
+const CarSizeRoute = require("./Routes/Admin/MasterData/CarSizeRoute");
+app.use("/admin/carsize", CarSizeRoute);
 
-const AdminCarSizeRoute = require("./Routes/Admin/AdminCarSize");
-app.use("/admin/carsize", AdminCarSizeRoute);
-
-const AdminLoginRoute = require("./Routes/Admin/AdminLogin");
-app.use("/admin/login", AdminLoginRoute);
+const LoginAdminRoute = require("./Routes/Admin/LoginAdminRoute");
+app.use("/admin/login", LoginAdminRoute);
 
 const AdminBookingRoute = require("./Routes/Admin/AdminBooking");
 app.use("/admin/booking", AdminBookingRoute);
 
-const AdminUserRoute = require("./Routes/Admin/AdminUser/AdminUser");
-app.use("/admin/user", AdminUserRoute);
+const StaffUserRoute = require("./Routes/Admin/User/StaffUserRoute");
+app.use("/admin/user", StaffUserRoute);
 
-const AdminServiceRoute = require("./Routes/Admin/AdminService");
-app.use("/admin/service", AdminServiceRoute);
+const ServiceRoute = require("./Routes/Admin/MasterData/ServiceRoute");
+app.use("/admin/service", ServiceRoute);
 
 const AdminPermissionRoute = require("./Routes/Admin/AdminPermission");
 app.use("/admin/permission", AdminPermissionRoute);
 
-const AdminRoleRoute = require("./Routes/Admin/Setting/AccessConfig/AdminRole");
+const AdminRoleRoute = require("./Routes/Admin/Setting/AccessConfig/RoleRoute");
 app.use("/admin/role", AdminRoleRoute);
 
-const ModulesRoutes = require("./Routes/Admin/Setting/AccessConfig/Modules");
+const ModulesRoutes = require("./Routes/Admin/Setting/AccessConfig/ModulesRoute");
 app.use("/admin/module", ModulesRoutes);
 
-const RolePermissionRoute = require("./Routes/Admin/Setting/AccessConfig/RolePermission");
+const RolePermissionRoute = require("./Routes/Admin/Setting/AccessConfig/RolePermissionRoute");
 app.use("/admin/role-permission", RolePermissionRoute);
 
-app.listen(process.env.API_PORT, () => {
-  console.log(`Server is running on port ${process.env.API_PORT}`);
+const PaymentAccountRoute = require("./Routes/Admin/MasterData/PaymentAccountRoute");
+app.use("/admin/payment-account", PaymentAccountRoute);
+
+const BranchRoute = require("./Routes/Admin/MasterData/BranchRoute");
+app.use("/admin/branch", BranchRoute);
+
+const ServiceRatesRoute = require("./Routes/Admin/Management/ServiceRatesRoute");
+app.use("/admin/service-rates", ServiceRatesRoute);
+
+const PaymentTypeRoute = require("./Routes/Admin/MasterData/PaymentTypeRoute");
+app.use("/admin/payment-type", PaymentTypeRoute);
+
+const ChannelMatchingRoute = require("./Routes/Admin/Management/ChannelMatchingRoute");
+app.use("/admin/channel-matching", ChannelMatchingRoute);
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "OK",
+    uptime: process.uptime(),
+    timestamp: new Date()
+  });
+});
+
+
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

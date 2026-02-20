@@ -309,7 +309,7 @@ export const UpdateCustomerProfile = (jsonData) => {
   return putApi(URLList.CustomerProfile, jsonData, isUseToken);
 };
 
-export const GetChannel = () => {
+export const GetAllChannel = () => {
   return getApi(URLList.AdminChannel);
 };
 

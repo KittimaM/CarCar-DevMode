@@ -1,5 +1,27 @@
 import { useEffect, useState } from "react";
 
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/jpg",
+  "image/png",
+  "image/gif",
+  "image/webp",
+];
+
+export const isValidImageFile = (file) => {
+  if (!file) return { valid: true };
+
+  const isAllowedType = ALLOWED_IMAGE_TYPES.includes(file.type);
+  if (!isAllowedType) {
+    return {
+      valid: false,
+      message: "Please upload an image only (JPEG, PNG, GIF or WebP).",
+    };
+  }
+
+  return { valid: true };
+};
+
 const Notification = ({ message, status, duration = 3000 }) => {
   const [show, setShow] = useState(true);
 

@@ -35,6 +35,7 @@ const AdminLogin = () => {
         sessionStorage.setItem("token", msg.token);
         sessionStorage.setItem("staff_id", msg.staff_id);
         sessionStorage.setItem("username", msg.username);
+        sessionStorage.setItem("is_system_id", msg.is_system_id);
         navigate("/admin/main");
       } else {
         setErrors(msg);

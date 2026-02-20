@@ -1,3 +1,5 @@
+SET FOREIGN_KEY_CHECKS = 0;
+
 DROP TABLE IF EXISTS `customer_user`;
 
 CREATE TABLE `customer_user` (
@@ -16,10 +18,4 @@ CREATE TABLE `customer_user` (
 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- how to check if the constraint is added --
-
--- SELECT CONSTRAINT_NAME, CHECK_CLAUSE 
--- FROM information_schema.CHECK_CONSTRAINTS 
--- WHERE CONSTRAINT_SCHEMA = 'carcare' 
---   AND TABLE_NAME = 'customer_user';
+SET FOREIGN_KEY_CHECKS = 1;

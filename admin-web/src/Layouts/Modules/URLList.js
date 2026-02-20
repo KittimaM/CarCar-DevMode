@@ -6,7 +6,7 @@ const URLList = {
   AdminService: "admin/service",
   AdminChannel: "admin/channel",
   AdminOnLeaveType: "admin/onleave/type",
-  AdminPaymentType: "admin/paymenttype",
+  AdminPaymentType: "admin/payment-type",
   AdminStaff: "admin/user",
   AdminStatus: "admin/status",
   AdminRole: "admin/role",
@@ -25,6 +25,10 @@ const URLList = {
   RolePermission: "admin/role-permission",
   Province: "admin/province",
   AdminStatusGroup: "admin/status-group",
+  PaymentAccount: "admin/payment-account",
+  Branch: "admin/branch",
+  ServiceRates: "admin/service-rates",
+  ChannelMatching: "admin/channel-matching",
 };
 
 export default URLList;

@@ -3,7 +3,7 @@ const {
   AdminBooking,
   AdminAddBooking,
   AdminUpdateStatusBooking,
-} = require("../../Controller/Admin/AdminBooking");
+} = require("../../Controller/Admin/Booking/AdminBooking");
 var router = express.Router();
 
 router.get("/", AdminBooking);

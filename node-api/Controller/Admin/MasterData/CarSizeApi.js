@@ -1,0 +1,98 @@
+const Conn = require("../../../db");
+
+const GetAllCarSize = (req, res, next) => {
+  Conn.execute("SELECT * FROM car_size", function (error, results) {
+    if (error) {
+      return res.json({ status: "ERROR", msg: error });
+    }
+    if (results.length === 0) {
+      return res.json({ status: "NO DATA", msg: "No Car Size Available" });
+    } else {
+      return res.json({ status: "SUCCESS", msg: results });
+    }
+  });
+};
+
+const PostAddCarSize = (req, res, next) => {
+  const { size } = req.body;
+  Conn.execute(
+    `INSERT INTO car_size(size) VALUES(?)`,
+    [size],
+    function (error) {
+      if (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "This Car Size Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
+      } else {
+        return res.json({ status: "SUCCESS", msg: "Successfully Added" });
+      }
+    },
+  );
+};
+
+const DeleteCarSize = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute("DELETE FROM car_size WHERE id = ?", [id], function (error) {
+    if (error) {
+      if (error.code === "ER_ROW_IS_REFERENCED_2") {
+        return res.json({ status: "WARNING", msg: "Currently In Use" });
+      } else {
+        return res.json({ status: "ERROR", msg: error });
+      }
+    } else {
+      return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+    }
+  });
+};
+
+const PutUpdateCarSize = (req, res, next) => {
+  const { id, size } = req.body;
+  Conn.execute(
+    `UPDATE car_size SET size = ? WHERE id = ?`,
+    [size, id],
+    function (error) {
+      if (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "This Car Size Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
+      } else {
+        return res.json({ status: "SUCCESS", msg: "Successfully Upated" });
+      }
+    },
+  );
+};
+
+const GetCarSizeById = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "SELECT * FROM car_size WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else if (result.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: result[0] });
+      }
+    },
+  );
+};
+
+module.exports = {
+  GetAllCarSize,
+  PostAddCarSize,
+  DeleteCarSize,
+  PutUpdateCarSize,
+  GetCarSizeById,
+};

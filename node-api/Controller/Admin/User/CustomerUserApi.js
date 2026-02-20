@@ -1,0 +1,146 @@
+var bcrypt = require("bcrypt");
+const Conn = require("../../../db");
+const saltRounds = 10;
+
+const GetAlllCustomerUser = (req, res, next) => {
+  Conn.execute("SELECT * FROM customer_user", function (error, results) {
+    if (error) {
+      return res.json({ status: "ERROR", msg: error });
+    }
+    if (results.length === 0) {
+      return res.json({ status: "NO DATA", msg: "NO DATA" });
+    } else {
+      return res.json({ status: "SUCCESS", msg: results });
+    }
+  });
+};
+
+const PostAddCustomerUser = (req, res, next) => {
+  const { phone, name, email, password } = req.body;
+  bcrypt.hash(password, saltRounds, function (error, hash) {
+    if (error) {
+      return res.json({ status: "ERROR", msg: error });
+    } else {
+      const emailVal = email && String(email).trim() !== "" ? email.trim() : null;
+      Conn.execute(
+        `INSERT INTO customer_user (phone, name, email, password) VALUES (?,?,?,?)`,
+        [phone, name, emailVal, hash],
+        function (error, result) {
+          if (error) {
+            if (error.code === "ER_DUP_ENTRY") {
+              return res.json({
+                status: "WARNING",
+                msg: "Already In System",
+              });
+            } else {
+              return res.json({ status: "ERROR", msg: error });
+            }
+          } else {
+            return res.json({ status: "SUCCESS", msg: "Successfully Added" });
+          }
+        }
+      );
+    }
+  });
+};
+
+const PutUpdateCustomerUser = (req, res, next) => {
+  const { id, phone, name, email, password, isChangePassword } = req.body;
+  const emailVal = email && String(email).trim() !== "" ? email.trim() : null;
+  const handleUpdate = (query, params) => {
+    Conn.execute(query, params, function (error) {
+      if (error) {
+        if (error.code === "ER_DUP_ENTRY") {
+          return res.json({
+            status: "WARNING",
+            msg: "Already In System",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
+      } else {
+        return res.json({ status: "SUCCESS", msg: "SUCCESS" });
+      }
+    });
+  };
+  if (isChangePassword) {
+    bcrypt.hash(password, saltRounds, function (error, hash) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else {
+        handleUpdate(
+          `UPDATE customer_user SET phone = ? , name = ?, email = ?, password = ? WHERE id = ?`,
+          [phone, name, emailVal, hash, id]
+        );
+      }
+    });
+  } else {
+    handleUpdate(
+      `UPDATE customer_user SET phone = ? , name = ?, email = ? WHERE id = ?`,
+      [phone, name, emailVal, id]
+    );
+  }
+};
+
+const DeleteCustomerUser = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "DELETE FROM customer_user WHERE id = ?",
+    [id],
+    function (error) {
+      if (error) {
+        if (error.code === "ER_ROW_IS_REFERENCED_2") {
+          return res.json({
+            status: "WARNING",
+            msg: "Currently In Use",
+          });
+        } else {
+          return res.json({ status: "ERROR", msg: error });
+        }
+      } else {
+        return res.json({ status: "SUCCESS", msg: "Successfully Deleted" });
+      }
+    }
+  );
+};
+
+const PutUnlockCustomerUser = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    `UPDATE customer_user SET is_locked = 0, failed_login_count = 0, locked_reason = NULL WHERE id = ?`,
+    [id],
+    function (error) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else {
+        return res.json({ status: "SUCCESS", msg: "Successfully Unlock" });
+      }
+    }
+  );
+};
+
+const GetCustomerUserById = (req, res, next) => {
+  const { id } = req.body;
+  Conn.execute(
+    "SELECT * FROM customer_user WHERE id = ?",
+    [id],
+    function (error, result) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      } else if (result.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      } else {
+        return res.json({ status: "SUCCESS", msg: result[0] });
+      }
+    }
+  );
+};
+
+module.exports = {
+  GetAlllCustomerUser,
+  PostAddCustomerUser,
+  PutUpdateCustomerUser,
+  DeleteCustomerUser,
+  PutUnlockCustomerUser,
+  GetCustomerUserById,
+};

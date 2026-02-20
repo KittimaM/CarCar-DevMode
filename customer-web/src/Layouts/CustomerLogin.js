@@ -63,17 +63,11 @@ const CustomerLogin = () => {
       <div className="min-h-screen w-full bg-gray-100 flex items-center justify-center">
         <form
           onSubmit={handleLogin}
-          className="max-w-[800px] w-full mx-auto flex flex-col lg:grid lg:grid-cols-2 rounded-lg overflow-hidden lg:shadow-lg "
+          className="max-w-[800px] w-full mx-auto flex flex-col lg:flex-row rounded-lg overflow-hidden lg:shadow-lg "
         >
-          {/* ================== IMAGE: cropped on sm/md; on lg fills same-size grid cell as form ================== */}
-          <div className="block w-full max-w-[400px] mx-auto lg:max-w-none lg:mx-0 min-h-0 overflow-hidden rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none lg:flex lg:flex-col lg:min-h-0 lg:h-full">
-            <div className="w-full h-[200px] lg:flex-1 lg:min-h-0 lg:flex lg:items-center lg:justify-center overflow-hidden bg-gray-50">
-              <img
-                src={LoginImg}
-                alt="Login"
-                className="w-full h-full object-cover object-center lg:object-cover "
-              />
-            </div>
+          {/* ================== IMAGE: on top for smallest/sm/md (same width & height as form); left on lg+ ================== */}
+          <div className="block w-full max-w-[400px] mx-auto flex-1 min-h-0 lg:max-w-[400px] lg:mx-0 lg:flex-none lg:shrink-0">
+            <img src={LoginImg} alt="Login" className="w-full h-full object-cover rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none aspect-square lg:aspect-auto lg:min-h-[320px]" />
           </div>
 
           {/* ================== FORM: same width as image when stacked; right on lg+ ================== */}

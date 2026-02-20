@@ -3,36 +3,38 @@ import URLList from "./URLList";
 
 const initialUrl = process.env.REACT_APP_NODE_API_URL;
 
-const putApi = async (url, jsonData, isUseToken = false) => {
+const putApi = async (url, data, isUseToken = false) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const headers = {};
+    if (!(data instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
     if (isUseToken) {
       const token = sessionStorage.getItem("token");
       headers.Authorization = `Bearer ${token}`;
     }
-    const response = await axios.put(initialUrl + url, jsonData, { headers });
-    const { status, msg } = response.data;
+    const response = await axios.put(initialUrl + url, data, { headers });
+    const { status, msg, qr_code } = response.data || {};
     if (msg === "token expired") {
       sessionStorage.removeItem("token");
     }
-    return { status: status, msg: msg };
+    return { status, msg, ...(qr_code !== undefined && { qr_code }) };
   } catch (error) {
     console.error("Error fetching data:", error);
   }
 };
 
-const postApi = async (url, jsonData, isUseToken = false) => {
+const postApi = async (url, data, isUseToken = false) => {
   try {
-    const headers = {
-      "Content-Type": "application/json",
-    };
+    const headers = {};
+    if (!(data instanceof FormData)) {
+      headers["Content-Type"] = "application/json";
+    }
     if (isUseToken) {
       const token = sessionStorage.getItem("token");
       headers.Authorization = `Bearer ${token}`;
     }
-    const response = await axios.post(initialUrl + url, jsonData, { headers });
+    const response = await axios.post(initialUrl + url, data, { headers });
     const { status, msg } = response.data;
     if (msg === "token expired") {
       sessionStorage.removeItem("token");
@@ -307,7 +309,7 @@ export const UpdateCustomerProfile = (jsonData) => {
   return putApi(URLList.CustomerProfile, jsonData, isUseToken);
 };
 
-export const GetChannel = () => {
+export const GetAllChannel = () => {
   return getApi(URLList.AdminChannel);
 };
 
@@ -463,22 +465,74 @@ export const GetRolePermissionById = (jsonData) => {
   return postApi(URLList.RolePermission + "/id", jsonData);
 };
 
-export const UpdateCarSizeAvailable = (jsonData) => {
-  return putApi(URLList.AdminCarSize + "/is-available", jsonData);
+export const GetAllPaymentAccount = () => {
+  return getApi(URLList.PaymentAccount);
 };
 
-export const UpdateServiceAvailable = (jsonData) => {
-  return putApi(URLList.AdminService + "/is-available", jsonData);
+export const PostAddPaymentAccount = (formData) => {
+  return postApi(URLList.PaymentAccount, formData);
 };
 
-export const GetAvailableCarSize = () => {
-  return getApi(URLList.AdminCarSize + "/is-available");
+export const UpdatePaymentAccount = (formData) => {
+  return putApi(URLList.PaymentAccount, formData);
 };
 
-export const GetAvailableService = () => {
-  return getApi(URLList.AdminService + "/is-available");
+export const UpdatePaymentAccountAvailable = (jsonData) => {
+  return putApi(URLList.PaymentAccount + "/is-available", jsonData);
 };
 
-export const UpdateChannelAvailable = (jsonData) => {
-  return putApi(URLList.AdminChannel + "/is-available", jsonData);
+export const DeletePaymentAccount = (jsonData) => {
+  return deleteApi(URLList.PaymentAccount, jsonData);
+};
+
+export const GetAllBranch = () => {
+  return getApi(URLList.Branch);
+};
+
+export const PostAddBranch = (jsonData) => {
+  return postApi(URLList.Branch, jsonData);
+};
+
+export const DeleteBranch = (jsonData) => {
+  return deleteApi(URLList.Branch, jsonData);
+};
+
+export const UpdateBranch = (jsonData) => {
+  return putApi(URLList.Branch, jsonData);
+};
+
+export const GetAllServiceRates = () => {
+  return getApi(URLList.ServiceRates);
+};
+
+export const PostAddServiceRates = (jsonData) => {
+  return postApi(URLList.ServiceRates, jsonData);
+};
+
+export const PostDeleteServiceRates = (jsonData) => {
+  return deleteApi(URLList.ServiceRates, jsonData);
+};
+
+export const PutUpdateServiceRates = (jsonData) => {
+  return putApi(URLList.ServiceRates, jsonData);
+};
+
+export const GetAllChannelMatching = () => {
+  return getApi(URLList.ChannelMatching);
+};
+
+export const PostAddChannelMatching = (jsonData) => {
+  return postApi(URLList.ChannelMatching, jsonData);
+};
+
+export const PostDeleteChannelMatching = (jsonData) => {
+  return deleteApi(URLList.ChannelMatching, jsonData);
+};
+
+export const PutUpdateChannelMatching = (jsonData) => {
+  return putApi(URLList.ChannelMatching, jsonData);
+};
+
+export const PutUpdateChannelMatchingAvailable = (jsonData) => {
+  return putApi(URLList.ChannelMatching + "/available", jsonData);
 };
