@@ -36,11 +36,11 @@ const postApi = async (url, jsonData, isUseToken = false) => {
       headers.Authorization = `Bearer ${token}`;
     }
     const response = await axios.post(initialUrl + url, jsonData, { headers });
-    const { status, msg } = response.data;
-    if (msg === "token expired") {
+    const data = response.data;
+    if (data?.msg === "token expired") {
       sessionStorage.removeItem("token");
     }
-    return { status: status, msg: msg };
+    return { ...data };
   } catch (error) {
     console.error("Error fetching data:", error);
   }
@@ -185,11 +185,11 @@ export const PostAddCustomerCar = (jsonData) => {
 };
 
 export const DeleteCustomerCar = (jsonData) => {
-  return deleteApi("customer/car", jsonData);
+  return deleteApi("customer/car", jsonData, true);
 };
 
 export const UpdateCustomerCar = (jsonData) => {
-  return putApi("customer/car", jsonData);
+  return putApi("customer/car", jsonData, true);
 };
 
 export const GetAllCustomerBooking = () => {
@@ -198,7 +198,30 @@ export const GetAllCustomerBooking = () => {
 };
 
 export const DeleteCustomerBooking = (jsonData) => {
-  return deleteApi("customer/booking", jsonData);
+  return deleteApi("customer/booking", jsonData, true);
+};
+
+export const GetBookingBranches = () => {
+  return getApi(URLList.BookingBranches);
+};
+
+export const GetBookingChannels = (branchId) => {
+  return getApi(`customer/booking/channels?branch_id=${branchId}`);
+};
+
+export const GetChannelOpenDays = (branchId, serviceCarSizeIds) => {
+  const ids = Array.isArray(serviceCarSizeIds) ? serviceCarSizeIds.join(",") : String(serviceCarSizeIds || "");
+  return getApi(`customer/booking/open-days?branch_id=${branchId}&service_car_size_ids=${ids}`);
+};
+
+export const GetBookingServiceRates = (carSizeId, branchId = null) => {
+  let url = `customer/booking/service-rates?car_size_id=${carSizeId}`;
+  if (branchId) url += `&branch_id=${branchId}`;
+  return getApi(url);
+};
+
+export const PostBookingAvailableSlots = (jsonData) => {
+  return postApi(URLList.BookingAvailableSlots, jsonData);
 };
 
 export const PostAddCustomer = (jsonData) => {

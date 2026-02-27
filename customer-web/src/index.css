@@ -7,3 +7,12 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
+/* Fix react-datepicker overlap - ensure calendar appears above navbar/modals */
+.react-datepicker-popper {
+  z-index: 9999 !important;
+  padding-top: 8px; /* gap between input and calendar to prevent overlap */
+}
+.react-datepicker {
+  font-family: inherit;
+}
+

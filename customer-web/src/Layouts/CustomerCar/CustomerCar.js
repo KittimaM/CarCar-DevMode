@@ -1,241 +1,113 @@
 import React, { useEffect, useState } from "react";
 import {
   DeleteCustomerCar,
-  GetAllCarSize,
-  GetAllProvince,
   GetCustomerCar,
   PostAddCustomerCar,
-  UpdateCustomerCar,
-  GetCustomerProfile,
 } from "../../Modules/Api";
-
 import CustomerAddCar from "./CustomerAddCar";
 
 const CustomerCar = () => {
   const [viewMode, setViewMode] = useState("list");
-  const [carSize, setCarSize] = useState(null);
-  const [province, setProvince] = useState(null);
-  const [editItem, setEditItem] = useState(null);
+  const [editingCar, setEditingCar] = useState(null);
+  const [cars, setCars] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  // const fetchCustomerCar = async () => {
-  //   GetCustomerCar().then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       setCar(msg);
-  //     } else {
-  //       setCar(null);
-  //       console.log(data);
-  //     }
-  //   });
-  // };
+  const fetchCars = () => {
+    setLoading(true);
+    GetCustomerCar().then(({ status, msg }) => {
+      setLoading(false);
+      if (status === "SUCCESS") setCars(Array.isArray(msg) ? msg : []);
+    });
+  };
 
-  // useEffect(() => {
-  //   fetchCustomerCar();
-  //   GetAllCarSize().then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       setCarSize(msg);
-  //     } else {
-  //       setCarSize(null);
-  //       console.log(data);
-  //     }
-  //   });
-  //   GetAllProvince().then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       setProvince(msg);
-  //     } else {
-  //       setProvince(null);
-  //       console.log(data);
-  //     }
-  //   });
-  //   GetCustomerProfile().then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       setProfile(msg[0]);
-  //     } else {
-  //       console.log(data);
-  //     }
-  //   });
-  // }, []);
+  useEffect(() => {
+    fetchCars();
+  }, []);
 
-  // const handleCustomerAddCar = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   const prefix = data.get("plate_no").match(/\d+\D+|\D+/g);
-  //   const postfix = data.get("plate_no").match(/(\d+)$/g);
-  //   const jsonData = {
-  //     plate_no: data.get("plate_no"),
-  //     prefix: prefix[0],
-  //     postfix: postfix[0],
-  //     province: data.get("province"),
-  //     color: data.get("color"),
-  //     size_id: data.get("size").split(",")[0],
-  //     size: data.get("size").split(",")[1],
-  //     brand: data.get("brand"),
-  //     model: data.get("model"),
-  //   };
+  const handleAddSuccess = () => {
+    fetchCars();
+    setViewMode("list");
+    setEditingCar(null);
+  };
 
-  //   PostAddCustomerCar(jsonData).then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       fetchCustomerCar();
-  //     } else {
-  //       if (msg.code === "ER_DUP_ENTRY") {
-  //         alert("this plate no already exist");
-  //       } else {
-  //         console.log(data);
-  //       }
-  //     }
-  //   });
-  // };
-
-  // const handleSelectEditId = (selectedItem) => {
-  //   setEditItem(selectedItem);
-  // };
-
-  // const handleDeleteCustomerCar = (event) => {
-  //   event.preventDefault();
-  //   const jsonData = {
-  //     id: event.target.value,
-  //   };
-  //   DeleteCustomerCar(jsonData).then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       fetchCustomerCar();
-  //     } else {
-  //       console.log(data);
-  //     }
-  //   });
-  // };
-
-  // const handleEditCustomerCar = (event) => {
-  //   event.preventDefault();
-  //   const data = new FormData(event.currentTarget);
-  //   const prefix = data.get("plate_no").match(/\d+\D+|\D+/g);
-  //   const postfix = data.get("plate_no").match(/(\d+)$/g);
-  //   const jsonData = {
-  //     id: editItem.id,
-  //     plate_no: data.get("plate_no"),
-  //     prefix: prefix[0],
-  //     postfix: postfix[0],
-  //     province: data.get("province"),
-  //     color: data.get("color"),
-  //     size_id: data.get("size").split(",")[0],
-  //     size: data.get("size").split(",")[1],
-  //     brand: data.get("brand"),
-  //     model: data.get("model"),
-  //   };
-  //   UpdateCustomerCar(jsonData).then((data) => {
-  //     const { status, msg } = data;
-  //     if (status === "SUCCESS") {
-  //       setEditItem(null);
-  //       fetchCustomerCar();
-  //     } else {
-  //       if (msg.code === "ER_DUP_ENTRY") {
-  //         alert("this plate no already exist");
-  //       } else {
-  //         console.log(data);
-  //       }
-  //     }
-  //   });
-  // };
-  // const formFields = (defaults = {}) => (
-  //   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-  //     <label className="form-control sm:col-span-2">
-  //       <span className="label-text">Plate No</span>
-  //       <input
-  //         type="text"
-  //         name="plate_no"
-  //         className="input input-bordered"
-  //         defaultValue={defaults.plate_no}
-  //         required
-  //       />
-  //     </label>
-  //     <label className="form-control">
-  //       <span className="label-text">Province</span>
-  //       {province && (
-  //         <select
-  //           name="province"
-  //           className="select select-bordered"
-  //           defaultValue={defaults.province}
-  //           required
-  //         >
-  //           <option value="">Select</option>
-  //           {province.map((item) => (
-  //             <option key={item.id} value={item.province}>
-  //               {item.province}
-  //             </option>
-  //           ))}
-  //         </select>
-  //       )}
-  //     </label>
-  //     <label className="form-control">
-  //       <span className="label-text">Size</span>
-  //       {carSize && (
-  //         <select
-  //           name="size"
-  //           className="select select-bordered"
-  //           defaultValue={
-  //             defaults.size ? `${defaults.size_id},${defaults.size}` : ""
-  //           }
-  //           required
-  //         >
-  //           <option value="">Select</option>
-  //           {carSize.map(
-  //             (item) =>
-  //               item.is_available === 1 && (
-  //                 <option key={item.id} value={[item.id, item.size]}>
-  //                   {item.size}
-  //                 </option>
-  //               )
-  //           )}
-  //         </select>
-  //       )}
-  //     </label>
-  //     <label className="form-control sm:col-span-2">
-  //       <span className="label-text">Brand</span>
-  //       <input
-  //         type="text"
-  //         name="brand"
-  //         className="input input-bordered"
-  //         defaultValue={defaults.brand}
-  //         required
-  //       />
-  //     </label>
-  //     <label className="form-control sm:col-span-2">
-  //       <span className="label-text">Model</span>
-  //       <input
-  //         type="text"
-  //         name="model"
-  //         className="input input-bordered"
-  //         defaultValue={defaults.model}
-  //         required
-  //       />
-  //     </label>
-  //     <label className="form-control sm:col-span-2">
-  //       <span className="label-text">Color</span>
-  //       <input
-  //         type="text"
-  //         name="color"
-  //         className="input input-bordered"
-  //         defaultValue={defaults.color}
-  //         required
-  //       />
-  //     </label>
-  //   </div>
-  // );
+  const handleDelete = (carId) => {
+    if (!window.confirm("ยืนยันลบรถนี้?")) return;
+    DeleteCustomerCar({ id: carId }).then(({ status }) => {
+      if (status === "SUCCESS") fetchCars();
+    });
+  };
 
   return (
-    <div>
-      <button
-        className="btn btn-primary font-bold"
-        onClick={() => setViewMode("add")}
-      >
-        + Add Car
-      </button>
-      {viewMode === "add" && <CustomerAddCar />}
-      
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <h2 className="text-xl font-bold">รถของฉัน</h2>
+        <button
+          className="btn btn-primary btn-sm"
+          onClick={() => setViewMode("add")}
+        >
+          + เพิ่มรถ
+        </button>
+      </div>
+
+      {(viewMode === "add" || editingCar) && (
+        <CustomerAddCar
+          car={editingCar}
+          onSuccess={handleAddSuccess}
+          onBack={() => { setViewMode("list"); setEditingCar(null); }}
+        />
+      )}
+
+      {viewMode === "list" && !editingCar && (
+        <>
+          {loading ? (
+            <div className="flex justify-center py-8">
+              <span className="loading loading-spinner loading-md" />
+            </div>
+          ) : cars.length === 0 ? (
+            <div className="card bg-base-200/50 rounded-xl p-8 text-center">
+              <p className="text-base-content/70 mb-4">ยังไม่มีรถในระบบ</p>
+              <button
+                className="btn btn-primary"
+                onClick={() => setViewMode("add")}
+              >
+                + เพิ่มรถ
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {cars.map((car) => (
+                <div
+                  key={car.id}
+                  className="card bg-base-100 border border-base-300 rounded-xl p-4 flex flex-col sm:flex-row justify-between items-start gap-4"
+                >
+                  <div>
+                    <p className="font-semibold">{car.plate_no}</p>
+                    <p className="text-sm text-base-content/70">
+                      {car.brand} {car.model || ""} · {car.color}
+                    </p>
+                  </div>
+                  <div className="flex gap-1">
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm"
+                      onClick={() => setEditingCar(car)}
+                    >
+                      แก้ไข
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-sm text-error"
+                      onClick={() => handleDelete(car.id)}
+                    >
+                      ลบ
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </>
+      )}
     </div>
   );
 };

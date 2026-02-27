@@ -29,8 +29,8 @@ app.use("/customer/booking", CustomerBookingRoute);
 const CustomerIndexRoute = require("./Routes/Customer/CustomerIndex");
 app.use("/customer/index", CustomerIndexRoute);
 
-// const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
-// app.use("/customer/car", CustomerCarRoute);
+const CustomerCarRoute = require("./Routes/Customer/CustomerCar");
+app.use("/customer/car", CustomerCarRoute);
 
 //admin
 const GeneralRoute = require("./Routes/Admin/Setting/GeneralRoute");
@@ -45,8 +45,8 @@ app.use("/admin/template", AdminTemplateRoute);
 const AdminOnLeaveDetailRoute = require("./Routes/Admin/AdminOnLeave/AdminOnLeaveDetail");
 app.use("/admin/onleave/detail", AdminOnLeaveDetailRoute);
 
-const CustomerCarRoute = require("./Routes/Admin/User/CustomerCarRoute");
-app.use("/admin/customer-car", CustomerCarRoute);
+const AdminCustomerCarRoute = require("./Routes/Admin/User/CustomerCarRoute");
+app.use("/admin/customer-car", AdminCustomerCarRoute);
 
 const CustomerUserRoute = require("./Routes/Admin/User/CustomerUserRoute");
 app.use("/admin/customer", CustomerUserRoute);

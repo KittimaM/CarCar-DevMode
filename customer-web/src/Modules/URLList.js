@@ -30,6 +30,8 @@ const URLList = {
   Modules: "admin/module",
   RolePermission: "admin/role-permission",
   Province: "admin/province",
+  BookingBranches: "customer/booking/branches",
+  BookingAvailableSlots: "customer/booking/available-slots",
 };
 
 export default URLList;
