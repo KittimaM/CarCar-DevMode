@@ -33,7 +33,7 @@ const CustomerAddCustomerCar = (req, res, next) => {
     Conn.execute(
       `INSERT INTO customer_car (plate_no, province_id, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?)`,
       [plate_no, province_id, brand, model, color, size_id, id],
-      function (error) {
+      function (error, result) {
         if (error) {
           if (error.code === "ER_DUP_ENTRY") {
             return res.json({ status: "WARNING", msg: "Already In System" });
@@ -41,7 +41,8 @@ const CustomerAddCustomerCar = (req, res, next) => {
             return res.json({ status: "ERROR", msg: error });
           }
         } else {
-          return res.json({ status: "SUCCESS", msg: "Successfully Added" });
+          const insertedId = result.insertId;
+          return res.json({ status: "SUCCESS", msg: insertedId });
         }
       },
     );

@@ -36,6 +36,7 @@ const DAY_NAMES = [
 ];
 
 const CustomerBooking = () => {
+  const [loaded, setLoaded] = useState(false);
   const [step, setStep] = useState(0);
   const [branch, setBranch] = useState([]);
   const [errors, setErrors] = useState(null);
@@ -53,12 +54,24 @@ const CustomerBooking = () => {
   const [customerCar, setCustomerCar] = useState([]);
   const [data, setData] = useState({
     branch_id: "",
+    customer_car_id: "",
   });
+
+  const fetchCustomerCar = () => {
+    GetCustomerCar().then(({ status, msg }) => {
+      if (status === "SUCCESS") {
+        setCustomerCar(msg);
+      } else if (status === "NO DATA") {
+        setCustomerCar([]);
+      }
+    });
+  };
 
   useEffect(() => {
     GetBookingBranches().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setBranch(msg);
+        setLoaded(true);
       }
     });
   }, []);
@@ -71,13 +84,9 @@ const CustomerBooking = () => {
       currentStep = currentStep - 1;
     }
     if (currentStep === 1) {
-      GetCustomerCar().then(({ status, msg }) => {
-        if (status === "SUCCESS") {
-          setCustomerCar(msg);
-        } else if (status === "NO DATA") {
-          setCustomerCar([]);
-        }
-      });
+      setLoaded(false);
+      fetchCustomerCar();
+      setLoaded(true);
     }
     if (step === 2) {
     }
@@ -91,6 +100,7 @@ const CustomerBooking = () => {
 
   const handleAddNewCar = () => {
     setIsNewCar(true);
+    setLoaded(false);
     GetAllProvince().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setProvince(msg);
@@ -101,13 +111,20 @@ const CustomerBooking = () => {
         setSize(msg);
       }
     });
+    setLoaded(true);
   };
 
   const handleSubmitAddNewCar = (e) => {
     e.preventDefault();
+    setLoaded(false);
     PostAddCustomerCar(newCarData).then(({ status, msg }) => {
       if (status === "SUCCESS") {
+        fetchCustomerCar();
         setIsNewCar(false);
+        setData({
+          ...data,
+          customer_car_id: msg,
+        });
         setNewCarData({
           province_id: "",
           plate_no: "",
@@ -116,13 +133,14 @@ const CustomerBooking = () => {
           size_id: "",
           color: "",
         });
-      } else {
-        setErrors(msg);
+      } else if (status === "WARNING") {
+        setErrors("ทะเบียนรถนี้มีอยู่ในระบบแล้ว");
         setNewCarData({
           ...newCarData,
           plate_no: "",
         });
       }
+      setLoaded(true);
     });
   };
 
@@ -156,7 +174,12 @@ const CustomerBooking = () => {
             {isNewCar ? "เพิ่มรถใหม่" : STEP_LABELS[step]}
           </h2>
           <div className="text-sm sm:text-base text-base-content/80 leading-relaxed">
-            {step === 0 && (
+            {!loaded && (
+              <div className="flex items-center justify-center py-8">
+                <span className="loading loading-spinner loading-lg text-primary"></span>
+              </div>
+            )}
+            {loaded && step === 0 && (
               <select
                 className="select select-bordered w-full select-md"
                 value={data.branch_id}
@@ -175,7 +198,7 @@ const CustomerBooking = () => {
               </select>
             )}
 
-            {step === 1 && (
+            {loaded && step === 1 && (
               <div className="space-y-3">
                 {!isNewCar ? (
                   <>
@@ -371,7 +394,17 @@ const CustomerBooking = () => {
                       <button
                         type="button"
                         className="btn btn-ghost flex-1 sm:flex-initial min-h-[44px]"
-                        onClick={() => setIsNewCar(false)}
+                        onClick={() => {
+                          setIsNewCar(false);
+                          setNewCarData({
+                            size_id: "",
+                            plate_no: "",
+                            province_id: "",
+                            brand: "",
+                            color: "",
+                            model: null,
+                          });
+                        }}
                       >
                         ย้อนกลับ
                       </button>
