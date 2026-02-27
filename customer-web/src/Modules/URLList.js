@@ -34,6 +34,7 @@ const URLList = {
   BookingAvailableSlots: "customer/booking/available-slots",
 
   CustomerCar: "customer/car",
+  BookingServiceRates: "customer/booking/service-rates",
 };
 
 export default URLList;

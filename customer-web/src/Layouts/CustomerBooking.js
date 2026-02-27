@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
 import {
   GetCustomerCar,
   GetBookingBranches,
@@ -39,10 +38,11 @@ const CustomerBooking = () => {
   const [loaded, setLoaded] = useState(false);
   const [step, setStep] = useState(0);
   const [branch, setBranch] = useState([]);
-  const [errors, setErrors] = useState(null);
-  const [isNewCar, setIsNewCar] = useState(false);
+  const [serviceRates, setServiceRates] = useState([]);
   const [province, setProvince] = useState([]);
   const [size, setSize] = useState([]);
+  const [errors, setErrors] = useState(null);
+  const [isNewCar, setIsNewCar] = useState(false);
   const [newCarData, setNewCarData] = useState({
     province_id: "",
     plate_no: "",
@@ -55,6 +55,8 @@ const CustomerBooking = () => {
   const [data, setData] = useState({
     branch_id: "",
     customer_car_id: "",
+    service_car_size_ids: [],
+    booking_date: null,
   });
 
   const fetchCustomerCar = () => {
@@ -63,16 +65,34 @@ const CustomerBooking = () => {
         setCustomerCar(msg);
       } else if (status === "NO DATA") {
         setCustomerCar([]);
+        setIsNewCar(true);
       }
     });
   };
 
   useEffect(() => {
-    GetBookingBranches().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setBranch(msg);
-        setLoaded(true);
+    Promise.all([
+      GetBookingBranches(),
+      GetAllProvince(),
+      GetAllCarSize(),
+      GetCustomerCar(),
+    ]).then(([branchRes, provinceRes, sizeRes, customerCarRes]) => {
+      if (branchRes.status === "SUCCESS") {
+        setBranch(branchRes.msg);
       }
+      if (provinceRes.status === "SUCCESS") {
+        setProvince(provinceRes.msg);
+      }
+      if (sizeRes.status === "SUCCESS") {
+        setSize(sizeRes.msg);
+      }
+      if (customerCarRes.status === "SUCCESS") {
+        setCustomerCar(customerCarRes.msg);
+      } else if (customerCarRes.status === "NO DATA") {
+        setCustomerCar([]);
+        setIsNewCar(true);
+      }
+      setLoaded(true);
     });
   }, []);
 
@@ -83,12 +103,54 @@ const CustomerBooking = () => {
     } else {
       currentStep = currentStep - 1;
     }
-    if (currentStep === 1) {
+
+    if (currentStep === 2) {
       setLoaded(false);
-      fetchCustomerCar();
-      setLoaded(true);
-    }
-    if (step === 2) {
+      GetBookingServiceRates({
+        customer_car_id: data.customer_car_id,
+        branch_id: data.branch_id,
+      }).then(({ status, msg }) => {
+        if (status === "SUCCESS") {
+          const grouped = msg.reduce((acc, row) => {
+            if (!acc[row.channel_id]) {
+              acc[row.channel_id] = {
+                channel_id: row.channel_id,
+                max_capacity: row.max_capacity,
+                services: {},
+              };
+            }
+
+            if (!acc[row.channel_id].services[row.id]) {
+              acc[row.channel_id].services[row.id] = {
+                service_car_size_id: row.id,
+                service_name: row.service_name,
+                duration: row.duration_minute,
+                price: row.price,
+                available_days: [],
+              };
+            }
+
+            acc[row.channel_id].services[row.id].available_days.push({
+              day_of_week: row.day_of_week,
+              open: row.start_time,
+              close: row.end_time,
+            });
+
+            return acc;
+          }, {});
+
+          const result = Object.values(grouped).map((channel) => ({
+            ...channel,
+            services: Object.values(channel.services),
+          }));
+          console.log(result);
+          setServiceRates(result);
+        } else if (status === "NO DATA") {
+          setServiceRates([]);
+          setErrors(msg);
+        }
+        setLoaded(true);
+      });
     }
     setStep(currentStep);
   };
@@ -96,23 +158,9 @@ const CustomerBooking = () => {
   const canButtonProceed =
     (step === 0 && !!data.branch_id) ||
     (step === 1 && !!data.customer_car_id) ||
-    step >= 2;
-
-  const handleAddNewCar = () => {
-    setIsNewCar(true);
-    setLoaded(false);
-    GetAllProvince().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setProvince(msg);
-      }
-    });
-    GetAllCarSize().then(({ status, msg }) => {
-      if (status === "SUCCESS") {
-        setSize(msg);
-      }
-    });
-    setLoaded(true);
-  };
+    (step === 2 && data.service_car_size_ids.length > 0) ||
+    (step === 3 && !!data.booking_date) ||
+    step >= 4;
 
   const handleSubmitAddNewCar = (e) => {
     e.preventDefault();
@@ -133,6 +181,7 @@ const CustomerBooking = () => {
           size_id: "",
           color: "",
         });
+        setErrors(null);
       } else if (status === "WARNING") {
         setErrors("ทะเบียนรถนี้มีอยู่ในระบบแล้ว");
         setNewCarData({
@@ -171,7 +220,7 @@ const CustomerBooking = () => {
       <div className="card bg-base-100 shadow-sm sm:shadow-md border border-base-200/60 rounded-xl sm:rounded-2xl overflow-hidden w-full">
         <div className="card-body p-4 sm:p-5 md:p-6">
           <h2 className="card-title text-base sm:text-lg">
-            {isNewCar ? "เพิ่มรถใหม่" : STEP_LABELS[step]}
+            {isNewCar && step == 1 ? "เพิ่มรถใหม่" : STEP_LABELS[step]}
           </h2>
           <div className="text-sm sm:text-base text-base-content/80 leading-relaxed">
             {!loaded && (
@@ -219,7 +268,7 @@ const CustomerBooking = () => {
                     <button
                       type="button"
                       className="btn btn-ghost btn-sm inline-flex items-center gap-2 text-primary hover:bg-primary/10 mt-2 -ml-2"
-                      onClick={() => handleAddNewCar()}
+                      onClick={() => setIsNewCar(true)}
                     >
                       <span className="flex items-center justify-center w-6 h-6 rounded-full bg-primary/10 text-primary">
                         +
@@ -288,8 +337,7 @@ const CustomerBooking = () => {
                             </span>
                           ) : (
                             <span className="label-text-alt text-base-content/60">
-                              ตัวเลข 0-9 และตัวอักษรไทย (ก-ฮ) อนุญาตเว้นวรรคได้
-                              1 ที่
+                              ตัวอักษรไทย (ก-ฮ) และตัวเลข 0-9
                             </span>
                           )}
                         </label>
@@ -426,9 +474,114 @@ const CustomerBooking = () => {
                 )}
               </div>
             )}
+
+            {loaded && step === 2 && (
+              <div className="space-y-3">
+                {errors && (
+                  <span className="label-text-alt text-error">{errors}</span>
+                )}
+                {serviceRates.length === 0 ? (
+                  <p className="text-base-content/70">
+                    ไม่พบบริการสำหรับรถคันนี้
+                  </p>
+                ) : (
+                  <>
+                    <p className="text-sm text-base-content/60">
+                      เลือกได้หลายรายการ
+                    </p>
+                    <div className="grid gap-2">
+                      {serviceRates.flatMap((channel) =>
+                        channel.services.map((s) => {
+                          const isSelected = data.service_car_size_ids.includes(
+                            s.service_car_size_id,
+                          );
+                          return (
+                            <button
+                              key={s.service_car_size_id}
+                              type="button"
+                              onClick={() => {
+                                setData((prev) => ({
+                                  ...prev,
+                                  service_car_size_ids: isSelected
+                                    ? prev.service_car_size_ids.filter(
+                                        (id) => id !== s.service_car_size_id,
+                                      )
+                                    : [
+                                        ...prev.service_car_size_ids,
+                                        s.service_car_size_id,
+                                      ],
+                                }));
+                              }}
+                              className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 p-4 rounded-xl border-2 text-left transition-all ${
+                                isSelected
+                                  ? "border-primary bg-primary/5"
+                                  : "border-base-300 hover:border-base-content/20 hover:bg-base-200/50"
+                              }`}
+                            >
+                              <span className="font-medium flex items-center gap-2">
+                                {isSelected && (
+                                  <span className="text-primary">✓</span>
+                                )}
+                                {s.service_name}
+                              </span>
+                              <span className="text-sm text-base-content/70">
+                                {s.duration} นาที · ฿
+                                {Number(s.price).toLocaleString()}
+                              </span>
+                            </button>
+                          );
+                        }),
+                      )}
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+
+            {loaded && step === 3 && (
+              <div className="space-y-4">
+                <p className="text-sm text-base-content/60">
+                  จองล่วงหน้าได้ไม่เกิน 2 เดือน
+                </p>
+                <div className="flex justify-center">
+                  <DatePicker
+                    selected={data.booking_date}
+                    onChange={(date) =>
+                      setData((prev) => ({ ...prev, booking_date: date }))
+                    }
+                    minDate={(() => {
+                      const tomorrow = new Date();
+                      tomorrow.setDate(tomorrow.getDate() + 1);
+                      return tomorrow;
+                    })()}
+                    maxDate={(() => {
+                      const maxDate = new Date();
+                      maxDate.setMonth(maxDate.getMonth() + 2);
+                      return maxDate;
+                    })()}
+                    dateFormat="dd/MM/yyyy"
+                    placeholderText="เลือกวันที่"
+                    inline
+                  />
+                </div>
+                {data.booking_date && (
+                  <div className="text-center p-3 bg-primary/5 rounded-xl border border-primary/20">
+                    <p className="text-sm text-base-content/70">วันที่เลือก</p>
+                    <p className="text-lg font-semibold text-primary">
+                      {data.booking_date.toLocaleDateString("th-TH", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
           <div className="card-actions justify-end mt-2 sm:mt-4">
-            {!isNewCar && (
+            {!(isNewCar && step == 1) && (
               <button
                 className="btn btn-primary btn-sm sm:btn-md min-h-[44px] sm:min-h-[48px] w-full sm:w-auto"
                 onClick={() => handleNext("+")}
@@ -438,7 +591,7 @@ const CustomerBooking = () => {
               </button>
             )}
 
-            {!isNewCar && step > 0 && (
+            {!(isNewCar && step == 1) && step > 0 && (
               <button
                 className="btn btn-sm sm:btn-md min-h-[44px] sm:min-h-[48px] w-full sm:w-auto"
                 onClick={() => handleNext("-")}

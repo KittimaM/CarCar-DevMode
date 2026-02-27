@@ -10,9 +10,73 @@ body {
 /* Fix react-datepicker overlap - ensure calendar appears above navbar/modals */
 .react-datepicker-popper {
   z-index: 9999 !important;
-  padding-top: 8px; /* gap between input and calendar to prevent overlap */
+  padding-top: 8px;
 }
+
+/* Custom react-datepicker styles for DaisyUI theme */
 .react-datepicker {
   font-family: inherit;
+  border: 1px solid oklch(var(--bc) / 0.2);
+  border-radius: 1rem;
+  background-color: oklch(var(--b1));
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+.react-datepicker__header {
+  background-color: oklch(var(--b2));
+  border-bottom: 1px solid oklch(var(--bc) / 0.1);
+  border-radius: 1rem 1rem 0 0;
+  padding-top: 12px;
+}
+.react-datepicker__current-month {
+  color: oklch(var(--bc));
+  font-weight: 600;
+  font-size: 1rem;
+  margin-bottom: 8px;
+}
+.react-datepicker__day-name {
+  color: oklch(var(--bc) / 0.6);
+  font-weight: 500;
+  width: 2.5rem;
+  margin: 0.2rem;
+}
+.react-datepicker__day {
+  color: oklch(var(--bc));
+  width: 2.5rem;
+  height: 2.5rem;
+  line-height: 2.5rem;
+  margin: 0.2rem;
+  border-radius: 0.5rem;
+  transition: all 0.15s;
+}
+.react-datepicker__day:hover {
+  background-color: oklch(var(--p) / 0.1);
+  border-radius: 0.5rem;
+}
+.react-datepicker__day--selected {
+  background-color: oklch(var(--p)) !important;
+  color: oklch(var(--pc)) !important;
+  font-weight: 600;
+}
+.react-datepicker__day--keyboard-selected {
+  background-color: oklch(var(--p) / 0.2);
+}
+.react-datepicker__day--disabled {
+  color: oklch(var(--bc) / 0.3);
+}
+.react-datepicker__day--outside-month {
+  color: oklch(var(--bc) / 0.3);
+}
+.react-datepicker__navigation {
+  top: 12px;
+}
+.react-datepicker__navigation-icon::before {
+  border-color: oklch(var(--bc) / 0.6);
+}
+.react-datepicker__navigation:hover *::before {
+  border-color: oklch(var(--p));
+}
+.react-datepicker__day--today {
+  font-weight: 700;
+  color: oklch(var(--p));
 }
 

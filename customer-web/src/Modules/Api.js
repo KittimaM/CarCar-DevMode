@@ -209,14 +209,16 @@ export const GetBookingChannels = (branchId) => {
 };
 
 export const GetChannelOpenDays = (branchId, serviceCarSizeIds) => {
-  const ids = Array.isArray(serviceCarSizeIds) ? serviceCarSizeIds.join(",") : String(serviceCarSizeIds || "");
-  return getApi(`customer/booking/open-days?branch_id=${branchId}&service_car_size_ids=${ids}`);
+  const ids = Array.isArray(serviceCarSizeIds)
+    ? serviceCarSizeIds.join(",")
+    : String(serviceCarSizeIds || "");
+  return getApi(
+    `customer/booking/open-days?branch_id=${branchId}&service_car_size_ids=${ids}`,
+  );
 };
 
-export const GetBookingServiceRates = (carSizeId, branchId = null) => {
-  let url = `customer/booking/service-rates?car_size_id=${carSizeId}`;
-  if (branchId) url += `&branch_id=${branchId}`;
-  return getApi(url);
+export const GetBookingServiceRates = (jsonData) => {
+  return postApi(URLList.BookingServiceRates, jsonData);
 };
 
 export const PostBookingAvailableSlots = (jsonData) => {
