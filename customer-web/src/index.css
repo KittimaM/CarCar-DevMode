@@ -7,3 +7,23 @@ body {
   font-family: "Inter", system-ui, sans-serif;
 }
 
+/* Image card entrance motion */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-card-in {
+  animation: cardFadeIn 0.5s ease-out forwards;
+}
+
+.animate-card-in-delay-1 { animation-delay: 0.1s; opacity: 0; }
+.animate-card-in-delay-2 { animation-delay: 0.2s; opacity: 0; }
+.animate-card-in-delay-3 { animation-delay: 0.3s; opacity: 0; }
+
