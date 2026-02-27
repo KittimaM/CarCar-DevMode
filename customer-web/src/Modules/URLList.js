@@ -32,6 +32,8 @@ const URLList = {
   Province: "admin/province",
   BookingBranches: "customer/booking/branches",
   BookingAvailableSlots: "customer/booking/available-slots",
+
+  CustomerCar: "customer/car",
 };
 
 export default URLList;

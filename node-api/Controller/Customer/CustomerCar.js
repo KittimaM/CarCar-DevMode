@@ -18,7 +18,7 @@ const CustomerCar = (req, res, next) => {
         } else {
           return res.json({ status: "SUCCESS", msg: results });
         }
-      }
+      },
     );
   } catch (error) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -31,16 +31,19 @@ const CustomerAddCustomerCar = (req, res, next) => {
     const token = req.headers.authorization.split(" ")[1];
     const { id } = jwt.verify(token, secret);
     Conn.execute(
-      `INSERT INTO customer_car(customer_id, plate_no, province_id, brand, model, size_id, color) VALUES (?,?,?,?,?,?,?)`,
-      [id, plate_no, province_id, brand || "", model || null, size_id, color],
-      function (error, result) {
+      `INSERT INTO customer_car (plate_no, province_id, brand, model, color, size_id, customer_id) VALUES (?,?,?,?,?,?,?)`,
+      [plate_no, province_id, brand, model, color, size_id, id],
+      function (error) {
         if (error) {
-          return res.json({ status: "ERROR", msg: error });
+          if (error.code === "ER_DUP_ENTRY") {
+            return res.json({ status: "WARNING", msg: "Already In System" });
+          } else {
+            return res.json({ status: "ERROR", msg: error });
+          }
         } else {
-          const insertId = result.insertId;
-          return res.json({ status: "SUCCESS", msg: insertId });
+          return res.json({ status: "SUCCESS", msg: "Successfully Added" });
         }
-      }
+      },
     );
   } catch (error) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -59,9 +62,13 @@ const CustomerDeleteCustomerCar = (req, res, next) => {
       [carId, id],
       function (error, result) {
         if (error) return res.json({ status: "ERROR", msg: error });
-        if (result.affectedRows === 0) return res.json({ status: "WARNING", msg: "ไม่พบรถหรือไม่มีสิทธิ์ลบ" });
+        if (result.affectedRows === 0)
+          return res.json({
+            status: "WARNING",
+            msg: "ไม่พบรถหรือไม่มีสิทธิ์ลบ",
+          });
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-      }
+      },
     );
   } catch (err) {
     return res.json({ status: "ERROR", msg: "token expired" });
@@ -70,7 +77,8 @@ const CustomerDeleteCustomerCar = (req, res, next) => {
 
 const CustomerUpdateCustomerCar = (req, res, next) => {
   try {
-    const { id, plate_no, province_id, brand, model, size_id, color } = req.body;
+    const { id, plate_no, province_id, brand, model, size_id, color } =
+      req.body;
     const token = req.headers.authorization?.split(" ")[1];
     if (!token) return res.json({ status: "ERROR", msg: "token expired" });
     const { id: customerId } = jwt.verify(token, secret);
@@ -79,12 +87,25 @@ const CustomerUpdateCustomerCar = (req, res, next) => {
       `UPDATE customer_car 
         SET plate_no = ?, province_id = ?, brand = ?, model = ?, size_id = ?, color = ? 
         WHERE id = ? AND customer_id = ?`,
-      [plate_no, province_id, brand || "", model || null, size_id, color, id, customerId],
+      [
+        plate_no,
+        province_id,
+        brand || "",
+        model || null,
+        size_id,
+        color,
+        id,
+        customerId,
+      ],
       function (error, result) {
         if (error) return res.json({ status: "ERROR", msg: error });
-        if (result.affectedRows === 0) return res.json({ status: "WARNING", msg: "ไม่พบรถหรือไม่มีสิทธิ์แก้ไข" });
+        if (result.affectedRows === 0)
+          return res.json({
+            status: "WARNING",
+            msg: "ไม่พบรถหรือไม่มีสิทธิ์แก้ไข",
+          });
         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-      }
+      },
     );
   } catch (err) {
     return res.json({ status: "ERROR", msg: "token expired" });

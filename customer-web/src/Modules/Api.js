@@ -176,20 +176,19 @@ export const UpdateService = (jsonData) => {
 };
 
 export const GetCustomerCar = () => {
-  return getApi("customer/car", null, true);
+  return getApi(URLList.CustomerCar, null, true);
 };
 
 export const PostAddCustomerCar = (jsonData) => {
-  const isUseToken = true;
-  return postApi("customer/car", jsonData, isUseToken);
+  return postApi(URLList.CustomerCar, jsonData, true);
 };
 
 export const DeleteCustomerCar = (jsonData) => {
-  return deleteApi("customer/car", jsonData, true);
+  return deleteApi(URLList.CustomerCar, jsonData, true);
 };
 
 export const UpdateCustomerCar = (jsonData) => {
-  return putApi("customer/car", jsonData, true);
+  return putApi(URLList.CustomerCar, jsonData, true);
 };
 
 export const GetAllCustomerBooking = () => {
