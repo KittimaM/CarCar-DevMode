@@ -94,7 +94,7 @@ function AdminIndex() {
           return (
             <div key={item.module_id}>
               <div
-                className="p-3 cursor-pointer hover:bg-gray-600 flex justify-between"
+                className={`p-3 cursor-pointer hover:bg-gray-600 flex justify-between ${activeCode === item.code ? "bg-gray-600" : ""}`}
                 onClick={() => handleMenuClick(item, hasSub)}
               >
                 {item.name}
@@ -111,7 +111,7 @@ function AdminIndex() {
                   {subs.map((sub) => (
                     <div
                       key={sub.module_id}
-                      className="p-2 cursor-pointer hover:bg-gray-600"
+                      className={`p-2 cursor-pointer hover:bg-gray-600 ${activeCode === sub.code ? "bg-gray-600" : ""}`}
                       onClick={() => handleMenuClick(sub, false)}
                     >
                       {sub.name}

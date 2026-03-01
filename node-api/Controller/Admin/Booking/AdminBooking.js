@@ -33,11 +33,13 @@ const AdminAddBooking = (req, res, next) => {
       end_service_datetime,
       service_usetime,
       service_price,
+      branch_id,
+      branch_name,
     } = req.body;
 
     Conn.execute(
-      `INSERT INTO booking(car_no, car_size_id, car_size, customer_name, customer_phone, service, payment_type_id, created_by_id, created_by, car_color, start_service_datetime, end_service_datetime, service_usetime, service_price) 
-      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+      `INSERT INTO booking(car_no, car_size_id, car_size, customer_name, customer_phone, service, payment_type_id, created_by_id, created_by, car_color, start_service_datetime, end_service_datetime, service_usetime, service_price, branch_id, branch_name) 
+      VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
       [
         car_no,
         car_size_id,
@@ -53,6 +55,8 @@ const AdminAddBooking = (req, res, next) => {
         end_service_datetime,
         service_usetime,
         service_price,
+        branch_id || null,
+        branch_name || null,
       ],
       function (error, result) {
         if (error) {
