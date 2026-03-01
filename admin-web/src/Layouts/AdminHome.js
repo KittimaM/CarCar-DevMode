@@ -136,7 +136,7 @@ const AdminHome = () => {
       customer_phone: formData.customer_phone,
       car_no: formData.car_no,
       car_size_id: formData.car_size_id,
-      car_size: selectedCarSize?.name || "",
+      car_size: selectedCarSize?.size || "",
       car_color: formData.car_color,
       service: formData.service,
       payment_type_id: formData.payment_type_id,
@@ -275,9 +275,9 @@ const AdminHome = () => {
                     className="select select-bordered w-full"
                   >
                     <option value="">เลือกขนาดรถ</option>
-                    {carSizes.map((size) => (
-                      <option key={size.id} value={size.id}>
-                        {size.name}
+                    {carSizes.map((cs) => (
+                      <option key={cs.id} value={cs.id}>
+                        {cs.size}
                       </option>
                     ))}
                   </select>

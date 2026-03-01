@@ -173,7 +173,7 @@ const CustomerIndex = () => {
         {active === "index" && (
           <div className="flex flex-col">
             <section
-              className="relative w-full min-h-screen min-h-[100dvh] flex items-center justify-center text-center bg-cover bg-center bg-no-repeat"
+              className="relative w-full h-full min-h-[100dvh] flex items-center justify-center text-center bg-cover bg-center bg-no-repeat"
               style={{
                 backgroundImage:
                   "url('https://images.pexels.com/photos/1056516/pexels-photo-1056516.jpeg')",

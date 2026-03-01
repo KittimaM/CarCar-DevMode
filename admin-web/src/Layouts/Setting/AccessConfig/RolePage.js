@@ -16,6 +16,7 @@ const RolePage = ({ data }) => {
     message: "",
     status: "",
   });
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
 
   const fetchAllRole = () => {
     GetAllAdminRole().then(({ status, msg }) => {
@@ -54,7 +55,7 @@ const RolePage = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+    <div className="flex flex-col h-full bg-base-100">
       {notification.show && (
         <Notification
           key={notificationKey}
@@ -63,117 +64,155 @@ const RolePage = ({ data }) => {
         />
       )}
 
-      <div className="text-4xl font-bold py-8 pl-6 border-b-2 border-gray-200">
-        <div className="breadcrumbs">
-          <ul>
-            <li>{labelValue}</li>
-            {viewMode === "list" && <li className="text-xl">ROLE LIST</li>}
-            {viewMode === "add" && <li className="text-xl">CREATE NEW ROLE</li>}
-            {viewMode === "edit" && <li className="text-xl">EDIT ROLE</li>}
-          </ul>
+      <div className="px-8 py-8 shadow-lg bg-gradient-to-r from-primary/5 to-transparent border-b ">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-medium text-primary uppercase tracking-wide mb-1">{labelValue}</p>
+            <h1 className="text-3xl font-bold text-base-content">
+              {viewMode === "list" && "Role List"}
+              {viewMode === "add" && "Create New Role"}
+              {viewMode === "edit" && "Edit Role"}
+            </h1>
+          </div>
+
+          {viewMode === "list" && actions.includes("add") && (
+            <button
+              className="btn btn-primary gap-2"
+              onClick={() => setViewMode("add")}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+              </svg>
+              Add Role
+            </button>
+          )}
+
+          {viewMode !== "list" && (
+            <button
+              className="btn btn-ghost gap-2"
+              onClick={() => {
+                setEditItem(null);
+                setViewMode("list");
+                fetchAllRole();
+              }}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
+              </svg>
+              Back to List
+            </button>
+          )}
         </div>
       </div>
 
-      <div className="flex gap-4 my-6">
-        <button
-          className={`btn btn-wide font-bold ${
-            viewMode === "list" ? "btn-primary" : "btn-outline"
-          }`}
-          onClick={() => {
-            setViewMode("list");
-            fetchAllRole();
-          }}
-        >
-          Role List
-        </button>
+      <div className="flex-1 overflow-y-auto p-8 shadow-lg">
+        {viewMode === "add" && (
+          <RoleAddPage
+            onBack={() => { setViewMode("list"); fetchAllRole(); }}
+            onSuccess={(msg) => {
+              setNotification({ show: true, message: msg, status: "SUCCESS" });
+              setNotificationKey((prev) => prev + 1);
+              setViewMode("list");
+              fetchAllRole();
+            }}
+          />
+        )}
 
-        {actions.includes("add") && (
-          <button
-            className={`btn btn-wide font-bold ${
-              viewMode === "add" ? "btn-primary" : "btn-outline"
-            }`}
-            onClick={() => setViewMode("add")}
-          >
-            + Create New Role
-          </button>
+        {viewMode === "edit" && editItem && (
+          <RoleEditPage
+            editItem={editItem}
+            onBack={() => { setEditItem(null); setViewMode("list"); fetchAllRole(); }}
+            onSuccess={(msg) => {
+              setNotification({ show: true, message: msg, status: "SUCCESS" });
+              setNotificationKey((prev) => prev + 1);
+              setEditItem(null);
+              setViewMode("list");
+              fetchAllRole();
+            }}
+          />
+        )}
+
+        {viewMode === "list" && (
+          <>
+            {roleList.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-24 text-base-content/50">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-20 w-20 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                <p className="text-lg">No roles found</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {roleList.map((role) => (
+                  <div
+                    key={role.id}
+                    className="flex items-center justify-between px-6 py-5 bg-base-100 border border-base-200 rounded-xl hover:border-base-300 transition-colors"
+                  >
+                    <span className="text-lg font-medium text-base-content">{role.name}</span>
+
+                    {(actions.includes("edit") || actions.includes("delete")) && (
+                      <div className="flex items-center gap-2">
+                        {actions.includes("edit") && (
+                          <button
+                            className="btn btn-ghost btn-square"
+                            onClick={() => {
+                              setEditItem(role);
+                              setViewMode("edit");
+                            }}
+                            title="Edit"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                            </svg>
+                          </button>
+                        )}
+                        {actions.includes("delete") && role.name.toLowerCase() !== "super user" && (
+                          <button
+                            className="btn btn-ghost btn-square text-error hover:bg-error/10"
+                            onClick={() => setDeleteConfirm(role)}
+                            title="Delete"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                              <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                            </svg>
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {viewMode === "add" && (
-        <RoleAddPage
-          onBack={() => { setViewMode("list"); fetchAllRole(); }}
-          onSuccess={(msg) => {
-            setNotification({ show: true, message: msg, status: "SUCCESS" });
-            setNotificationKey((prev) => prev + 1);
-            setViewMode("list");
-            fetchAllRole();
-          }}
-        />
-      )}
-      {viewMode === "edit" && editItem && (
-        <RoleEditPage
-          editItem={editItem}
-          onBack={() => { setEditItem(null); setViewMode("list"); fetchAllRole(); }}
-          onSuccess={(msg) => {
-            setNotification({ show: true, message: msg, status: "SUCCESS" });
-            setNotificationKey((prev) => prev + 1);
-            setEditItem(null);
-            setViewMode("list");
-            fetchAllRole();
-          }}
-        />
-      )}
-
-      {viewMode === "list" && (
-        <div className="h-screen overflow-y-auto">
-          <div className="overflow-x-auto">
-            <table className="table table-lg table-pin-rows">
-              <thead>
-                <tr>
-                  <th>Role</th>
-                  {(actions.includes("edit") || actions.includes("delete")) && (
-                    <th className="text-right">Actions</th>
-                  )}
-                </tr>
-              </thead>
-
-              <tbody>
-                {roleList.map((role) => (
-                  <tr key={role.id}>
-                    <td>{role.name}</td>
-                    {(actions.includes("edit") ||
-                      actions.includes("delete")) && (
-                      <td className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {actions.includes("delete") && (
-                            <button
-                              className="btn btn-error text-white"
-                              onClick={() =>
-                                handleDeleteRole(role.id, role.name)
-                              }
-                            >
-                              Delete
-                            </button>
-                          )}
-                          {actions.includes("edit") && (
-                            <button
-                              className="btn btn-warning"
-                              onClick={() => {
-                                setEditItem(role);
-                                setViewMode("edit");
-                              }}
-                            >
-                              Edit
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {deleteConfirm && (
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">ยืนยันการลบ</h3>
+            <p className="py-4">
+              คุณต้องการลบ <span className="font-semibold text-error">"{deleteConfirm.name}"</span> หรือไม่?
+            </p>
+            <div className="modal-action">
+              <button
+                className="btn btn-ghost"
+                onClick={() => setDeleteConfirm(null)}
+              >
+                ยกเลิก
+              </button>
+              <button
+                className="btn btn-error"
+                onClick={() => {
+                  handleDeleteRole(deleteConfirm.id, deleteConfirm.name);
+                  setDeleteConfirm(null);
+                }}
+              >
+                ลบ
+              </button>
+            </div>
           </div>
+          <div className="modal-backdrop bg-black/50" onClick={() => setDeleteConfirm(null)} />
         </div>
       )}
     </div>

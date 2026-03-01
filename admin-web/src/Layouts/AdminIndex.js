@@ -78,16 +78,17 @@ function AdminIndex() {
       <aside
         className={`
           fixed top-0 left-0 h-screen w-64 bg-gray-800 text-white z-50
-          transform transition-transform duration-300
+          transform transition-transform duration-300 flex flex-col
           ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"}
           lg:translate-x-0
         `}
       >
-        <div className="p-5 font-bold text-xl border-b border-gray-700">
+        <div className="p-5 font-bold text-xl border-b border-gray-700 flex-shrink-0">
           Carcare
         </div>
 
-        {parentModules.map((item) => {
+        <div className="flex-1 overflow-y-auto scrollbar-hide">
+          {parentModules.map((item) => {
           const subs = getSubModules(item.module_id);
           const hasSub = subs.length > 0;
 
@@ -122,10 +123,11 @@ function AdminIndex() {
             </div>
           );
         })}
+        </div>
       </aside>
 
       <div className="lg:ml-64">
-        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30 lg:ml-64">
+        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30 ">
           <button className="lg:hidden" onClick={toggleSidebar}>
             <FaBars size={20} />
           </button>
@@ -143,7 +145,7 @@ function AdminIndex() {
           </div>
         </header>
 
-        <main className="pt-20 p-4">
+        <main className="pt-20 p-4 lg:m-16 rounded-md">
           <Suspense fallback={<div>Loading...</div>}>
             <ActiveComponent data={data} />
           </Suspense>
