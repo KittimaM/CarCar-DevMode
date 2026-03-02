@@ -55,7 +55,7 @@ const GeneralPage = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col h-full bg-base-100">
+    <div className="flex flex-col h-full bg-base-100 ">
       {notification.show && (
         <Notification
           key={notificationKey}
@@ -87,8 +87,8 @@ const GeneralPage = ({ data }) => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-8">
-        <form onSubmit={handleSubmit} className="max-w-3xl space-y-6">
+      <div className="flex-1 overflow-y-auto p-8 ">
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-6">
           <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
             <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
               <h2 className="font-semibold text-base-content flex items-center gap-2">
