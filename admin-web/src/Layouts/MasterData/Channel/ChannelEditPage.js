@@ -5,7 +5,8 @@ import { GetAllBranch, UpdateChannel } from "../../Modules/Api";
 const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
   const [data, setData] = useState({ ...editItem });
   const [branch, setBranch] = useState([]);
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
     show: false,
@@ -19,16 +20,18 @@ const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
         setBranch(msg);
       } else if (status === "NO DATA") {
         setBranch([]);
-        setErrors(msg);
+        setErrors("No branches available");
       }
     });
   }, []);
 
   const handleEdit = (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
     UpdateChannel(data).then(({ status, msg }) => {
+      setIsSubmitting(false);
       if (status === "SUCCESS") {
-        setErrors([]);
+        setErrors("");
         onSuccess?.(msg);
       } else {
         setNotification({
@@ -40,14 +43,16 @@ const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
         if (status === "WARNING") {
           setErrors(msg);
           setData({ ...editItem });
+        } else if (status === "ERROR") {
+          setErrors(msg);
         }
       }
     });
   };
 
   return (
-    <div className="space-y-4">
-      {notification.show === true && (
+    <div className="max-w-3xl mx-auto">
+      {notification.show && (
         <Notification
           key={notificationKey}
           message={notification.message}
@@ -55,81 +60,93 @@ const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
         />
       )}
 
-      <form onSubmit={handleEdit}>
-        {branch.length !== 0 && (
-          <div className="border p-4 bg-base-100 space-y-4 items-center">
-            {errors && <p className="text-red-500 text-md">{errors}</p>}
-            <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-              <span className="w-32">Branch</span>
-              <select
-                value={data.branch_id}
-                className={`select w-full select-bordered max-w-md ${
-                  !data.branch_id ? `select-error` : ``
-                }`}
-                onChange={(e) =>
-                  setData({ ...data, branch_id: e.target.value })
-                }
-                required
-              >
-                <option disabled={true} value="">
-                  Pick A Branch
-                </option>
-                {branch &&
-                  branch.map((b) => (
-                    <option key={b.id} value={b.id}>
-                      {b.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
+      <form onSubmit={handleEdit} className="space-y-6">
+        {/* Channel Info Card */}
+        <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
+          <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
+            <h2 className="font-semibold text-base-content flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" />
+              </svg>
+              Channel Information
+            </h2>
+          </div>
+          <div className="p-5 space-y-4">
+            {errors && <p className="text-error text-sm">{errors}</p>}
 
-            <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-              <span className="w-32">Channel Name</span>
-              <input
-                type="text"
-                value={data.name}
-                className={`input input-bordered w-full max-w-md ${
-                  !data.name ? `input-error` : ``
-                }`}
-                onChange={(e) => {
-                  setData({ ...data, name: e.target.value });
-                }}
-                required
-              />
-            </div>
+            {branch.length > 0 && (
+              <>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Branch <span className="text-error">*</span>
+                  </label>
+                  <select
+                    value={data.branch_id}
+                    className="select select-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, branch_id: e.target.value })}
+                    required
+                  >
+                    <option disabled value="">Pick a branch</option>
+                    {branch.map((b) => (
+                      <option key={b.id} value={b.id}>{b.name}</option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-              <span className="w-32">Max Capacity</span>
-              <input
-                type="number"
-                min="1"
-                value={data.max_capacity}
-                className={`input input-bordered w-full max-w-md ${
-                  !data.max_capacity ? `input-error` : ``
-                }`}
-                onChange={(e) => {
-                  setData({ ...data, max_capacity: e.target.value });
-                }}
-                required
-              />
-            </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Channel Name <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter channel name"
+                    value={data.name}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, name: e.target.value })}
+                    required
+                  />
+                </div>
 
-            <div className="flex gap-2 mt-4">
-              <button type="submit" className="btn btn-success text-white">
-                SUBMIT
-              </button>
-              <button
-                type="button"
-                className="btn"
-                onClick={() => {
-                  setData({ ...editItem });
-                  setErrors([]);
-                  onBack?.();
-                }}
-              >
-                CANCEL
-              </button>
-            </div>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Max Capacity <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="number"
+                    min="1"
+                    placeholder="Enter max capacity"
+                    value={data.max_capacity}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, max_capacity: e.target.value })}
+                    required
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Actions */}
+        {branch.length > 0 && (
+          <div className="flex justify-end gap-3 pt-4 border-t border-base-200">
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => {
+                setData({ ...editItem });
+                setErrors("");
+                onBack?.();
+              }}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={`btn btn-accent ${isSubmitting ? "loading" : ""}`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
+            </button>
           </div>
         )}
       </form>
