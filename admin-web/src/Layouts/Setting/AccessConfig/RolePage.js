@@ -64,10 +64,10 @@ const RolePage = ({ data }) => {
         />
       )}
 
-      <div className="px-8 py-8 shadow-lg bg-gradient-to-r from-primary/5 to-transparent border-b ">
+      <div className="px-8 py-8 shadow-md bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b border-base-200">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm font-medium text-primary uppercase tracking-wide mb-1">{labelValue}</p>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">{labelValue}</p>
             <h1 className="text-3xl font-bold text-base-content">
               {viewMode === "list" && "Role List"}
               {viewMode === "add" && "Create New Role"}
@@ -188,21 +188,31 @@ const RolePage = ({ data }) => {
       </div>
 
       {deleteConfirm && (
-        <div className="modal modal-open">
-          <div className="modal-box">
-            <h3 className="font-bold text-lg">ยืนยันการลบ</h3>
-            <p className="py-4">
-              คุณต้องการลบ <span className="font-semibold text-error">"{deleteConfirm.name}"</span> หรือไม่?
-            </p>
-            <div className="modal-action">
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setDeleteConfirm(null)} />
+          <div className="relative bg-base-100 rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden">
+            <div className="p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-error/10 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-error" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-base-content mb-2">ยืนยันการลบ</h3>
+              <p className="text-base-content/70">
+                คุณต้องการลบ <span className="font-semibold text-error">"{deleteConfirm.name}"</span> หรือไม่?
+              </p>
+              <p className="text-sm text-base-content/50 mt-1">การดำเนินการนี้ไม่สามารถย้อนกลับได้</p>
+            </div>
+            <div className="flex border-t border-base-200">
               <button
-                className="btn btn-ghost"
+                className="flex-1 py-4 text-base font-medium text-base-content/70 hover:bg-base-200 transition-colors"
                 onClick={() => setDeleteConfirm(null)}
               >
                 ยกเลิก
               </button>
+              <div className="w-px bg-base-200" />
               <button
-                className="btn btn-error"
+                className="flex-1 py-4 text-base font-medium text-error hover:bg-error/10 transition-colors"
                 onClick={() => {
                   handleDeleteRole(deleteConfirm.id, deleteConfirm.name);
                   setDeleteConfirm(null);
@@ -212,7 +222,6 @@ const RolePage = ({ data }) => {
               </button>
             </div>
           </div>
-          <div className="modal-backdrop bg-black/50" onClick={() => setDeleteConfirm(null)} />
         </div>
       )}
     </div>

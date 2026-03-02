@@ -127,25 +127,39 @@ function AdminIndex() {
       </aside>
 
       <div className="lg:ml-64">
-        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow flex items-center px-4 z-30 ">
-          <button className="lg:hidden" onClick={toggleSidebar}>
+        <header className="fixed top-0 left-0 right-0 h-16 bg-white shadow-sm border-b border-base-200 flex items-center px-6 z-30 lg:left-64">
+          <button className="lg:hidden p-2 hover:bg-base-200 rounded-lg transition-colors" onClick={toggleSidebar}>
             <FaBars size={20} />
           </button>
 
-          <div className="ml-auto flex items-center gap-3">
-            <div className="text-right">
-              <div className="text-sm">
-                {sessionStorage.getItem("username")}
+          <div className="ml-auto flex items-center gap-4">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-full bg-[#e8f0f9] flex items-center justify-center text-gray-700 font-bold text-sm shadow-md">
+                {sessionStorage.getItem("username")?.charAt(0).toUpperCase() || "A"}
+              </div>
+              <div className="hidden sm:block">
+                <p className="text-sm font-semibold text-base-content">
+                  {sessionStorage.getItem("username")}
+                </p>
+                <p className="text-xs text-base-content/60">Administrator</p>
               </div>
             </div>
 
-            <Link to="/" className="text-sm text-red-600 hover:underline">
-              Log out
+            <div className="w-px h-8 bg-base-300"></div>
+
+            <Link 
+              to="/" 
+              className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-error hover:bg-error/10 rounded-lg transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 001 1h12a1 1 0 001-1V4a1 1 0 00-1-1H3zm11 4.414l-4.293 4.293a1 1 0 01-1.414 0L4 7.414 5.414 6l3.293 3.293L13 5l1 2.414z" clipRule="evenodd" />
+              </svg>
+              <span className="hidden sm:inline">Log out</span>
             </Link>
           </div>
         </header>
 
-        <main className="pt-20 p-4 lg:m-16 rounded-md">
+        <main className="pt-20 p-4 lg:m-12 rounded-md">
           <Suspense fallback={<div>Loading...</div>}>
             <ActiveComponent data={data} />
           </Suspense>
