@@ -222,7 +222,8 @@ const PostGetAvailableSlots = (req, res) => {
               for (const ch of channels) {
                 bookingCountByChannel[ch.channel_id] = uniqueBookingsByChannel[ch.channel_id]?.size || 0;
               }
-              // Step 5: Generate slots for EACH channel using pre-calc timeline
+              // Step 5: For each channel, find FREE ranges (opposite of union of busy times)
+              // A minute is free if timeline[m] + requiredStaff <= maxCapacity
               const allSlots = [];
 
               for (const channel of channels) {
@@ -231,19 +232,32 @@ const PostGetAvailableSlots = (req, res) => {
                 const maxCapacity = channel.max_capacity;
                 const timeline = capacityTimeline[channel.channel_id];
 
-                for (let t = chStart; t + totalDuration <= chEnd; t += totalDuration) {
-                  const slotEnd = t + totalDuration;
-
-                  // Find max capacity used in this slot range (O(duration) instead of O(bookings))
-                  let maxUsedInSlot = 0;
-                  for (let m = t; m < slotEnd; m++) {
-                    if (timeline[m] > maxUsedInSlot) {
-                      maxUsedInSlot = timeline[m];
+                // Build free ranges: contiguous intervals where capacity allows
+                const freeRanges = [];
+                let rangeStart = null;
+                for (let m = chStart; m < chEnd; m++) {
+                  const hasRoom = (timeline[m] || 0) + requiredStaff <= maxCapacity;
+                  if (hasRoom) {
+                    if (rangeStart === null) rangeStart = m;
+                  } else {
+                    if (rangeStart !== null) {
+                      freeRanges.push([rangeStart, m]);
+                      rangeStart = null;
                     }
                   }
+                }
+                if (rangeStart !== null) {
+                  freeRanges.push([rangeStart, chEnd]);
+                }
 
-                  // Check if adding requiredStaff would exceed maxCapacity
-                  if (maxUsedInSlot + requiredStaff <= maxCapacity) {
+                // Generate slots only within free ranges (opposite of union of booking times)
+                for (const [rangeStartMin, rangeEndMin] of freeRanges) {
+                  const rangeDuration = rangeEndMin - rangeStartMin;
+                  if (rangeDuration < totalDuration) continue;
+
+                  for (let t = rangeStartMin; t + totalDuration <= rangeEndMin; t += totalDuration) {
+                    const slotEnd = t + totalDuration;
+
                     const slotStartMin = t;
                     const slotEndMin = slotEnd;
                     const overlapsCustomerBooking = customerBookingRanges.some(
