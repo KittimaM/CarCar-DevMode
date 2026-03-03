@@ -195,6 +195,7 @@ const CustomerBooking = () => {
         branch_id: Number(data.branch_id),
         booking_date: bookingDateStr,
         service_car_size_ids: data.service_car_size_ids,
+        customer_car_id: data.customer_car_id,
       }).then(({ status, msg }) => {
         if (status === "SUCCESS") {
           setTimeSlots(msg);
@@ -692,10 +693,19 @@ const CustomerBooking = () => {
 
             {loaded && step === 4 && (
               <div className="space-y-4">
-                <div className="text-center p-3 bg-base-200 rounded-xl">
-                  <p className="text-sm text-base-content/70">ระยะเวลารวม</p>
-                  <p className="text-lg font-semibold">
+                <div className="text-center p-3 bg-base-200 rounded-xl space-y-2">
+                  <p className="text-sm text-base-content/70">ระยะเวลาแต่ละบริการ</p>
+                  <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
                     {serviceRates
+                      .filter((s) => data.service_car_size_ids.includes(s.service_car_size_id))
+                      .map((s) => (
+                        <span key={s.service_car_size_id} className="text-sm">
+                          {s.service_name}: <strong>{s.duration}</strong> นาที
+                        </span>
+                      ))}
+                  </div>
+                  <p className="text-base font-semibold">
+                    รวม {serviceRates
                       .filter((s) => data.service_car_size_ids.includes(s.service_car_size_id))
                       .reduce((sum, s) => sum + s.duration, 0)} นาที
                   </p>
@@ -705,42 +715,39 @@ const CustomerBooking = () => {
                     ไม่พบช่วงเวลาที่ว่าง
                   </p>
                 ) : (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                    {timeSlots.map((slot, index) => {
-                      const slotKey = `${slot.channel_id}-${slot.start_time}`;
-                      const isSelected = data.selected_slot?.channel_id === slot.channel_id && 
-                                         data.selected_slot?.start_time === slot.start_time;
-                      return (
-                        <button
-                          key={slotKey}
-                          type="button"
-                          onClick={() =>
-                            setData((prev) => ({ ...prev, selected_slot: slot }))
-                          }
-                          className={`p-3 rounded-xl border-2 text-center transition-all ${
-                            isSelected
-                              ? "border-primary bg-primary/5"
-                              : "border-base-300 hover:border-base-content/20 hover:bg-base-200/50"
-                          }`}
+                  <div>
+                    <label className="label">
+                      <span className="label-text">เลือกช่วงเวลา</span>
+                    </label>
+                    <select
+                      className="select select-bordered w-full"
+                      value={
+                        data.selected_slot
+                          ? `${data.selected_slot.channel_id}-${data.selected_slot.start_time}`
+                          : ""
+                      }
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        if (!val) {
+                          setData((prev) => ({ ...prev, selected_slot: null }));
+                          return;
+                        }
+                        const slot = timeSlots.find(
+                          (s) => `${s.channel_id}-${s.start_time}` === val
+                        );
+                        setData((prev) => ({ ...prev, selected_slot: slot || null }));
+                      }}
+                    >
+                      <option value="">-- เลือกเวลา --</option>
+                      {timeSlots.map((slot) => (
+                        <option
+                          key={`${slot.channel_id}-${slot.start_time}`}
+                          value={`${slot.channel_id}-${slot.start_time}`}
                         >
-                          <span className="font-medium">
-                            {slot.start_time}
-                          </span>
-                          <span className="text-base-content/50"> - </span>
-                          <span className="font-medium">
-                            {slot.end_time}
-                          </span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                )}
-                {data.selected_slot && (
-                  <div className="text-center p-3 bg-primary/5 rounded-xl border border-primary/20">
-                    <p className="text-sm text-base-content/70">เวลาที่เลือก</p>
-                    <p className="text-lg font-semibold text-primary">
-                      {data.selected_slot.start_time} - {data.selected_slot.end_time}
-                    </p>
+                          {slot.start_time} - {slot.end_time}
+                        </option>
+                      ))}
+                    </select>
                   </div>
                 )}
               </div>
@@ -775,7 +782,7 @@ const CustomerBooking = () => {
                       <div className="text-right">
                         {selectedServices.map((s) => (
                           <div key={s.service_car_size_id} className="font-medium">
-                            {s.service_name}
+                            {s.service_name} ({s.duration} นาที)
                           </div>
                         ))}
                       </div>
@@ -841,9 +848,6 @@ const CustomerBooking = () => {
                   <p className="text-base-content/70">หมายเลขการจอง</p>
                   <p className="text-2xl font-bold">{bookingResult.booking_no}</p>
                 </div>
-                <p className="text-sm text-base-content/70">
-                  กรุณาชำระเงินภายใน 5 นาที มิฉะนั้นการจองจะถูกยกเลิกอัตโนมัติ
-                </p>
                 <button
                   className="btn btn-primary"
                   onClick={() => {

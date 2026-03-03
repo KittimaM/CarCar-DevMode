@@ -90,292 +90,33 @@ const PostGetServiceRatesByCarSize = (req, res) => {
   );
 };
 
-// Helper: time string "HH:mm" to minutes since midnight
-// function timeToMin(t) {
-//   const [h, m] = String(t).split(":").map(Number);
-//   return (h || 0) * 60 + (m || 0);
-// }
-// function minToTime(min) {
-//   const h = Math.floor(min / 60) % 24;
-//   const m = min % 60;
-//   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
-// }
-// // Helper: do two time ranges overlap? (start/end in minutes)
-// function overlaps(s1, e1, s2, e2) {
-//   return !(e1 <= s2 || e2 <= s1);
-// }
-
-// // POST: Get available time slots (no recursive CTE - generate slots in Node to avoid ER_MALFORMED_PACKET)
-// // Body: { branch_id, booking_date, service_car_size_id } or { branch_id, booking_date, service_car_size_ids: [6,7] }
-// const GetAvailableSlots = (req, res) => {
-//   const { branch_id, booking_date, service_car_size_id, service_car_size_ids } =
-//     req.body;
-//   const ids = service_car_size_ids;
-
-//   const dayNames = [
-//     "Sunday",
-//     "Monday",
-//     "Tuesday",
-//     "Wednesday",
-//     "Thursday",
-//     "Friday",
-//     "Saturday",
-//   ];
-//   const d = new Date(booking_date + "T12:00:00");
-//   const dayOfWeek = dayNames[d.getDay()];
-//   const placeholders = ids.map(() => "?").join(",");
-
-//   Conn.execute(
-//     `SELECT COALESCE(SUM(duration_minute),0) AS total FROM service_car_size WHERE id IN (${placeholders})`,
-//     ids,
-//     function (err, durRows) {
-//       if (err) return res.json({ status: "ERROR", msg: err });
-//       const totalMin = durRows?.[0]?.total || 0;
-//       if (totalMin <= 0)
-//         return res.json({
-//           status: "ERROR",
-//           msg: "Invalid service_car_size_id(s)",
-//         });
-
-//       Conn.execute(
-//         `SELECT c.id AS channel_id, c.name AS channel_name, c.max_capacity,
-//                 TIME_FORMAT(cs.start_time, '%H:%i') AS start_time, TIME_FORMAT(cs.end_time, '%H:%i') AS end_time
-//          FROM channel c
-//          JOIN channel_schedule cs ON cs.channel_id = c.id AND cs.day_of_week = ?
-//          JOIN channel_service chs ON chs.channel_id = c.id AND chs.is_available = 1
-//          WHERE c.branch_id = ? AND chs.service_car_size_id IN (${placeholders})
-//          GROUP BY c.id, c.name, c.max_capacity, cs.start_time, cs.end_time
-//          HAVING COUNT(DISTINCT chs.service_car_size_id) = ?`,
-//         [dayOfWeek, branch_id, ...ids, ids.length],
-//         function (errCh, channels) {
-//           if (errCh) return res.json({ status: "ERROR", msg: errCh });
-//           if (!channels || channels.length === 0)
-//             return res.json({ status: "SUCCESS", msg: [], booked: [] });
-
-//           Conn.execute(
-//             `SELECT ch.id AS channel_id, TIME_FORMAT(b.start_time,'%H:%i') AS start_time, TIME_FORMAT(b.end_time,'%H:%i') AS end_time
-//              FROM booking b
-//              JOIN channel ch ON ch.id = b.channel_id
-//              JOIN status st ON st.id = b.status_id
-//              WHERE ch.branch_id = ? AND b.booking_date = ? AND st.code NOT IN ('CANCELLED','NO_SHOW')`,
-//             [branch_id, booking_date],
-//             function (errBk, bookings) {
-//               if (errBk) return res.json({ status: "ERROR", msg: errBk });
-//               const booked = (bookings || []).map((r) => ({
-//                 channel_id: r.channel_id,
-//                 start_min: timeToMin(r.start_time),
-//                 end_min: timeToMin(r.end_time),
-//               }));
-
-//               const slots = [];
-//               for (const ch of channels) {
-//                 const chStart = timeToMin(ch.start_time);
-//                 const chEnd = timeToMin(ch.end_time);
-//                 const chBooked = booked.filter(
-//                   (b) => b.channel_id === ch.channel_id,
-//                 );
-
-//                 for (let t = chStart; t + totalMin <= chEnd; t += totalMin) {
-//                   const slotEnd = t + totalMin;
-//                   const overlapCount = chBooked.filter((b) =>
-//                     overlaps(t, slotEnd, b.start_min, b.end_min),
-//                   ).length;
-//                   if (overlapCount < ch.max_capacity) {
-//                     slots.push({
-//                       channel_id: ch.channel_id,
-//                       channel_name: ch.channel_name,
-//                       start_time: minToTime(t),
-//                       end_time: minToTime(slotEnd),
-//                     });
-//                   }
-//                 }
-//               }
-//               slots.sort((a, b) =>
-//                 a.channel_id !== b.channel_id
-//                   ? a.channel_id - b.channel_id
-//                   : String(a.start_time).localeCompare(b.start_time),
-//               );
-
-//               const bookedForClient = booked.map((b) => ({
-//                 start_time: minToTime(b.start_min),
-//                 end_time: minToTime(b.end_min),
-//               }));
-//               return res.json({
-//                 status: "SUCCESS",
-//                 msg: slots,
-//                 booked: bookedForClient,
-//               });
-//             },
-//           );
-//         },
-//       );
-//     },
-//   );
-// };
-
-// // POST: Create booking (new schema)
-// const CustomerBooking = (req, res) => {
-//   try {
-//     const token = req.headers.authorization?.split(" ")[1];
-//     if (!token) return res.json({ status: "ERROR", msg: "token expired" });
-//     const decoded = jwt.verify(token, secret);
-//     const { id } = decoded;
-
-//     const {
-//       customer_car_id,
-//       channel_id,
-//       service_car_size_id,
-//       booking_date,
-//       start_time,
-//       end_time,
-//       price_snapshot,
-//       duration_snapshot,
-//     } = req.body;
-
-//     if (
-//       !customer_car_id ||
-//       !channel_id ||
-//       !service_car_size_id ||
-//       !booking_date ||
-//       !start_time ||
-//       !end_time
-//     ) {
-//       return res.json({ status: "ERROR", msg: "Missing required fields" });
-//     }
-
-//     const bookingNo = generateBookingNo();
-
-//     getStatusIdByCode("PENDING", (err, statusId) => {
-//       if (err) return res.json({ status: "ERROR", msg: err.message });
-
-//       Conn.execute(
-//         `INSERT INTO booking (customer_car_id, channel_id, service_car_size_id, booking_date, start_time, end_time, price_snapshot, duration_snapshot, status_id, booking_no)
-//          VALUES (?,?,?,?,?,?,?,?,?,?)`,
-//         [
-//           customer_car_id,
-//           channel_id,
-//           service_car_size_id,
-//           booking_date,
-//           start_time,
-//           end_time,
-//           price_snapshot ?? null,
-//           duration_snapshot ?? null,
-//           statusId,
-//           bookingNo,
-//         ],
-//         function (error, result) {
-//           if (error) return res.json({ status: "ERROR", msg: error });
-//           return res.json({
-//             status: "SUCCESS",
-//             msg: { id: result.insertId, booking_no: bookingNo },
-//           });
-//         },
-//       );
-//     });
-//   } catch (err) {
-//     return res.json({ status: "ERROR", msg: "token expired" });
-//   }
-// };
-
-// // GET: All bookings for logged-in customer (by customer_id from cars)
-// const CustomerGetAllBooking = (req, res) => {
-//   try {
-//     const token = req.headers.authorization?.split(" ")[1];
-//     if (!token) return res.json({ status: "ERROR", msg: "token expired" });
-//     const { id } = jwt.verify(token, secret);
-
-//     Conn.execute(
-//       `SELECT b.*, s.name AS service_name, ch.name AS channel_name, br.name AS branch_name,
-//               cc.plate_no, cc.brand, cc.model, st.code AS status_code
-//        FROM booking b
-//        JOIN customer_car cc ON cc.id = b.customer_car_id
-//        LEFT JOIN service_car_size scs ON scs.id = b.service_car_size_id
-//        LEFT JOIN service s ON s.id = scs.service_id
-//        JOIN channel ch ON ch.id = b.channel_id
-//        JOIN branch br ON br.id = ch.branch_id
-//        JOIN status st ON st.id = b.status_id
-//        WHERE cc.customer_id = ?
-//        ORDER BY b.booking_date DESC, b.start_time DESC`,
-//       [id],
-//       function (error, results) {
-//         if (error) return res.json({ status: "ERROR", msg: error });
-//         if (results.length === 0)
-//           return res.json({ status: "NO DATA", msg: "NO DATA" });
-//         return res.json({ status: "SUCCESS", msg: results });
-//       },
-//     );
-//   } catch (err) {
-//     return res.json({ status: "ERROR", msg: "token expired" });
-//   }
-// };
-
-// // DELETE: Cancel booking (customer can only delete own)
-// const CustomerDeleteBooking = (req, res) => {
-//   try {
-//     const token = req.headers.authorization?.split(" ")[1];
-//     if (!token) return res.json({ status: "ERROR", msg: "token expired" });
-//     const { id } = jwt.verify(token, secret);
-//     const { booking_id } = req.body;
-//     if (!booking_id)
-//       return res.json({ status: "ERROR", msg: "booking_id required" });
-
-//     Conn.execute(
-//       `DELETE b FROM booking b
-//        JOIN customer_car cc ON cc.id = b.customer_car_id
-//        WHERE b.id = ? AND cc.customer_id = ?`,
-//       [booking_id, id],
-//       function (error, result) {
-//         if (error) return res.json({ status: "ERROR", msg: error });
-//         if (result.affectedRows === 0)
-//           return res.json({
-//             status: "WARNING",
-//             msg: "Booking not found or cannot delete",
-//           });
-//         return res.json({ status: "SUCCESS", msg: "SUCCESS" });
-//       },
-//     );
-//   } catch (err) {
-//     return res.json({ status: "ERROR", msg: "token expired" });
-//   }
-// };
-
-// // Legacy: Get service choice by car_size (for backward compat)
-// const CustomerGetServiceChoice = (req, res) => {
-//   const { car_size_id } = req.body;
-//   Conn.execute(
-//     `SELECT scs.*, s.name AS service_name FROM service_car_size scs JOIN service s ON s.id = scs.service_id WHERE scs.car_size_id = ?`,
-//     [car_size_id],
-//     function (error, results) {
-//       if (error) return res.json({ status: "ERROR", msg: error });
-//       if (results.length === 0)
-//         return res.json({ status: "NO DATA", msg: "NO DATA" });
-//       return res.json({ status: "SUCCESS", msg: results });
-//     },
-//   );
-// };
-
 const PostGetAvailableSlots = (req, res) => {
-  const { branch_id, booking_date, service_car_size_ids } = req.body;
-
-  if (!branch_id || !booking_date || !service_car_size_ids || !service_car_size_ids.length) {
-    return res.json({ status: "ERROR", msg: "Missing required fields" });
-  }
-
-  const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  const d = new Date(booking_date + "T12:00:00");
+  const { branch_id, booking_date, service_car_size_ids, customer_car_id } = req.body;
+  const [year, month, day] = booking_date.split("-").map(Number);
+  const d = new Date(year, month - 1, day); // month is 0-indexed
   const dayOfWeek = d.getDay();
   const placeholders = service_car_size_ids.map(() => "?").join(",");
 
   Conn.execute(
-    `SELECT COALESCE(SUM(duration_minute), 0) AS total 
+    `SELECT id, duration_minute, required_staff
      FROM service_car_size 
      WHERE id IN (${placeholders})`,
     service_car_size_ids,
     (durErr, durRows) => {
       if (durErr) return res.json({ status: "ERROR", msg: durErr.message });
-      
-      const totalDuration = durRows?.[0]?.total || 0;
-      if (totalDuration <= 0) {
+
+      if (!durRows || durRows.length === 0) {
+        return res.json({ status: "ERROR", msg: "Services not found" });
+      }
+
+      const totalDuration = durRows.reduce((s, r) => s + (r.duration_minute || 0), 0);
+      const requiredStaff = durRows.reduce((s, r) => s + (r.required_staff || 1), 0);
+      const serviceDurations = durRows.map((r) => ({
+        service_car_size_id: r.id,
+        duration_minute: r.duration_minute || 0,
+      }));
+
+      if (totalDuration === 0) {
         return res.json({ status: "ERROR", msg: "Invalid services" });
       }
 
@@ -386,89 +127,169 @@ const PostGetAvailableSlots = (req, res) => {
            c.priority,
            c.max_capacity,
            TIME_FORMAT(cs.start_time, '%H:%i') AS start_time,
-           TIME_FORMAT(cs.end_time, '%H:%i') AS end_time,
-           (SELECT COUNT(*) FROM booking b 
-            JOIN status st ON st.id = b.status_id 
-            WHERE b.channel_id = c.id 
-              AND b.booking_date = ? 
-              AND st.code IN ('PENDING', 'CONFIRMED')) AS booking_count
+           TIME_FORMAT(cs.end_time, '%H:%i') AS end_time
          FROM channel c
          JOIN channel_schedule cs ON cs.channel_id = c.id AND cs.day_of_week = ?
          JOIN channel_service chs ON chs.channel_id = c.id AND chs.is_available = 1
          WHERE c.branch_id = ? 
            AND chs.service_car_size_id IN (${placeholders})
          GROUP BY c.id, c.name, c.priority, c.max_capacity, cs.start_time, cs.end_time
-         HAVING COUNT(DISTINCT chs.service_car_size_id) = ?
-         ORDER BY c.priority ASC, booking_count ASC
-         LIMIT 1`,
-        [booking_date, dayOfWeek, branch_id, ...service_car_size_ids, service_car_size_ids.length],
+         HAVING COUNT(DISTINCT chs.service_car_size_id) = ?`,
+        [
+          dayOfWeek,
+          branch_id,
+          ...service_car_size_ids,
+          service_car_size_ids.length,
+        ],
         (chErr, channels) => {
           if (chErr) return res.json({ status: "ERROR", msg: chErr.message });
-          
+
           if (!channels || channels.length === 0) {
-            return res.json({ status: "SUCCESS", msg: [] });
+            return res.json({ status: "NO DATA", msg: "NO DATA" });
           }
 
-          const bestChannel = channels[0];
+          // Step 3: Get existing bookings WITH required_staff from each booking's services
+          const channelIds = channels.map((c) => c.channel_id);
+          const chPlaceholders = channelIds.map(() => "?").join(",");
 
           Conn.execute(
             `SELECT 
+               b.channel_id,
+               b.booking_no,
                TIME_FORMAT(b.start_time, '%H:%i') AS start_time,
-               TIME_FORMAT(b.end_time, '%H:%i') AS end_time
+               TIME_FORMAT(b.end_time, '%H:%i') AS end_time,
+               COALESCE(scs.required_staff, 1) AS required_staff
              FROM booking b
              JOIN status st ON st.id = b.status_id
-             WHERE b.channel_id = ?
+             LEFT JOIN service_car_size scs ON scs.id = b.service_car_size_id
+             WHERE b.channel_id IN (${chPlaceholders})
                AND b.booking_date = ?
                AND st.code IN ('PENDING', 'CONFIRMED')`,
-            [bestChannel.channel_id, booking_date],
+            [...channelIds, booking_date],
             (bkErr, existingBookings) => {
-              if (bkErr) return res.json({ status: "ERROR", msg: bkErr.message });
+              if (bkErr)
+                return res.json({ status: "ERROR", msg: bkErr.message });
 
-              const chStart = timeToMin(bestChannel.start_time);
-              const chEnd = timeToMin(bestChannel.end_time);
-              const maxCapacity = bestChannel.max_capacity;
+              const fetchCustomerBookings = (done) => {
+                if (!customer_car_id) return done(null, []);
+                Conn.execute(
+                  `SELECT MIN(TIME_TO_SEC(b.start_time))/60 AS start_min, MAX(TIME_TO_SEC(b.end_time))/60 AS end_min
+                   FROM booking b
+                   JOIN status st ON st.id = b.status_id
+                   WHERE b.customer_car_id = ? AND b.booking_date = ?
+                     AND st.code IN ('PENDING', 'CONFIRMED')
+                   GROUP BY b.booking_no`,
+                  [customer_car_id, booking_date],
+                  (custErr, rows) => {
+                    if (custErr) return done(custErr, null);
+                    const ranges = (rows || []).map((r) => ({
+                      start: Math.floor(r.start_min) || 0,
+                      end: Math.floor(r.end_min) || 0,
+                    }));
+                    done(null, ranges);
+                  }
+                );
+              };
 
-              const bookedSlots = (existingBookings || []).map((b) => ({
-                start: timeToMin(b.start_time),
-                end: timeToMin(b.end_time),
-              }));
+              fetchCustomerBookings((custErr, customerBookingRanges) => {
+                if (custErr) return res.json({ status: "ERROR", msg: custErr.message });
+                const capacityTimeline = {};
 
-              const slots = [];
-              for (let t = chStart; t + totalDuration <= chEnd; t += 30) {
-                const slotEnd = t + totalDuration;
-                
-                const overlapCount = bookedSlots.filter((b) =>
-                  overlaps(t, slotEnd, b.start, b.end)
-                ).length;
+              for (const channel of channels) {
+                capacityTimeline[channel.channel_id] = new Array(1440).fill(0);
+              }
 
-                if (overlapCount < maxCapacity) {
-                  const startTime = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
-                  const endTime = `${String(Math.floor(slotEnd / 60)).padStart(2, "0")}:${String(slotEnd % 60).padStart(2, "0")}`;
-                  
-                  slots.push({
-                    channel_id: bestChannel.channel_id,
-                    channel_name: bestChannel.channel_name,
-                    start_time: startTime,
-                    end_time: endTime,
-                    duration: totalDuration,
-                  });
+              const bookingCountByChannel = {};
+              const uniqueBookingsByChannel = {};
+              for (const ch of channels) {
+                bookingCountByChannel[ch.channel_id] = 0;
+                uniqueBookingsByChannel[ch.channel_id] = new Set();
+              }
+              for (const b of existingBookings) {
+                const startMin = timeToMin(b.start_time);
+                const endMin = timeToMin(b.end_time);
+                const staff = b.required_staff;
+
+                if (capacityTimeline[b.channel_id]) {
+                  for (let m = startMin; m < endMin; m++) {
+                    capacityTimeline[b.channel_id][m] += staff;
+                  }
+                }
+                if (uniqueBookingsByChannel[b.channel_id]) {
+                  uniqueBookingsByChannel[b.channel_id].add(b.booking_no);
+                }
+              }
+              for (const ch of channels) {
+                bookingCountByChannel[ch.channel_id] = uniqueBookingsByChannel[ch.channel_id]?.size || 0;
+              }
+              // Step 5: Generate slots for EACH channel using pre-calc timeline
+              const allSlots = [];
+
+              for (const channel of channels) {
+                const chStart = timeToMin(channel.start_time);
+                const chEnd = timeToMin(channel.end_time);
+                const maxCapacity = channel.max_capacity;
+                const timeline = capacityTimeline[channel.channel_id];
+
+                for (let t = chStart; t + totalDuration <= chEnd; t += totalDuration) {
+                  const slotEnd = t + totalDuration;
+
+                  // Find max capacity used in this slot range (O(duration) instead of O(bookings))
+                  let maxUsedInSlot = 0;
+                  for (let m = t; m < slotEnd; m++) {
+                    if (timeline[m] > maxUsedInSlot) {
+                      maxUsedInSlot = timeline[m];
+                    }
+                  }
+
+                  // Check if adding requiredStaff would exceed maxCapacity
+                  if (maxUsedInSlot + requiredStaff <= maxCapacity) {
+                    const slotStartMin = t;
+                    const slotEndMin = slotEnd;
+                    const overlapsCustomerBooking = customerBookingRanges.some(
+                      (r) => overlaps(slotStartMin, slotEndMin, r.start, r.end)
+                    );
+                    if (overlapsCustomerBooking) continue;
+
+                    const startTime = `${String(Math.floor(t / 60)).padStart(2, "0")}:${String(t % 60).padStart(2, "0")}`;
+                    const endTime = `${String(Math.floor(slotEnd / 60)).padStart(2, "0")}:${String(slotEnd % 60).padStart(2, "0")}`;
+
+                    allSlots.push({
+                      channel_id: channel.channel_id,
+                      channel_name: channel.channel_name,
+                      priority: channel.priority,
+                      booking_count: bookingCountByChannel[channel.channel_id] || 0,
+                      start_time: startTime,
+                      end_time: endTime,
+                      duration: totalDuration,
+                      required_staff: requiredStaff,
+                      services: serviceDurations,
+                    });
+                  }
                 }
               }
 
+              // Step 6: Sort by priority, then by least booking, then by start_time
+              allSlots.sort((a, b) => {
+                if (a.priority !== b.priority) {
+                  return a.priority - b.priority;
+                }
+                if (a.booking_count !== b.booking_count) {
+                  return a.booking_count - b.booking_count;
+                }
+                return a.start_time.localeCompare(b.start_time);
+              });
+
               return res.json({
                 status: "SUCCESS",
-                msg: slots,
-                channel: {
-                  id: bestChannel.channel_id,
-                  name: bestChannel.channel_name,
-                  priority: bestChannel.priority,
-                },
+                msg: allSlots,
               });
-            }
+              });
+            },
           );
-        }
+        },
       );
-    }
+    },
   );
 };
 
@@ -528,52 +349,121 @@ const PostAddCustomerBooking = (req, res) => {
 
             const maxCapacity = channelRows[0].max_capacity;
 
+            // Get required_staff for the services being booked
+            const placeholders = service_car_size_ids.map(() => "?").join(",");
             connection.execute(
-              `SELECT id, start_time, end_time 
-               FROM booking 
-               WHERE channel_id = ? 
-                 AND booking_date = ? 
-                 AND status_id IN (SELECT id FROM status WHERE code IN ('PENDING', 'CONFIRMED'))
-               FOR UPDATE`,
-              [channel_id, booking_date],
-              (bkErr, existingBookings) => {
-                if (bkErr) {
+              `SELECT id, price, duration_minute, required_staff FROM service_car_size WHERE id IN (${placeholders})`,
+              service_car_size_ids,
+              (svcErr, svcRows) => {
+                if (svcErr) {
                   return connection.rollback(() => {
                     connection.release();
-                    res.json({ status: "ERROR", msg: bkErr.message });
+                    res.json({ status: "ERROR", msg: svcErr.message });
                   });
                 }
 
-                const startMin = timeToMin(start_time);
-                const endMin = timeToMin(end_time);
+                const requiredStaff = svcRows.reduce(
+                  (sum, s) => sum + (s.required_staff || 1),
+                  0,
+                );
 
-                const overlapCount = existingBookings.filter((b) => {
-                  const bStart = timeToMin(b.start_time);
-                  const bEnd = timeToMin(b.end_time);
-                  return overlaps(startMin, endMin, bStart, bEnd);
-                }).length;
-
-                if (overlapCount >= maxCapacity) {
-                  return connection.rollback(() => {
-                    connection.release();
-                    res.json({ status: "ERROR", msg: "ช่วงเวลานี้เต็มแล้ว กรุณาเลือกเวลาอื่น" });
-                  });
-                }
-
-                const placeholders = service_car_size_ids.map(() => "?").join(",");
+                // Check if customer_car already has overlapping booking on same date
                 connection.execute(
-                  `SELECT id, price, duration_minute FROM service_car_size WHERE id IN (${placeholders})`,
-                  service_car_size_ids,
-                  (svcErr, svcRows) => {
-                    if (svcErr) {
+                  `SELECT MIN(TIME_TO_SEC(b.start_time))/60 AS start_min, MAX(TIME_TO_SEC(b.end_time))/60 AS end_min
+                   FROM booking b
+                   JOIN status st ON st.id = b.status_id
+                   WHERE b.customer_car_id = ? AND b.booking_date = ?
+                     AND st.code IN ('PENDING', 'CONFIRMED')
+                   GROUP BY b.booking_no`,
+                  [customer_car_id, booking_date],
+                  (custErr, custRows) => {
+                    if (custErr) {
                       return connection.rollback(() => {
                         connection.release();
-                        res.json({ status: "ERROR", msg: svcErr.message });
+                        res.json({ status: "ERROR", msg: custErr.message });
+                      });
+                    }
+                    const startMin = timeToMin(start_time);
+                    const endMin = timeToMin(end_time);
+                    const customerRanges = (custRows || []).map((r) => ({
+                      start: Math.floor(r.start_min) || 0,
+                      end: Math.floor(r.end_min) || 0,
+                    }));
+                    const hasOverlap = customerRanges.some((r) =>
+                      overlaps(startMin, endMin, r.start, r.end)
+                    );
+                    if (hasOverlap) {
+                      return connection.rollback(() => {
+                        connection.release();
+                        res.json({
+                          status: "ERROR",
+                          msg: "รถคันนี้มีการจองในช่วงเวลานี้อยู่แล้ว",
+                        });
                       });
                     }
 
-                    const totalPrice = svcRows.reduce((sum, s) => sum + Number(s.price), 0);
-                    const totalDuration = svcRows.reduce((sum, s) => sum + s.duration_minute, 0);
+                    // Get existing bookings with their required_staff
+                    connection.execute(
+                      `SELECT b.id, b.start_time, b.end_time, COALESCE(scs.required_staff, 1) AS required_staff
+                   FROM booking b
+                   LEFT JOIN service_car_size scs ON scs.id = b.service_car_size_id
+                   WHERE b.channel_id = ? 
+                     AND b.booking_date = ? 
+                     AND b.status_id IN (SELECT id FROM status WHERE code IN ('PENDING', 'CONFIRMED'))
+                   FOR UPDATE`,
+                      [channel_id, booking_date],
+                      (bkErr, existingBookings) => {
+                    if (bkErr) {
+                      return connection.rollback(() => {
+                        connection.release();
+                        res.json({ status: "ERROR", msg: bkErr.message });
+                      });
+                    }
+
+                    const startMin = timeToMin(start_time);
+                    const endMin = timeToMin(end_time);
+
+                    // Build capacity timeline for the slot range
+                    const timeline = new Array(endMin - startMin).fill(0);
+
+                    for (const b of existingBookings) {
+                      const bStart = timeToMin(b.start_time);
+                      const bEnd = timeToMin(b.end_time);
+                      const staff = b.required_staff || 1;
+
+                      // Check overlap and add to timeline
+                      if (overlaps(startMin, endMin, bStart, bEnd)) {
+                        const overlapStart =
+                          Math.max(startMin, bStart) - startMin;
+                        const overlapEnd = Math.min(endMin, bEnd) - startMin;
+                        for (let m = overlapStart; m < overlapEnd; m++) {
+                          timeline[m] += staff;
+                        }
+                      }
+                    }
+
+                    // Find max used capacity in the slot
+                    const maxUsedInSlot = Math.max(...timeline, 0);
+
+                    if (maxUsedInSlot + requiredStaff > maxCapacity) {
+                      return connection.rollback(() => {
+                        connection.release();
+                        res.json({
+                          status: "ERROR",
+                          msg: "ช่วงเวลานี้เต็มแล้ว กรุณาเลือกเวลาอื่น",
+                        });
+                      });
+                    }
+
+                    // Services already fetched above (svcRows), continue with booking
+                    const totalPrice = svcRows.reduce(
+                      (sum, s) => sum + Number(s.price),
+                      0,
+                    );
+                    const totalDuration = svcRows.reduce(
+                      (sum, s) => sum + s.duration_minute,
+                      0,
+                    );
 
                     connection.execute(
                       `SELECT id FROM status WHERE code = 'PENDING' LIMIT 1`,
@@ -582,7 +472,10 @@ const PostAddCustomerBooking = (req, res) => {
                         if (stErr || stRows.length === 0) {
                           return connection.rollback(() => {
                             connection.release();
-                            res.json({ status: "ERROR", msg: stErr?.message || "PENDING status not found" });
+                            res.json({
+                              status: "ERROR",
+                              msg: stErr?.message || "PENDING status not found",
+                            });
                           });
                         }
 
@@ -595,7 +488,10 @@ const PostAddCustomerBooking = (req, res) => {
                             connection.commit((commitErr) => {
                               connection.release();
                               if (commitErr) {
-                                return res.json({ status: "ERROR", msg: commitErr.message });
+                                return res.json({
+                                  status: "ERROR",
+                                  msg: commitErr.message,
+                                });
                               }
                               return res.json({
                                 status: "SUCCESS",
@@ -635,22 +531,30 @@ const PostAddCustomerBooking = (req, res) => {
                               if (insErr) {
                                 return connection.rollback(() => {
                                   connection.release();
-                                  res.json({ status: "ERROR", msg: insErr.message });
+                                  res.json({
+                                    status: "ERROR",
+                                    msg: insErr.message,
+                                  });
                                 });
                               }
-                              insertBookings(index + 1, [...bookingIds, insResult.insertId]);
-                            }
+                              insertBookings(index + 1, [
+                                ...bookingIds,
+                                insResult.insertId,
+                              ]);
+                            },
                           );
                         };
 
                         insertBookings(0, []);
-                      }
+                      },
                     );
-                  }
+                  },
                 );
-              }
+                  },
+                );
+              },
             );
-          }
+          },
         );
       });
     });
