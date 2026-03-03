@@ -29,7 +29,7 @@ const CustomerProfile = () => {
       email: data.get("email") || null,
     };
     UpdateCustomerProfile(jsonData).then((data) => {
-      const { status, msg } = data;
+      const { status } = data;
       if (status === "SUCCESS") {
         setEditMode(false);
         fetchProfile();

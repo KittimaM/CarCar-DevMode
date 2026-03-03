@@ -6,7 +6,7 @@ import CustomerProfile from "./CustomerProfile";
 import CustomerBooking from "./CustomerBooking";
 
 const CustomerIndex = () => {
-  const [profile, setProfile] = useState();
+  const [, setProfile] = useState();
   const [active, setActive] = useState("index");
   const navigate = useNavigate();
 

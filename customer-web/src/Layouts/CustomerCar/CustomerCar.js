@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   DeleteCustomerCar,
   GetCustomerCar,
-  PostAddCustomerCar,
 } from "../../Modules/Api";
 import CustomerAddCar from "./CustomerAddCar";
 

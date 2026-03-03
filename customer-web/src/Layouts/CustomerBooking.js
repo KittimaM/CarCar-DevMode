@@ -3,17 +3,12 @@ import DatePicker from "react-datepicker";
 import {
   GetCustomerCar,
   GetBookingBranches,
-  GetBookingChannels,
-  GetChannelOpenDays,
   GetBookingServiceRates,
   PostBookingAvailableSlots,
   PostAddCustomerBooking,
-  GetAllCustomerBooking,
-  DeleteCustomerBooking,
   PostAddCustomerCar,
   GetAllProvince,
   GetAllCarSize,
-  GetAvailableCarSize,
 } from "../Modules/Api";
 
 const STEP_LABELS = [
@@ -277,7 +272,7 @@ const CustomerBooking = () => {
       <div className="card bg-base-100 shadow-sm sm:shadow-md border border-base-200/60 rounded-xl sm:rounded-2xl overflow-hidden w-full">
         <div className="card-body p-4 sm:p-5 md:p-6">
           <h2 className="card-title text-base sm:text-lg">
-            {isNewCar && step == 1 ? "เพิ่มรถใหม่" : STEP_LABELS[step]}
+            {isNewCar && step === 1 ? "เพิ่มรถใหม่" : STEP_LABELS[step]}
           </h2>
           <div className="text-sm sm:text-base text-base-content/80 leading-relaxed">
             {!loaded && (
@@ -869,7 +864,7 @@ const CustomerBooking = () => {
             )}
           </div>
           <div className="card-actions justify-end mt-2 sm:mt-4">
-            {!(isNewCar && step == 1) && step < 5 && step !== 6 && (
+            {!(isNewCar && step === 1) && step < 5 && step !== 6 && (
               <button
                 className="btn btn-primary btn-sm sm:btn-md min-h-[44px] sm:min-h-[48px] w-full sm:w-auto"
                 onClick={() => handleNext("+")}
@@ -914,7 +909,7 @@ const CustomerBooking = () => {
               </button>
             )}
 
-            {!(isNewCar && step == 1) && step > 0 && step !== 6 && (
+            {!(isNewCar && step === 1) && step > 0 && step !== 6 && (
               <button
                 className="btn btn-sm sm:btn-md min-h-[44px] sm:min-h-[48px] w-full sm:w-auto"
                 onClick={() => handleNext("-")}
