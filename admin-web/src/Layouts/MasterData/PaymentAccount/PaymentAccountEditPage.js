@@ -6,14 +6,8 @@ import Notification, {
 
 const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
 
-  const PaymentAccountEditPage = ({ editItem, onBack, onSuccess }) => {
+const PaymentAccountEditPage = ({ editItem, onBack, onSuccess }) => {
   const [paymentType, setPaymentType] = useState([]);
-  const [notificationKey, setNotificationKey] = useState(0);
-  const [notification, setNotification] = useState({
-    show: false,
-    message: "",
-    status: "",
-  });
   const [data, setData] = useState({
     id: "",
     payment_type_id: "",
@@ -23,6 +17,14 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
     qr_code: "",
   });
   const [qrCodeFile, setQrCodeFile] = useState(null);
+  const [errors, setErrors] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [notificationKey, setNotificationKey] = useState(0);
+  const [notification, setNotification] = useState({
+    show: false,
+    message: "",
+    status: "",
+  });
 
   useEffect(() => {
     if (editItem) {
@@ -37,18 +39,15 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
     }
   }, [editItem]);
 
-  const fetchPaymentType = () => {
+  useEffect(() => {
     GetAllPaymentType().then(({ status, msg }) => {
       if (status === "SUCCESS") {
         setPaymentType(msg);
       } else if (status === "NO DATA") {
         setPaymentType([]);
+        setErrors("No payment types available");
       }
     });
-  };
-
-  useEffect(() => {
-    fetchPaymentType();
   }, []);
 
   const handleEdit = (e) => {
@@ -65,6 +64,7 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
         return;
       }
     }
+    setIsSubmitting(true);
     const formData = new FormData();
     formData.append("id", data.id);
     formData.append("payment_type_id", data.payment_type_id);
@@ -77,8 +77,10 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
       formData.append("existing_qr_code", data.qr_code);
     }
     UpdatePaymentAccount(formData).then(({ status, msg, qr_code }) => {
+      setIsSubmitting(false);
       if (status === "SUCCESS") {
         setQrCodeFile(null);
+        setErrors("");
         if (qr_code !== undefined) {
           setData((prev) => ({ ...prev, qr_code }));
         }
@@ -86,6 +88,9 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
       } else {
         setNotification({ show: true, status, message: msg });
         setNotificationKey((k) => k + 1);
+        if (status === "ERROR" || status === "WARNING") {
+          setErrors(msg);
+        }
       }
     });
   };
@@ -96,7 +101,7 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
       : null;
 
   return (
-    <div className="space-y-4">
+    <div className="max-w-3xl mx-auto">
       {notification.show && (
         <Notification
           key={notificationKey}
@@ -105,136 +110,167 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
         />
       )}
 
-      <form onSubmit={handleEdit}>
-        <div className="border p-4 bg-base-100 space-y-4 items-center">
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Payment Type</span>
-            <select
-              value={data.payment_type_id}
-              className={`select w-full select-bordered max-w-md ${
-                !data.payment_type_id ? `select-error` : ``
-              }`}
-              onChange={(e) =>
-                setData({ ...data, payment_type_id: e.target.value })
-              }
-              required
-            >
-              <option disabled value="">
-                Pick A Payment Type
-              </option>
-              {paymentType &&
-                paymentType.map((pt) => (
-                  <option key={pt.id} value={pt.id}>
-                    {pt.name}
-                  </option>
-                ))}
-            </select>
+      <form onSubmit={handleEdit} className="space-y-6">
+        {/* Account Info Card */}
+        <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
+          <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
+            <h2 className="font-semibold text-base-content flex items-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-accent" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z" />
+                <path fillRule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clipRule="evenodd" />
+              </svg>
+              Account Information
+            </h2>
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Provider</span>
-            <input
-              type="text"
-              value={data.provider}
-              className={`input input-bordered w-full max-w-md ${
-                !data.provider ? `input-error` : ``
-              }`}
-              onChange={(e) => setData({ ...data, provider: e.target.value })}
-              required
-            />
+          <div className="p-5 space-y-4">
+            {errors && <p className="text-error text-sm">{errors}</p>}
+
+            {paymentType.length > 0 && (
+              <>
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Payment Type <span className="text-error">*</span>
+                  </label>
+                  <select
+                    value={data.payment_type_id}
+                    className="select select-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, payment_type_id: e.target.value })}
+                    required
+                  >
+                    <option disabled value="">Pick a payment type</option>
+                    {paymentType.map((pt) => (
+                      <option key={pt.id} value={pt.id}>{pt.name}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Provider <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter provider name"
+                    value={data.provider}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, provider: e.target.value })}
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Account No. <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    placeholder="Enter account number"
+                    value={data.account_no}
+                    className="input input-bordered w-full max-w-xs tabular-nums"
+                    onChange={(e) => {
+                      const value = e.target.value.replace(/\D/g, "");
+                      setData({ ...data, account_no: value });
+                    }}
+                    required
+                  />
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Account Name <span className="text-error">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Enter account name"
+                    value={data.account_name}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, account_name: e.target.value })}
+                    required
+                  />
+                </div>
+              </>
+            )}
           </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Account No.</span>
-              <span className="text-xs">(numbers only)</span>
-            </span>
-            <input
-              type="text"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              value={data.account_no}
-              className={`input input-bordered w-full max-w-md ${
-                !data.account_no ? `input-error` : ``
-              }`}
-              onChange={(e) => {
-                const value = e.target.value.replace(/\D/g, "");
-                setData({ ...data, account_no: value });
-              }}
-              required
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32">Account Name</span>
-            <input
-              type="text"
-              value={data.account_name}
-              className={`input input-bordered w-full max-w-md ${
-                !data.account_name ? `input-error` : ``
-              }`}
-              onChange={(e) =>
-                setData({ ...data, account_name: e.target.value })
-              }
-              required
-            />
-          </div>
-          <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-            <span className="w-32 flex flex-col leading-tight">
-              <span>Qr Code</span>
-              <span className="text-xs text-success">(optional)</span>
-            </span>
-            <div className="flex flex-col gap-2 w-full max-w-md">
+        </div>
+
+        {/* QR Code Card */}
+        {paymentType.length > 0 && (
+          <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
+            <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
+              <h2 className="font-semibold text-base-content flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1V4zm2 2V5h1v1H5zM3 13a1 1 0 011-1h3a1 1 0 011 1v3a1 1 0 01-1 1H4a1 1 0 01-1-1v-3zm2 2v-1h1v1H5zM13 3a1 1 0 00-1 1v3a1 1 0 001 1h3a1 1 0 001-1V4a1 1 0 00-1-1h-3zm1 2v1h1V5h-1z" clipRule="evenodd" />
+                  <path d="M11 4a1 1 0 10-2 0v1a1 1 0 002 0V4zM10 7a1 1 0 011 1v1h2a1 1 0 110 2h-3a1 1 0 01-1-1V8a1 1 0 011-1zM16 9a1 1 0 100 2 1 1 0 000-2zM9 13a1 1 0 011-1h1a1 1 0 110 2v2a1 1 0 11-2 0v-3zM16 13a1 1 0 10-2 0v3a1 1 0 102 0v-3z" />
+                </svg>
+                QR Code
+                <span className="text-xs text-success font-normal">(optional)</span>
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
               {currentQrUrl && !qrCodeFile && (
-                <div className="flex items-center gap-2">
-                  <span className="text-sm text-base-content/70">Current:</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-base-content/70">Current QR:</span>
                   <img
                     key={data.qr_code}
                     src={currentQrUrl}
                     alt="Current QR"
-                    className="h-16 w-16 object-contain border rounded"
+                    className="h-20 w-20 object-contain border border-base-300 rounded-lg bg-white p-1"
                     onError={(e) => {
                       e.target.style.display = "none";
                     }}
                   />
                 </div>
               )}
-              <input
-                type="file"
-                accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
-                className="input input-bordered w-full max-w-md"
-                onChange={(e) => {
-                  const file = e.target.files?.[0] || null;
-                  if (!file) {
-                    setQrCodeFile(null);
-                    return;
-                  }
-                  const check = isValidImageFile(file);
-                  if (!check.valid) {
-                    setNotification({
-                      show: true,
-                      status: "ERROR",
-                      message: check.message,
-                    });
-                    setNotificationKey((k) => k + 1);
-                    setQrCodeFile(null);
-                    e.target.value = "";
-                    return;
-                  }
-                  setQrCodeFile(file);
-                }}
-              />
-              {qrCodeFile && (
-                <span className="text-sm text-base-content/70">
-                  New file: {qrCodeFile.name}
-                </span>
-              )}
+
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                  Upload New
+                </label>
+                <div className="flex flex-col gap-2 w-full max-w-xs">
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                    className="file-input file-input-bordered w-full"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      if (!file) {
+                        setQrCodeFile(null);
+                        return;
+                      }
+                      const check = isValidImageFile(file);
+                      if (!check.valid) {
+                        setNotification({
+                          show: true,
+                          status: "ERROR",
+                          message: check.message,
+                        });
+                        setNotificationKey((k) => k + 1);
+                        setQrCodeFile(null);
+                        e.target.value = "";
+                        return;
+                      }
+                      setQrCodeFile(file);
+                    }}
+                  />
+                  {qrCodeFile && (
+                    <span className="text-sm text-success">
+                      New file: {qrCodeFile.name}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex gap-2 mt-4">
-            <button type="submit" className="btn btn-success text-white">
-              UPDATE
-            </button>
+        )}
+
+        {/* Actions */}
+        {paymentType.length > 0 && (
+          <div className="flex justify-end gap-3 pt-4 border-t border-base-200">
             <button
               type="button"
-              className="btn"
+              className="btn btn-ghost"
               onClick={() => {
                 setData({
                   id: editItem.id,
@@ -245,13 +281,21 @@ const baseUrl = process.env.REACT_APP_NODE_API_URL || "";
                   qr_code: editItem.qr_code,
                 });
                 setQrCodeFile(null);
+                setErrors("");
                 onBack?.();
               }}
             >
-              CANCEL
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className={`btn btn-accent ${isSubmitting ? "loading" : ""}`}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save Changes"}
             </button>
           </div>
-        </div>
+        )}
       </form>
     </div>
   );

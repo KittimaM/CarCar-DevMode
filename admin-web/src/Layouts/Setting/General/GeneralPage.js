@@ -55,7 +55,7 @@ const GeneralPage = ({ data }) => {
   };
 
   return (
-    <div className="flex flex-col bg-white mx-auto p-5 rounded-lg shadow-xl h-full overflow-y-auto">
+    <div className="flex flex-col h-full bg-base-100 ">
       {notification.show && (
         <Notification
           key={notificationKey}
@@ -64,128 +64,151 @@ const GeneralPage = ({ data }) => {
         />
       )}
 
-      <div className="text-4xl font-bold py-8 pl-6 border-b-2 border-gray-200">
-        <div className="breadcrumbs">
-          <ul>
-            <li>{labelValue}</li>
-            {isEditSettings ? (
-              <li className="text-xl">GENERAL SETTINGS</li>
-            ) : (
-              <li className="text-xl">EDIT SETTINGS</li>
-            )}
-          </ul>
-        </div>
-      </div>
+      <div className="px-8 py-8 shadow-md bg-gradient-to-r from-primary/10 via-primary/5 to-transparent border-b border-base-200">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">{labelValue}</p>
+            <h1 className="text-3xl font-bold text-base-content">
+              {isEditSettings ? "General Settings" : "Edit Settings"}
+            </h1>
+          </div>
 
-      <div className="flex gap-4 my-6">
-        {actions.includes("edit") && (
-          <button
-            className={`btn btn-wide font-bold ${
-              !isEditSettings ? "btn-primary" : "btn-outline"
-            }`}
-            onClick={handleEdit}
-            disabled={!isEditSettings}
-          >
-            Edit
-          </button>
-        )}
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Staff failed login limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="staff_failed_login_limit"
-              type="number"
-              defaultValue={settings && settings.staff_failed_login_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">times</span>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Staff user login mins limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="staff_user_login_mins_limit"
-              type="number"
-              defaultValue={settings && settings.staff_user_login_mins_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">mins</span>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Staff inactive limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="staff_inactive_limit"
-              type="number"
-              defaultValue={settings && settings.staff_inactive_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">days</span>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Customer failed login limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="customer_failed_login_limit"
-              type="number"
-              defaultValue={settings && settings.customer_failed_login_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">times</span>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Customer user login mins limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="customer_user_login_mins_limit"
-              type="number"
-              defaultValue={settings && settings.customer_user_login_mins_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">mins</span>
-          </div>
-        </div>
-        <div className="flex flex-col md:flex-row gap-2 md:items-center font-semibold">
-          <span className="w-64">Customer inactive limit</span>
-          <div className="flex items-center gap-2">
-            <input
-              name="customer_inactive_limit"
-              type="number"
-              defaultValue={settings && settings.customer_inactive_limit}
-              disabled={isEditSettings}
-              className="input input-bordered w-full max-w-md"
-            />
-            <span className="text-sm text-base-content/70">days</span>
-          </div>
-        </div>
-
-        {!isEditSettings && (
-          <div className="flex gap-4 mt-6">
-            <button type="submit" className="btn btn-primary font-bold">
-              Submit
-            </button>
+          {actions.includes("edit") && isEditSettings && (
             <button
-              type="button"
-              className="btn btn-outline font-bold"
-              onClick={() => setIsEditSettings(true)}
+              className="btn btn-primary  gap-2 shadow-md"
+              onClick={handleEdit}
             >
-              Cancel
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+              </svg>
+              Edit Settings
             </button>
+          )}
+        </div>
+      </div>
+
+      <div className="flex-1 overflow-y-auto p-8 ">
+        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto space-y-6">
+          <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
+            <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
+              <h2 className="font-semibold text-base-content flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-primary" viewBox="0 0 20 20" fill="currentColor">
+                  <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                </svg>
+                Staff Settings
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Failed login limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="staff_failed_login_limit"
+                    type="number"
+                    defaultValue={settings?.staff_failed_login_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">times</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Login session limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="staff_user_login_mins_limit"
+                    type="number"
+                    defaultValue={settings?.staff_user_login_mins_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">minutes</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Inactive account limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="staff_inactive_limit"
+                    type="number"
+                    defaultValue={settings?.staff_inactive_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">days</span>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
-      </form>
+
+          <div className="bg-base-100 border border-base-300 rounded-xl overflow-hidden">
+            <div className="px-5 py-4 bg-base-200/50 border-b border-base-200">
+              <h2 className="font-semibold text-base-content flex items-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-secondary" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z" />
+                </svg>
+                Customer Settings
+              </h2>
+            </div>
+            <div className="p-5 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Failed login limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="customer_failed_login_limit"
+                    type="number"
+                    defaultValue={settings?.customer_failed_login_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">times</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Login session limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="customer_user_login_mins_limit"
+                    type="number"
+                    defaultValue={settings?.customer_user_login_mins_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">minutes</span>
+                </div>
+              </div>
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="text-sm font-medium text-base-content/80 sm:w-56">Inactive account limit</label>
+                <div className="flex items-center gap-2 flex-1">
+                  <input
+                    name="customer_inactive_limit"
+                    type="number"
+                    defaultValue={settings?.customer_inactive_limit}
+                    disabled={isEditSettings}
+                    className="input input-bordered input-sm w-24"
+                  />
+                  <span className="text-sm text-base-content/60">days</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {!isEditSettings && (
+            <div className="flex justify-end gap-3 pt-4 border-t border-base-200">
+              <button
+                type="button"
+                className="btn btn-ghost"
+                onClick={() => setIsEditSettings(true)}
+              >
+                Cancel
+              </button>
+              <button type="submit" className="btn btn-primary">
+                Save Changes
+              </button>
+            </div>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

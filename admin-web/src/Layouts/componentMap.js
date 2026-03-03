@@ -2,7 +2,7 @@ import { lazy } from "react";
 
 const componentMap = {
   home: lazy(() => import("./AdminHome")),
-  //   schedule: lazy(() => import("./AdminSchedule")),
+  schedule: lazy(() => import("./AdminSchedule")),
   // booking: lazy(() => import("./Booking/Booking")),
   //   payment: lazy(() => import("./AdminPayment")),
   staff: lazy(() => import("./User/Staff/StaffPage")),
