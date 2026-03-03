@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   GetAllBooking,
   GetAllCarSize,
@@ -35,11 +35,7 @@ const AdminHome = () => {
     fetchFormData();
   }, []);
 
-  useEffect(() => {
-    filterBookingsByBranch();
-  }, [selectedBranch, allBookings]);
-
-  const filterBookingsByBranch = () => {
+  const filterBookingsByBranch = useCallback(() => {
     if (!selectedBranch) {
       setBookings(allBookings);
     } else {
@@ -48,7 +44,11 @@ const AdminHome = () => {
       );
       setBookings(filtered);
     }
-  };
+  }, [selectedBranch, allBookings]);
+
+  useEffect(() => {
+    filterBookingsByBranch();
+  }, [filterBookingsByBranch]);
 
   const fetchFormData = () => {
     GetAllCarSize().then((data) => {
