@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PostAddCustomer, PostCustomerLogin } from "../Modules/Api";
+import { validatePassword } from "../Modules/validation";
 import LoginImg from "../assets/carbukilogo.jpg";
 
 const CustomerRegister = () => {
@@ -9,11 +10,18 @@ const CustomerRegister = () => {
   const handleRegister = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
+    const password = data.get("password");
+    const { valid, message } = validatePassword(password);
+    if (!valid) {
+      setErrors(message);
+      return;
+    }
+    setErrors(null);
     const jsonData = {
       name: data.get("name"),
       phone: data.get("phone"),
       email: data.get("email") || null,
-      password: data.get("password"),
+      password,
     };
 
     PostAddCustomer(jsonData).then((data) => {
@@ -71,7 +79,7 @@ const CustomerRegister = () => {
                 type="tel"
                 name="phone"
                 required
-                placeholder="Type here"
+                placeholder=""
                 className="input input-bordered w-full"
               />
             </label>
@@ -84,7 +92,7 @@ const CustomerRegister = () => {
                 type="text"
                 name="name"
                 required
-                placeholder="Type here"
+                placeholder=""
                 className="input input-bordered w-full"
               />
             </label>
@@ -109,9 +117,11 @@ const CustomerRegister = () => {
                 type="password"
                 name="password"
                 required
-                placeholder="Type here"
+                minLength={8}
+                placeholder=""
                 className="input input-bordered w-full"
               />
+              <p className="text-xs text-gray-500 mt-1">ตัวอักษรพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข อักขระพิเศษ อย่างน้อย 8 ตัว</p>
             </label>
             <label className="form-control w-full flex flex-col p-2 ">
               {errors && <p className="mt-1 text-red-500 text-sm">{errors}</p>}
