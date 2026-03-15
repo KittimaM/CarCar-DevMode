@@ -4,12 +4,14 @@ import {
   UpdateStaffUser,
   GetAllBranch,
 } from "../../Modules/Api";
+import { validatePassword } from "../../Modules/validation";
 import Notification from "../../Notification/Notification";
 
 const StaffEditPage = ({ editItem, onBack, onSuccess }) => {
   const [branch, setBranch] = useState([]);
   const [roleList, setRoleList] = useState([]);
   const [errors, setErrors] = useState([]);
+  const [passwordError, setPasswordError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [notificationKey, setNotificationKey] = useState(0);
   const [notification, setNotification] = useState({
@@ -38,6 +40,14 @@ const StaffEditPage = ({ editItem, onBack, onSuccess }) => {
 
   const handleEdit = (e) => {
     e.preventDefault();
+    setPasswordError("");
+    if (data.isChangePassword && data.password) {
+      const { valid, message } = validatePassword(data.password);
+      if (!valid) {
+        setPasswordError(message);
+        return;
+      }
+    }
     setIsSubmitting(true);
     UpdateStaffUser(data).then(({ status, msg }) => {
       setIsSubmitting(false);
@@ -143,16 +153,26 @@ const StaffEditPage = ({ editItem, onBack, onSuccess }) => {
                 <label className="text-sm font-medium text-base-content/80 sm:w-32">
                   New Password <span className="text-error">*</span>
                 </label>
-                <input
-                  type="password"
-                  placeholder="Enter new password"
-                  value={data.password}
-                  className="input input-bordered w-full max-w-xs"
-                  onChange={(e) => {
-                    setData({ ...data, password: e.target.value });
-                  }}
-                  required={data.isChangePassword}
-                />
+                <div className="flex-1">
+                  <input
+                    type="password"
+                    placeholder="Enter new password"
+                    value={data.password}
+                    className="input input-bordered w-full max-w-xs"
+                    onChange={(e) => {
+                      setData({ ...data, password: e.target.value });
+                      setPasswordError("");
+                    }}
+                    required={data.isChangePassword}
+                    minLength={8}
+                  />
+                  {passwordError && (
+                    <p className="text-error text-sm mt-1">{passwordError}</p>
+                  )}
+                  <p className="text-xs text-base-content/60 mt-1">
+                    ตัวอักษรพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข อักขระพิเศษ อย่างน้อย 8 ตัว
+                  </p>
+                </div>
               </div>
             )}
           </div>

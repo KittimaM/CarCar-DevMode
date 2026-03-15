@@ -88,7 +88,7 @@ const CustomerLogin = () => {
                 type="tel"
                 name="phone"
                 required
-                placeholder="Type here"
+                placeholder=""
                 className="input input-bordered w-full"
               />
             </label>
@@ -102,7 +102,7 @@ const CustomerLogin = () => {
                 type="password"
                 name="password"
                 required
-                placeholder="Type here"
+                placeholder=""
                 className="input input-bordered w-full"
               />
             </label>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { PostResetPassword } from "../Modules/Api";
+import { validatePassword } from "../Modules/validation";
 import LoginImg from "../assets/carbukilogo.jpg";
 
 const CustomerResetPassword = () => {
@@ -16,8 +17,9 @@ const CustomerResetPassword = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setMessage(null);
-    if (password.length < 6) {
-      setMessage("Password must be at least 6 characters.");
+    const { valid, message: validationMsg } = validatePassword(password);
+    if (!valid) {
+      setMessage(validationMsg);
       return;
     }
     if (password !== confirm) {
@@ -96,10 +98,11 @@ const CustomerResetPassword = () => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  minLength={6}
-                  placeholder="At least 6 characters"
+                  minLength={8}
+                  placeholder=""
                   className="input input-bordered w-full"
                 />
+                <p className="text-xs text-gray-500 mt-1">ตัวอักษรพิมพ์ใหญ่ พิมพ์เล็ก ตัวเลข อักขระพิเศษ อย่างน้อย 8 ตัว</p>
               </label>
               <label className="form-control w-full flex flex-col">
                 <div className="label">
@@ -110,10 +113,11 @@ const CustomerResetPassword = () => {
                   value={confirm}
                   onChange={(e) => setConfirm(e.target.value)}
                   required
-                  minLength={6}
-                  placeholder="Same as above"
+                  minLength={8}
+                  placeholder=""
                   className="input input-bordered w-full"
                 />
+                <p className="text-xs text-gray-500 mt-1">ใส่รหัสผ่านให้ตรงกับด้านบน</p>
               </label>
               {message && (
                 <p className="text-sm text-red-600">{message}</p>
