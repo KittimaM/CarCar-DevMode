@@ -28,6 +28,7 @@ const GetBranches = (req, res) => {
        SELECT 1 FROM channel
        JOIN channel_service ON channel_service.channel_id = channel.id AND channel_service.is_available = 1
        WHERE channel.branch_id = branch.id
+         AND channel.booking_mode IN ('BOOKING_ONLY', 'BOTH')
      )
      ORDER BY branch.name`,
     null,
@@ -70,6 +71,7 @@ const PostGetServiceRatesByCarSize = (req, res) => {
         ON channel_schedule.channel_id = channel.id
     WHERE
         channel_service.is_available = 1
+        AND channel.booking_mode IN ('BOOKING_ONLY', 'BOTH')
         AND channel.branch_id = ?
         AND customer_car.id = ?
     ORDER BY 
@@ -131,7 +133,8 @@ const PostGetAvailableSlots = (req, res) => {
          FROM channel c
          JOIN channel_schedule cs ON cs.channel_id = c.id AND cs.day_of_week = ?
          JOIN channel_service chs ON chs.channel_id = c.id AND chs.is_available = 1
-         WHERE c.branch_id = ? 
+         WHERE c.branch_id = ?
+           AND c.booking_mode IN ('BOOKING_ONLY', 'BOTH')
            AND chs.service_car_size_id IN (${placeholders})
          GROUP BY c.id, c.name, c.priority, c.max_capacity, cs.start_time, cs.end_time
          HAVING COUNT(DISTINCT chs.service_car_size_id) = ?`,
@@ -345,7 +348,7 @@ const PostAddCustomerBooking = (req, res) => {
         }
 
         connection.execute(
-          `SELECT id, max_capacity FROM channel WHERE id = ? FOR UPDATE`,
+          `SELECT id, max_capacity, booking_mode FROM channel WHERE id = ? FOR UPDATE`,
           [channel_id],
           (chErr, channelRows) => {
             if (chErr) {
@@ -358,6 +361,13 @@ const PostAddCustomerBooking = (req, res) => {
               return connection.rollback(() => {
                 connection.release();
                 res.json({ status: "ERROR", msg: "Channel not found" });
+              });
+            }
+            const bookingMode = channelRows[0].booking_mode;
+            if (bookingMode === "WALK_IN_ONLY") {
+              return connection.rollback(() => {
+                connection.release();
+                res.json({ status: "ERROR", msg: "ช่องนี้ไม่รองรับการจองล่วงหน้า" });
               });
             }
 
