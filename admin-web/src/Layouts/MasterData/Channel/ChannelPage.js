@@ -253,6 +253,7 @@ const ChannelPage = ({ data }) => {
                       <SortableHeader label="Branch" sortKey="branch_name" />
                       <SortableHeader label="Channel" sortKey="name" />
                       <SortableHeader label="Max Capacity" sortKey="max_capacity" />
+                      <SortableHeader label="Booking Type" sortKey="booking_mode" />
                       {(actions.includes("edit") || actions.includes("delete")) && (
                         <th className="font-semibold text-right">Actions</th>
                       )}
@@ -266,6 +267,14 @@ const ChannelPage = ({ data }) => {
                           <td>{c.branch_name}</td>
                           <td className="font-medium">{c.name}</td>
                           <td className="font-mono">{c.max_capacity}</td>
+                          <td>
+                            <span className="badge badge-sm">
+                              {c.booking_mode === "BOOKING_ONLY" && "จองล่วงหน้าเท่านั้น"}
+                              {c.booking_mode === "WALK_IN_ONLY" && "Walk-in เท่านั้น"}
+                              {c.booking_mode === "BOTH" && "จอง+Walk-in"}
+                              {!c.booking_mode && "จอง+Walk-in"}
+                            </span>
+                          </td>
                           {(actions.includes("edit") || actions.includes("delete")) && (
                             <td className="text-right">
                               <div className="flex justify-end gap-1">
@@ -302,7 +311,7 @@ const ChannelPage = ({ data }) => {
                     ) : (
                       <tr>
                         <td
-                          colSpan={actions.includes("edit") || actions.includes("delete") ? 5 : 4}
+                          colSpan={actions.includes("edit") || actions.includes("delete") ? 6 : 5}
                           className="text-center py-12 text-base-content/50"
                         >
                           {searchTerm ? "No channels match your search" : "No channels available"}

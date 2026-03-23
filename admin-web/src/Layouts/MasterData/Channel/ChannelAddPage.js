@@ -8,6 +8,7 @@ const ChannelAddPage = ({ onSuccess, onBack }) => {
     name: "",
     max_capacity: "",
     branch_id: "",
+    booking_mode: "BOTH",
   });
   const [errors, setErrors] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -124,6 +125,22 @@ const ChannelAddPage = ({ onSuccess, onBack }) => {
                     onChange={(e) => setData({ ...data, max_capacity: e.target.value })}
                     required
                   />
+                </div>
+
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <label className="text-sm font-medium text-base-content/80 sm:w-32">
+                    Booking Type <span className="text-error">*</span>
+                  </label>
+                  <select
+                    value={data.booking_mode}
+                    className="select select-bordered w-full max-w-xs"
+                    onChange={(e) => setData({ ...data, booking_mode: e.target.value })}
+                    required
+                  >
+                    <option value="BOOKING_ONLY">จองล่วงหน้าเท่านั้น</option>
+                    <option value="WALK_IN_ONLY">รับ Walk-in เท่านั้น</option>
+                    <option value="BOTH">ได้ทั้งจองล่วงหน้าและ Walk-in</option>
+                  </select>
                 </div>
               </>
             )}

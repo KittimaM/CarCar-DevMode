@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS `channel`  (
   `max_capacity` INT NOT NULL,
   `branch_id` INT NOT NULL,
   `priority` INT NOT NULL,
+  `booking_mode` ENUM('BOOKING_ONLY','WALK_IN_ONLY','BOTH') NOT NULL DEFAULT 'BOTH' COMMENT 'ประเภทการให้บริการของช่อง',
   UNIQUE KEY `unique_channel_name_branch_id` (`name`, `branch_id`),
   FOREIGN KEY (branch_id) REFERENCES branch(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -17,10 +17,10 @@ const GetAllChannel = (req, res, next) => {
 };
 
 const PostAddChannel = (req, res, next) => {
-  const { name, max_capacity, branch_id } = req.body;
+  const { name, max_capacity, branch_id, booking_mode } = req.body;
   Conn.execute(
-    "INSERT INTO channel (name, max_capacity, branch_id) VALUES (?, ?, ?)",
-    [name, max_capacity, branch_id],
+    "INSERT INTO channel (name, max_capacity, branch_id, booking_mode) VALUES (?, ?, ?, ?)",
+    [name, max_capacity, branch_id, booking_mode || "BOTH"],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
@@ -109,10 +109,10 @@ const DeleteChannel = (req, res, next) => {
 };
 
 const PutUpdateChannel = (req, res, next) => {
-  const { id, name, max_capacity, branch_id } = req.body;
+  const { id, name, max_capacity, branch_id, booking_mode } = req.body;
   Conn.execute(
-    "UPDATE channel SET name = ?, max_capacity = ?, branch_id = ? WHERE id = ?",
-    [name, max_capacity, branch_id, id],
+    "UPDATE channel SET name = ?, max_capacity = ?, branch_id = ?, booking_mode = ? WHERE id = ?",
+    [name, max_capacity, branch_id, booking_mode || "BOTH", id],
     function (error) {
       if (error) {
         if (error.code === "ER_DUP_ENTRY") {
