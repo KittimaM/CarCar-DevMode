@@ -31,7 +31,12 @@ const BranchEditPage = ({ editItem, onBack, onSuccess }) => {
         setNotificationKey((prev) => prev + 1);
         if (status === "ERROR" || status === "WARNING") {
           setErrors(msg);
-          setData({ id: editItem.id, name: editItem.name, address: editItem.address, phone: editItem.phone });
+          setData({
+            id: editItem.id,
+            name: editItem.name,
+            address: editItem.address,
+            phone: editItem.phone,
+          });
         }
       }
     });
@@ -118,7 +123,12 @@ const BranchEditPage = ({ editItem, onBack, onSuccess }) => {
             type="button"
             className="btn btn-ghost"
             onClick={() => {
-              setData({ id: editItem.id, name: editItem.name, address: editItem.address, phone: editItem.phone });
+              setData({
+                id: editItem.id,
+                name: editItem.name,
+                address: editItem.address,
+                phone: editItem.phone,
+              });
               setErrors("");
               onBack?.();
             }}

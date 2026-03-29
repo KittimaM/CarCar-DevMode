@@ -150,7 +150,6 @@ const CustomerBooking = () => {
             if (!acc[row.id].channels[row.channel_id]) {
               acc[row.id].channels[row.channel_id] = {
                 channel_id: row.channel_id,
-                priority: row.priority,
                 schedule: [],
               };
             }
@@ -167,7 +166,7 @@ const CustomerBooking = () => {
           const result = Object.values(grouped).map((service) => ({
             ...service,
             channels: Object.values(service.channels).sort(
-              (a, b) => a.priority - b.priority,
+              (a, b) => a.channel_id - b.channel_id,
             ),
           }));
           console.log(result);

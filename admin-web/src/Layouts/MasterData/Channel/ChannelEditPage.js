@@ -45,7 +45,10 @@ const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
         setNotificationKey((prev) => prev + 1);
         if (status === "WARNING") {
           setErrors(msg);
-          setData({ ...editItem });
+          setData({
+            ...editItem,
+            booking_mode: editItem.booking_mode || "BOTH",
+          });
         } else if (status === "ERROR") {
           setErrors(msg);
         }
@@ -152,7 +155,10 @@ const ChannelEditPage = ({ editItem, onBack, onSuccess }) => {
               type="button"
               className="btn btn-ghost"
               onClick={() => {
-                setData({ ...editItem });
+                setData({
+                  ...editItem,
+                  booking_mode: editItem.booking_mode || "BOTH",
+                });
                 setErrors("");
                 onBack?.();
               }}

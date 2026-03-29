@@ -26,7 +26,8 @@ const GetBranches = (req, res) => {
      FROM branch
      WHERE EXISTS (
        SELECT 1 FROM channel
-       JOIN channel_service ON channel_service.channel_id = channel.id AND channel_service.is_available = 1
+       JOIN channel_service ON channel_service.channel_id = channel.id
+         AND COALESCE(channel_service.is_available, 1) = 1
        WHERE channel.branch_id = branch.id
          AND channel.booking_mode IN ('BOOKING_ONLY', 'BOTH')
      )
@@ -53,7 +54,6 @@ const PostGetServiceRatesByCarSize = (req, res) => {
         service_car_size.duration_minute,
         service_car_size.price,
         channel.id AS channel_id,
-        channel.priority,
         channel.max_capacity,
         channel_schedule.day_of_week,
         channel_schedule.start_time,
@@ -76,7 +76,7 @@ const PostGetServiceRatesByCarSize = (req, res) => {
         AND customer_car.id = ?
     ORDER BY 
         service_car_size.id,
-        channel.priority ASC,
+        channel.id ASC,
         channel_schedule.day_of_week;
         `,
     [branch_id, customer_car_id],
@@ -126,7 +126,6 @@ const PostGetAvailableSlots = (req, res) => {
         `SELECT 
            c.id AS channel_id,
            c.name AS channel_name,
-           c.priority,
            c.max_capacity,
            TIME_FORMAT(cs.start_time, '%H:%i') AS start_time,
            TIME_FORMAT(cs.end_time, '%H:%i') AS end_time
@@ -136,7 +135,7 @@ const PostGetAvailableSlots = (req, res) => {
          WHERE c.branch_id = ?
            AND c.booking_mode IN ('BOOKING_ONLY', 'BOTH')
            AND chs.service_car_size_id IN (${placeholders})
-         GROUP BY c.id, c.name, c.priority, c.max_capacity, cs.start_time, cs.end_time
+         GROUP BY c.id, c.name, c.max_capacity, cs.start_time, cs.end_time
          HAVING COUNT(DISTINCT chs.service_car_size_id) = ?`,
         [
           dayOfWeek,
@@ -274,7 +273,6 @@ const PostGetAvailableSlots = (req, res) => {
                     allSlots.push({
                       channel_id: channel.channel_id,
                       channel_name: channel.channel_name,
-                      priority: channel.priority,
                       booking_count: bookingCountByChannel[channel.channel_id] || 0,
                       start_time: startTime,
                       end_time: endTime,
@@ -286,11 +284,8 @@ const PostGetAvailableSlots = (req, res) => {
                 }
               }
 
-              // Step 6: Sort by priority, then by least booking, then by start_time
+              // Step 6: Sort by least booking, then by start_time
               allSlots.sort((a, b) => {
-                if (a.priority !== b.priority) {
-                  return a.priority - b.priority;
-                }
                 if (a.booking_count !== b.booking_count) {
                   return a.booking_count - b.booking_count;
                 }

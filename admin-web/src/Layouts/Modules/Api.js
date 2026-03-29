@@ -215,6 +215,12 @@ export const PostAddAdminBooking = (jsonData) => {
   return postApi("admin/booking", jsonData, isUseToken);
 };
 
+/** บริการที่เลือกได้สำหรับ Walk-in ตามช่อง + สาขา + ขนาดรถ (ผ่าน channel_service) */
+export const PostWalkInServices = (jsonData) => {
+  const isUseToken = true;
+  return postApi("admin/booking/walk-in-services", jsonData, isUseToken);
+};
+
 export const PostAddPaymentType = (jsonData) => {
   return postApi(URLList.AdminPaymentType, jsonData);
 };
@@ -311,6 +317,10 @@ export const UpdateCustomerProfile = (jsonData) => {
 
 export const GetAllChannel = () => {
   return getApi(URLList.AdminChannel);
+};
+
+export const GetAllChannelSchedule = () => {
+  return getApi(`${URLList.AdminChannel}/schedule`);
 };
 
 export const PostAddChannel = (jsonData) => {
