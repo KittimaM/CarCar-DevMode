@@ -1,5 +1,6 @@
 var express = require("express");
 const {
+  PostWalkInServices,
   AdminBooking,
   AdminAddBooking,
   AdminUpdateStatusBooking,
@@ -7,6 +8,7 @@ const {
 var router = express.Router();
 
 router.get("/", AdminBooking);
+router.post("/walk-in-services", PostWalkInServices);
 router.post("/", AdminAddBooking);
 router.post("/update-status", AdminUpdateStatusBooking);
 

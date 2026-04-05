@@ -154,7 +154,12 @@ const ChannelAddPage = ({ onSuccess, onBack }) => {
               type="button"
               className="btn btn-ghost"
               onClick={() => {
-                setData({ name: "", max_capacity: "", branch_id: "" });
+                setData({
+                  name: "",
+                  max_capacity: "",
+                  branch_id: "",
+                  booking_mode: "BOTH",
+                });
                 setErrors("");
                 onBack?.();
               }}

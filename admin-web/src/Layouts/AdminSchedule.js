@@ -5,7 +5,6 @@ import {
   GetAllBranch,
   GetAllCarSize,
   GetAllService,
-  GetAllPaymentType,
   PostAddAdminBooking,
 } from "./Modules/Api";
 import { FaChevronLeft, FaChevronRight, FaFileExcel, FaPlus, FaSearch } from "react-icons/fa";
@@ -27,7 +26,6 @@ const AdminSchedule = ({ data }) => {
   const [submitting, setSubmitting] = useState(false);
   const [carSizes, setCarSizes] = useState([]);
   const [services, setServices] = useState([]);
-  const [paymentTypes, setPaymentTypes] = useState([]);
   const [formData, setFormData] = useState({
     customer_name: "",
     customer_phone: "",
@@ -35,12 +33,10 @@ const AdminSchedule = ({ data }) => {
     car_size_id: "",
     car_color: "",
     service: "",
-    payment_type_id: "",
     branch_id: "",
     booking_date: "",
     booking_time: "",
   });
-
   useEffect(() => {
     fetchBookings();
     fetchFormData();
@@ -49,6 +45,7 @@ const AdminSchedule = ({ data }) => {
   const fetchFormData = () => {
     GetAllBranch().then((data) => {
       if (data?.status === "SUCCESS") setBranches(data.msg);
+      else if (data?.status === "NO DATA") setBranches([]);
     }).catch((err) => console.error("Branch error:", err));
     
     GetAllCarSize().then((data) => {
@@ -58,10 +55,6 @@ const AdminSchedule = ({ data }) => {
     GetAllService().then((data) => {
       if (data?.status === "SUCCESS") setServices(data.msg);
     }).catch((err) => console.error("Service error:", err));
-    
-    GetAllPaymentType().then((data) => {
-      if (data?.status === "SUCCESS") setPaymentTypes(data.msg);
-    }).catch((err) => console.error("PaymentType error:", err));
   };
 
   const fetchBookings = () => {
@@ -82,6 +75,12 @@ const AdminSchedule = ({ data }) => {
     }
     return filtered;
   }, [bookings, selectedBranch]);
+
+  useEffect(() => {
+    if (!selectedBranch || branches.length === 0) return;
+    const stillExists = branches.some((b) => String(b.id) === String(selectedBranch));
+    if (!stillExists) setSelectedBranch("");
+  }, [branches, selectedBranch]);
 
   const monthlyStats = useMemo(() => {
     const year = currentDate.getFullYear();
@@ -153,8 +152,12 @@ const AdminSchedule = ({ data }) => {
     setShowModal(true);
   };
 
-  const handleStatusChange = (bookingId, newStatus) => {
-    PostUpDateBookingStatus({ booking_id: bookingId, processing_status: newStatus }).then((res) => {
+  const handleStatusChange = (booking, newStatus) => {
+    const payload =
+      booking.row_source === "walk_in"
+        ? { walk_in_id: booking.id, processing_status: newStatus }
+        : { booking_id: booking.id, processing_status: newStatus };
+    PostUpDateBookingStatus(payload).then((res) => {
       if (res.status === "SUCCESS") {
         fetchBookings();
         setShowModal(false);
@@ -173,12 +176,46 @@ const AdminSchedule = ({ data }) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const canOpenAddBooking =
+    branches.length === 1 ||
+    (branches.length > 1 && Boolean(selectedBranch));
+
+  const openAddBookingModal = () => {
+    if (branches.length > 1 && !selectedBranch) {
+      alert("กรุณาเลือกสาขาจากตัวกรองด้านบนก่อน จึงจะเพิ่มการจองได้");
+      return;
+    }
+    setFormData({
+      customer_name: "",
+      customer_phone: "",
+      car_no: "",
+      car_size_id: "",
+      car_color: "",
+      service: "",
+      branch_id:
+        branches.length === 1 ? String(branches[0].id) : String(selectedBranch),
+      booking_date: "",
+      booking_time: "",
+    });
+    setShowAddForm(true);
+  };
+
   const handleAddBooking = (e) => {
     e.preventDefault();
+    if (branches.length > 1 && !formData.branch_id) {
+      alert("กรุณาเลือกสาขา");
+      return;
+    }
     setSubmitting(true);
 
+    const branchIdResolved =
+      branches.length === 1
+        ? String(branches[0].id)
+        : String(formData.branch_id);
     const selectedCarSize = carSizes.find((c) => c.id === parseInt(formData.car_size_id));
-    const selectedBranchData = branches.find((b) => b.id === parseInt(formData.branch_id));
+    const selectedBranchData = branches.find(
+      (b) => String(b.id) === branchIdResolved,
+    );
     const startDatetime = `${formData.booking_date} ${formData.booking_time}:00`;
     const endDate = new Date(`${formData.booking_date}T${formData.booking_time}`);
     endDate.setHours(endDate.getHours() + 1);
@@ -192,8 +229,8 @@ const AdminSchedule = ({ data }) => {
       car_size: selectedCarSize?.size || "",
       car_color: formData.car_color,
       service: formData.service,
-      payment_type_id: formData.payment_type_id,
-      branch_id: formData.branch_id,
+      payment_type_id: null,
+      branch_id: branchIdResolved,
       branch_name: selectedBranchData?.name || "",
       start_service_datetime: startDatetime,
       end_service_datetime: endDatetime,
@@ -215,7 +252,6 @@ const AdminSchedule = ({ data }) => {
           car_size_id: "",
           car_color: "",
           service: "",
-          payment_type_id: "",
           branch_id: "",
           booking_date: "",
           booking_time: "",
@@ -335,18 +371,25 @@ const AdminSchedule = ({ data }) => {
         <h1 className="text-2xl font-bold text-gray-800">ตารางการจอง</h1>
         <div className="flex flex-wrap items-center gap-2">
           {branches.length > 1 && (
-            <select
-              value={selectedBranch}
-              onChange={(e) => setSelectedBranch(e.target.value)}
-              className="select select-bordered select-sm min-w-[160px] h-8 px-3 text-sm"
-            >
-              <option value="">ทุกสาขา</option>
-              {branches.map((branch) => (
-                <option key={branch.id} value={branch.id}>
-                  {branch.name}
-                </option>
-              ))}
-            </select>
+            <div className="flex flex-col gap-0.5">
+              <select
+                value={selectedBranch}
+                onChange={(e) => setSelectedBranch(e.target.value)}
+                className="select select-bordered select-sm min-w-[180px] h-8 px-3 text-sm"
+              >
+                <option value="">— เลือกสาขา —</option>
+                {branches.map((branch) => (
+                  <option key={branch.id} value={branch.id}>
+                    {branch.name}
+                  </option>
+                ))}
+              </select>
+              {!selectedBranch && (
+                <span className="text-[10px] text-amber-700 leading-tight max-w-[200px]">
+                  เลือกสาขาก่อนเพิ่มการจอง
+                </span>
+              )}
+            </div>
           )}
           <div className="relative">
             <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
@@ -361,7 +404,17 @@ const AdminSchedule = ({ data }) => {
           <button onClick={exportToExcel} className="btn btn-sm btn-outline gap-1">
             <FaFileExcel /> Export
           </button>
-          <button onClick={() => setShowAddForm(true)} className="btn btn-sm btn-primary gap-1">
+          <button
+            type="button"
+            onClick={openAddBookingModal}
+            disabled={!canOpenAddBooking}
+            title={
+              !canOpenAddBooking && branches.length > 1
+                ? "กรุณาเลือกสาขาจากตัวกรองด้านบนก่อน"
+                : undefined
+            }
+            className="btn btn-sm btn-primary gap-1 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
             <FaPlus /> เพิ่มการจอง
           </button>
           <button onClick={fetchBookings} className="btn btn-sm btn-outline">
@@ -512,7 +565,7 @@ const AdminSchedule = ({ data }) => {
             <div className="space-y-3 max-h-[400px] overflow-y-auto">
               {dayBookings.map((booking, index) => (
                 <div
-                  key={booking.id}
+                  key={`${booking.row_source || "booking"}-${booking.id}`}
                   onClick={() => handleBookingClick(booking)}
                   className="p-3 border rounded-lg cursor-pointer hover:bg-gray-50 transition-all"
                 >
@@ -547,10 +600,31 @@ const AdminSchedule = ({ data }) => {
               </div>
             </div>
             <form onSubmit={handleAddBooking} className="p-6 space-y-5">
+              {/* สาขา — ตัวเลือกแรก */}
+              <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">1</span>
+                  สาขา
+                </h3>
+                {branches.length === 1 ? (
+                  <p className="text-sm font-semibold text-gray-800">{branches[0].name}</p>
+                ) : (
+                  <div>
+                    <p className="text-sm font-semibold text-gray-800">
+                      {branches.find((b) => String(b.id) === String(formData.branch_id))?.name ||
+                        "—"}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      สาขามาจากที่เลือกไว้ในตัวกรองด้านบน
+                    </p>
+                  </div>
+                )}
+              </div>
+
               {/* วันที่และเวลา */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">1</span>
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">2</span>
                   วันที่และเวลา
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -586,7 +660,7 @@ const AdminSchedule = ({ data }) => {
               {/* ข้อมูลลูกค้า */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">2</span>
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">3</span>
                   ข้อมูลลูกค้า
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
@@ -623,7 +697,7 @@ const AdminSchedule = ({ data }) => {
               {/* ข้อมูลรถ */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">3</span>
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">4</span>
                   ข้อมูลรถ
                 </h3>
                 <div className="grid grid-cols-3 gap-4">
@@ -674,66 +748,28 @@ const AdminSchedule = ({ data }) => {
                 </div>
               </div>
 
-              {/* บริการและการชำระเงิน */}
+              {/* บริการ */}
               <div className="bg-gray-50 rounded-lg p-4">
                 <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">4</span>
-                  บริการและการชำระเงิน
+                  <span className="w-6 h-6 bg-blue-500 text-white rounded-full flex items-center justify-center text-xs">5</span>
+                  บริการ
                 </h3>
-                <div className={`grid gap-4 ${branches.length > 1 ? "grid-cols-3" : "grid-cols-2"}`}>
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text font-medium">บริการ *</span>
-                    </label>
-                    <select
-                      name="service"
-                      value={formData.service}
-                      onChange={handleInputChange}
-                      required
-                      className="select select-bordered w-full"
-                    >
-                      <option value="">เลือกบริการ</option>
-                      {services.map((svc) => (
-                        <option key={svc.id} value={svc.name}>{svc.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="form-control">
-                    <label className="label">
-                      <span className="label-text font-medium">การชำระเงิน *</span>
-                    </label>
-                    <select
-                      name="payment_type_id"
-                      value={formData.payment_type_id}
-                      onChange={handleInputChange}
-                      required
-                      className="select select-bordered w-full"
-                    >
-                      <option value="">เลือกการชำระเงิน</option>
-                      {paymentTypes.map((pt) => (
-                        <option key={pt.id} value={pt.id}>{pt.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  {branches.length > 1 && (
-                    <div className="form-control">
-                      <label className="label">
-                        <span className="label-text font-medium">สาขา *</span>
-                      </label>
-                      <select
-                        name="branch_id"
-                        value={formData.branch_id}
-                        onChange={handleInputChange}
-                        required
-                        className="select select-bordered w-full"
-                      >
-                        <option value="">เลือกสาขา</option>
-                        {branches.map((branch) => (
-                          <option key={branch.id} value={branch.id}>{branch.name}</option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text font-medium">บริการ *</span>
+                  </label>
+                  <select
+                    name="service"
+                    value={formData.service}
+                    onChange={handleInputChange}
+                    required
+                    className="select select-bordered w-full"
+                  >
+                    <option value="">เลือกบริการ</option>
+                    {services.map((svc) => (
+                      <option key={svc.id} value={svc.name}>{svc.name}</option>
+                    ))}
+                  </select>
                 </div>
               </div>
 
@@ -797,31 +833,31 @@ const AdminSchedule = ({ data }) => {
                 <p className="text-sm text-gray-500 mb-2">เปลี่ยนสถานะ:</p>
                 <div className="flex flex-wrap gap-2">
                   <button
-                    onClick={() => handleStatusChange(selectedBooking.id, "pending")}
+                    onClick={() => handleStatusChange(selectedBooking, "pending")}
                     className="btn btn-xs bg-yellow-100 text-yellow-800 border-yellow-300 hover:bg-yellow-200"
                   >
                     รอดำเนินการ
                   </button>
                   <button
-                    onClick={() => handleStatusChange(selectedBooking.id, "confirmed")}
+                    onClick={() => handleStatusChange(selectedBooking, "confirmed")}
                     className="btn btn-xs bg-blue-100 text-blue-800 border-blue-300 hover:bg-blue-200"
                   >
                     ยืนยัน
                   </button>
                   <button
-                    onClick={() => handleStatusChange(selectedBooking.id, "in_progress")}
+                    onClick={() => handleStatusChange(selectedBooking, "in_progress")}
                     className="btn btn-xs bg-purple-100 text-purple-800 border-purple-300 hover:bg-purple-200"
                   >
                     กำลังดำเนินการ
                   </button>
                   <button
-                    onClick={() => handleStatusChange(selectedBooking.id, "completed")}
+                    onClick={() => handleStatusChange(selectedBooking, "completed")}
                     className="btn btn-xs bg-green-100 text-green-800 border-green-300 hover:bg-green-200"
                   >
                     เสร็จสิ้น
                   </button>
                   <button
-                    onClick={() => handleStatusChange(selectedBooking.id, "cancelled")}
+                    onClick={() => handleStatusChange(selectedBooking, "cancelled")}
                     className="btn btn-xs bg-red-100 text-red-800 border-red-300 hover:bg-red-200"
                   >
                     ยกเลิก

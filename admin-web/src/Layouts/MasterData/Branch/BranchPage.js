@@ -85,11 +85,13 @@ const BranchPage = ({ data }) => {
   };
 
   const filteredAndSortedBranches = useMemo(() => {
+    const term = searchTerm.toLowerCase();
     let result = branch.filter(
       (b) =>
-        b.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        b.phone?.toLowerCase().includes(searchTerm.toLowerCase())
+        !term ||
+        b.name?.toLowerCase().includes(term) ||
+        b.address?.toLowerCase().includes(term) ||
+        b.phone?.toLowerCase().includes(term),
     );
 
     if (sortConfig.key && sortConfig.direction) {
@@ -265,7 +267,7 @@ const BranchPage = ({ data }) => {
                   <tbody>
                     {filteredAndSortedBranches.length > 0 ? (
                       filteredAndSortedBranches.map((b, index) => (
-                        <tr key={b.branch_id} className="hover:bg-base-50">
+                        <tr key={b.id} className="hover:bg-base-50">
                           <td className="text-center text-base-content/60 font-medium">{index + 1}</td>
                           <td className="font-medium">{b.name}</td>
                           <td>{b.address}</td>

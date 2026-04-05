@@ -1,5 +1,23 @@
 const Conn = require("../../../db");
 
+const GetAllChannelSchedule = (req, res, next) => {
+  Conn.execute(
+    `SELECT channel_id, day_of_week,
+            TIME_FORMAT(start_time, '%H:%i') AS start_time,
+            TIME_FORMAT(end_time, '%H:%i') AS end_time
+     FROM channel_schedule`,
+    function (error, results) {
+      if (error) {
+        return res.json({ status: "ERROR", msg: error });
+      }
+      if (results.length === 0) {
+        return res.json({ status: "NO DATA", msg: "NO DATA" });
+      }
+      return res.json({ status: "SUCCESS", msg: results });
+    },
+  );
+};
+
 const GetAllChannel = (req, res, next) => {
   Conn.execute(
     "SELECT channel.*, branch.name AS branch_name FROM channel JOIN branch ON channel.branch_id = branch.id",
@@ -130,6 +148,7 @@ const PutUpdateChannel = (req, res, next) => {
 };
 
 module.exports = {
+  GetAllChannelSchedule,
   GetAllChannel,
   PostAddChannel,
   DeleteChannel,
